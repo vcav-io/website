@@ -62,7 +62,7 @@
         <div class="step__body">
           <h3 class="step__title">Relay Execution</h3>
           <p>
-            The relay <strong>enforces</strong>: verifies model profile hash, assembles prompt from content-addressed <code>PromptProgram</code>, calls LLM, validates output against <strong>JSON Schema</strong>. <code>GATE</code> rules reject; <code>ADVISORY</code> rules log.
+            The relay <strong>enforces</strong>: verifies model profile hash — confirming both parties consented to the same cognitive role — assembles prompt from content-addressed <code>PromptProgram</code>, calls LLM, validates output against <strong>JSON Schema</strong>. <code>GATE</code> rules reject; <code>ADVISORY</code> rules log.
           </p>
           <p class="step__guarantee font-mono">Schema violation aborts execution — only structured signals pass</p>
         </div>
