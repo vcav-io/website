@@ -1,0 +1,729 @@
+---
+// Three-panel vault simulation — mediation triage scenario
+---
+
+<section class="sim-section" id="simulation" aria-label="Vault simulation">
+  <div class="sim-wrapper">
+
+    <!-- ── Three-panel grid ── -->
+    <div class="sim-grid" id="sim-grid">
+
+      <!-- Left panel: Alice's chat -->
+      <div class="sim-panel sim-panel--chat panel--dim" id="panel-left" aria-label="Alice's agent chat">
+        <div class="sim-panel__header">
+          <span class="sim-panel__agent-name">Alice</span>
+          <span class="sim-panel__agent-id font-mono">alicebot-prod-7</span>
+        </div>
+        <div class="sim-panel__messages" id="messages-left"></div>
+      </div>
+
+      <!-- Centre panel: The Vault -->
+      <div class="sim-panel sim-panel--vault panel--dim" id="panel-centre" aria-label="AgentVault protocol execution">
+        <div class="sim-panel__header">
+          <span class="sim-panel__vault-label font-mono">AgentVault — software execution lane</span>
+        </div>
+        <div class="sim-panel__vault-scroll" id="vault-scroll">
+          <div class="sim-panel__vault-events" id="vault-events"></div>
+        </div>
+        <!-- Signal flow overlay -->
+        <div class="signal-overlay" id="signal-overlay"></div>
+      </div>
+
+      <!-- Right panel: Bob's chat -->
+      <div class="sim-panel sim-panel--chat panel--dim" id="panel-right" aria-label="Bob's agent chat">
+        <div class="sim-panel__header">
+          <span class="sim-panel__agent-name">Bob</span>
+          <span class="sim-panel__agent-id font-mono">bobbot-prod-3</span>
+        </div>
+        <div class="sim-panel__messages" id="messages-right"></div>
+      </div>
+
+    </div><!-- /sim-grid -->
+
+    <!-- ── Mobile step-cards view (hidden on desktop) ── -->
+    <div class="sim-mobile" id="sim-mobile" aria-hidden="true">
+      <div class="sim-mobile__phase" id="mobile-phase-label">Pre-session</div>
+      <div class="sim-mobile__cards" id="mobile-cards"></div>
+    </div>
+
+    <!-- ── Controls ── -->
+    <div class="sim-controls" id="sim-controls">
+      <button class="sim-btn sim-btn--play" id="btn-play" aria-label="Play simulation">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+          <polygon points="2,1 13,7 2,13"/>
+        </svg>
+        <span>Play</span>
+      </button>
+      <button class="sim-btn sim-btn--pause" id="btn-pause" aria-label="Pause simulation" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+          <rect x="2" y="1" width="4" height="12"/>
+          <rect x="8" y="1" width="4" height="12"/>
+        </svg>
+        <span>Pause</span>
+      </button>
+      <button class="sim-btn sim-btn--replay" id="btn-replay" aria-label="Replay simulation" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+          <path d="M7 2a5 5 0 1 0 4.33 2.5L13 2H9V6l1.5-1.5A3.5 3.5 0 1 1 7 3.5V2z"/>
+        </svg>
+        <span>Replay</span>
+      </button>
+
+      <div class="sim-progress">
+        <div class="sim-progress__track">
+          <div class="sim-progress__bar" id="progress-bar"></div>
+        </div>
+        <span class="sim-progress__time font-mono" id="progress-time"></span>
+      </div>
+    </div>
+
+  </div><!-- /sim-wrapper -->
+</section>
+
+<script>
+  import { SimulationEngine } from './engine.ts';
+  import { SimulationRenderer } from './renderer.ts';
+  import { mediationTriageScenario } from './scenario.ts';
+  import type { PhaseId, ChatMessage, ProtocolCard, ProtocolSubCard } from './types.ts';
+
+  function init() {
+    // ── DOM refs ──────────────────────────────────────────────────────────
+    const panelLeft    = document.getElementById('panel-left')!     as HTMLElement;
+    const panelCentre  = document.getElementById('panel-centre')!   as HTMLElement;
+    const panelRight   = document.getElementById('panel-right')!    as HTMLElement;
+    const msgLeft      = document.getElementById('messages-left')!  as HTMLElement;
+    const msgRight     = document.getElementById('messages-right')! as HTMLElement;
+    const vaultEvents  = document.getElementById('vault-events')!   as HTMLElement;
+    const progressBar  = document.getElementById('progress-bar')!   as HTMLElement;
+    const progressTime = document.getElementById('progress-time')!  as HTMLElement;
+    const signalOverlay= document.getElementById('signal-overlay')! as HTMLElement;
+    const btnPlay      = document.getElementById('btn-play')!       as HTMLButtonElement;
+    const btnPause     = document.getElementById('btn-pause')!      as HTMLButtonElement;
+    const btnReplay    = document.getElementById('btn-replay')!     as HTMLButtonElement;
+
+    // ── Renderer ──────────────────────────────────────────────────────────
+    const renderer = new SimulationRenderer({
+      left: panelLeft,
+      centre: panelCentre,
+      right: panelRight,
+      leftMessages: msgLeft,
+      rightMessages: msgRight,
+      vaultEvents,
+      progressBar,
+      progressTime,
+      signalOverlay,
+    });
+
+    // ── Engine ────────────────────────────────────────────────────────────
+    const engine = new SimulationEngine(mediationTriageScenario, {
+      onPhaseChange(phase: PhaseId) {
+        renderer.onPhaseChange(phase);
+        // Update mobile phase label
+        const mobileLabel = document.getElementById('mobile-phase-label');
+        if (mobileLabel) {
+          const labels: Record<PhaseId, string> = {
+            'pre-session': 'Pre-session — agents briefed',
+            'protocol': 'Protocol — vault executing',
+            'post-session': 'Post-session — results delivered',
+          };
+          mobileLabel.textContent = labels[phase] ?? phase;
+        }
+      },
+      onChatMessage(msg: ChatMessage, charIndex: number, totalChars: number) {
+        renderer.onChatMessage(msg, charIndex, totalChars);
+      },
+      onChatMessageComplete(msg: ChatMessage) {
+        renderer.onChatMessageComplete(msg);
+      },
+      onProtocolCard(card: ProtocolCard) {
+        renderer.onProtocolCard(card);
+      },
+      onProtocolSubCard(_card: ProtocolCard, _sub: ProtocolSubCard) {
+        // Currently unused — subCards are part of individual cards
+      },
+      onSignalFlow(json: string) {
+        renderer.onSignalFlow(json);
+      },
+      onProgress(elapsed: number, total: number) {
+        renderer.onProgress(elapsed, total);
+      },
+      onComplete() {
+        renderer.onComplete();
+        btnPause.style.display = 'none';
+        btnPlay.style.display = 'none';
+        btnReplay.style.display = '';
+      },
+    });
+
+    // ── Button handlers ───────────────────────────────────────────────────
+    btnPlay.addEventListener('click', () => {
+      engine.play();
+      btnPlay.style.display = 'none';
+      btnPause.style.display = '';
+      btnReplay.style.display = 'none';
+    });
+
+    btnPause.addEventListener('click', () => {
+      engine.pause();
+      btnPause.style.display = 'none';
+      btnPlay.style.display = '';
+    });
+
+    btnReplay.addEventListener('click', () => {
+      engine.reset();
+      renderer.reset();
+      btnReplay.style.display = 'none';
+      btnPlay.style.display = '';
+    });
+
+    // ── IntersectionObserver: auto-play when visible ───────────────────────
+    const simSection = document.getElementById('simulation');
+    if (simSection && 'IntersectionObserver' in window) {
+      let hasAutoPlayed = false;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (entry && entry.isIntersecting && !hasAutoPlayed) {
+            hasAutoPlayed = true;
+            observer.disconnect();
+            // Small delay so the panel is visible before animating
+            setTimeout(() => {
+              engine.play();
+              btnPlay.style.display = 'none';
+              btnPause.style.display = '';
+            }, 400);
+          }
+        },
+        { threshold: 0.3 }
+      );
+      observer.observe(simSection);
+    }
+  }
+
+  // Run after DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>
+
+<style>
+  /* ── Wrapper & grid ──────────────────────────────────────────────────────── */
+  .sim-section {
+    width: 100%;
+    margin-bottom: var(--space-xl);
+  }
+
+  .sim-wrapper {
+    max-width: var(--container-max);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+  }
+
+  .sim-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1fr;
+    gap: 0;
+    height: var(--simulation-height);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--color-bg-panel);
+  }
+
+  /* ── Panels ──────────────────────────────────────────────────────────────── */
+  .sim-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: opacity 600ms var(--ease-out);
+    position: relative;
+  }
+
+  .sim-panel + .sim-panel {
+    border-left: 1px solid var(--color-border);
+  }
+
+  .panel--dim {
+    opacity: 0.4;
+  }
+
+  .panel--error-flash {
+    animation: error-flash 0.6s ease forwards;
+  }
+
+  @keyframes error-flash {
+    0%   { box-shadow: inset 0 0 0 2px var(--color-error); }
+    40%  { box-shadow: inset 0 0 0 2px var(--color-error), 0 0 20px var(--color-error-glow); }
+    100% { box-shadow: none; }
+  }
+
+  /* ── Panel header ──────────────────────────────────────────────────────────  */
+  .sim-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--color-border-subtle);
+    background: var(--color-bg-elevated);
+    flex-shrink: 0;
+  }
+
+  .sim-panel__agent-name {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .sim-panel__agent-id {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+  }
+
+  .sim-panel__vault-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Chat messages area ──────────────────────────────────────────────────── */
+  .sim-panel--chat .sim-panel__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    scroll-behavior: smooth;
+  }
+
+  .chat-message {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .chat-message__name {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    padding: 0 var(--space-sm);
+  }
+
+  .chat-message--user {
+    align-items: flex-end;
+  }
+
+  .chat-message--bot {
+    align-items: flex-start;
+  }
+
+  .chat-bubble {
+    max-width: 90%;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 12px;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    word-break: break-word;
+  }
+
+  .chat-bubble--user {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-bottom-right-radius: 3px;
+  }
+
+  .chat-bubble--bot {
+    background: color-mix(in srgb, var(--color-accent-dim) 20%, var(--color-bg-panel));
+    border: 1px solid var(--color-accent-dim);
+    border-bottom-left-radius: 3px;
+  }
+
+  /* Typing cursor */
+  .chat-bubble__text.typing::after {
+    content: '|';
+    color: var(--color-accent);
+    animation: cursor-blink 1s step-end infinite;
+    margin-left: 1px;
+  }
+
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* ── Vault panel ─────────────────────────────────────────────────────────── */
+  .sim-panel--vault {
+    background: var(--color-bg-panel);
+    position: relative;
+  }
+
+  .sim-panel__vault-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    scroll-behavior: smooth;
+  }
+
+  .sim-panel__vault-events {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  /* ── Vault cards ─────────────────────────────────────────────────────────── */
+  .vault-card {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .vault-card--error {
+    border-color: var(--color-error);
+    background: color-mix(in srgb, var(--color-error-glow) 30%, var(--color-bg-elevated));
+  }
+
+  .vault-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .vault-card__step-tag {
+    font-size: 10px;
+    color: var(--color-text-dim);
+    background: var(--color-bg-elevated);
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--color-border-subtle);
+    white-space: nowrap;
+  }
+
+  .vault-card--error .vault-card__step-tag {
+    color: var(--color-error);
+    border-color: var(--color-error);
+  }
+
+  .vault-card__title {
+    font-size: var(--text-xs);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+  }
+
+  .vault-card--error .vault-card__title {
+    color: var(--color-error);
+    font-weight: 700;
+  }
+
+  .vault-card__body {
+    padding: var(--space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .vault-card__status {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--text-xs);
+    border-top: 1px solid var(--color-border-subtle);
+    font-family: var(--font-mono);
+  }
+
+  .vault-card__status--ok {
+    color: var(--color-success);
+  }
+
+  .vault-card__status--error {
+    color: var(--color-error);
+  }
+
+  .vault-card__note {
+    padding: 2px var(--space-sm) var(--space-xs);
+    font-size: 10px;
+    color: var(--color-text-dim);
+    font-style: italic;
+    font-family: var(--font-mono);
+  }
+
+  /* ── Vault lines ──────────────────────────────────────────────────────────── */
+  .vault-line {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    line-height: 1.5;
+    white-space: pre;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .vault-line--heading {
+    color: var(--color-text);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .vault-line--blank {
+    height: 6px;
+  }
+
+  .vault-line--comment {
+    color: var(--color-text-dim);
+    font-style: italic;
+  }
+
+  .vault-line--status-ok {
+    color: var(--color-success);
+  }
+
+  .vault-line--status-error {
+    color: var(--color-error);
+  }
+
+  .vault-line--bullet {
+    color: var(--color-accent);
+  }
+
+  .vault-line--json {
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  .vault-line__key {
+    color: var(--color-text-dim);
+    min-width: 110px;
+    flex-shrink: 0;
+  }
+
+  .vault-line__value {
+    color: var(--color-accent);
+  }
+
+  .vault-line__comment {
+    color: var(--color-text-dim);
+    font-style: italic;
+    font-size: 10px;
+  }
+
+  /* ── Signal overlay ──────────────────────────────────────────────────────── */
+  .signal-overlay {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: color-mix(in srgb, var(--color-bg-panel) 85%, transparent);
+    z-index: 10;
+    padding: var(--space-md);
+  }
+
+  .signal-overlay--visible {
+    display: flex;
+  }
+
+  .signal-block {
+    position: absolute;
+  }
+
+  .signal-block--centre {
+    position: relative;
+    text-align: center;
+  }
+
+  .signal-block__label {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .signal-block__json {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-accent-dim);
+    border-radius: 6px;
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    line-height: var(--leading-relaxed);
+    text-align: left;
+    box-shadow: 0 0 20px var(--color-accent-glow);
+    white-space: pre;
+  }
+
+  .signal-block--left,
+  .signal-block--right {
+    opacity: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .signal-block--left {
+    left: 0;
+  }
+
+  .signal-block--right {
+    right: 0;
+  }
+
+  .signal-block--animate-left {
+    animation: slide-left 800ms var(--ease-out) forwards;
+  }
+
+  .signal-block--animate-right {
+    animation: slide-right 800ms var(--ease-out) forwards;
+  }
+
+  @keyframes slide-left {
+    from { opacity: 0; transform: translateY(-50%) translateX(60px); }
+    to   { opacity: 0.7; transform: translateY(-50%) translateX(-100%); }
+  }
+
+  @keyframes slide-right {
+    from { opacity: 0; transform: translateY(-50%) translateX(-60px); }
+    to   { opacity: 0.7; transform: translateY(-50%) translateX(100%); }
+  }
+
+  /* ── Controls ────────────────────────────────────────────────────────────── */
+  .sim-controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-sm);
+    padding: 0 2px;
+  }
+
+  .sim-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: var(--space-xs) var(--space-sm);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 5px;
+    color: var(--color-text-secondary);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .sim-btn:hover {
+    color: var(--color-text);
+    border-color: var(--color-accent-dim);
+  }
+
+  .sim-btn svg {
+    flex-shrink: 0;
+  }
+
+  /* ── Progress bar ────────────────────────────────────────────────────────── */
+  .sim-progress {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  .sim-progress__track {
+    flex: 1;
+    height: 3px;
+    background: var(--color-border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .sim-progress__bar {
+    height: 100%;
+    width: 0%;
+    background: var(--color-accent);
+    border-radius: 2px;
+    transition: width 200ms linear;
+  }
+
+  .sim-progress__time {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    min-width: 28px;
+    text-align: right;
+  }
+
+  /* ── Mobile ──────────────────────────────────────────────────────────────── */
+  .sim-mobile {
+    display: none;
+  }
+
+  .sim-mobile__phase {
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: var(--space-sm);
+    padding: 0 2px;
+  }
+
+  .sim-mobile__cards {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  @media (max-width: 1023px) {
+    .sim-grid {
+      display: none;
+    }
+
+    .sim-mobile {
+      display: block;
+      margin-bottom: var(--space-sm);
+    }
+
+    /* On mobile the panels exist but are shown as cards stacked vertically.
+       The renderer writes into the desktop panels, and we mirror content here
+       using a simpler approach: mobile gets its own card list from the engine
+       callbacks (same renderer, different scroll containers exposed via IDs).
+       For now, show a simplified layout referencing the same message divs
+       via scroll-linked clones. A full mirror would require a second renderer
+       pass. For the MVP mobile experience we show the three panels stacked. */
+
+    .sim-grid {
+      display: flex !important;
+      flex-direction: column;
+      height: auto;
+      border: none;
+      gap: var(--space-sm);
+    }
+
+    .sim-panel {
+      border-left: none !important;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      max-height: 300px;
+    }
+
+    .sim-panel--vault {
+      max-height: 400px;
+    }
+
+    .panel--dim {
+      opacity: 0.6;
+    }
+
+    .vault-line {
+      white-space: pre-wrap;
+    }
+  }
+</style>

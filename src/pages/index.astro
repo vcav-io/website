@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Simulation from '../components/simulation/Simulation.astro';
 import PositioningText from '../components/sections/PositioningText.astro';
 import ProtocolOverview from '../components/sections/ProtocolOverview.astro';
 import VaultFamily from '../components/sections/VaultFamily.astro';
@@ -21,12 +22,7 @@ import LinksResources from '../components/sections/LinksResources.astro';
         </div>
       </div>
 
-      <!-- Simulation placeholder — Issue 2 will replace this -->
-      <div class="simulation-placeholder container">
-        <div class="simulation-placeholder__inner">
-          <span class="text-dim font-mono">Simulation — three-panel vault demo</span>
-        </div>
-      </div>
+      <Simulation />
     </header>
 
     <PositioningText />
@@ -61,20 +57,6 @@ import LinksResources from '../components/sections/LinksResources.astro';
     line-height: var(--leading-relaxed);
     color: var(--color-text);
     max-width: none;
-  }
-
-  .simulation-placeholder {
-    margin-bottom: var(--space-xl);
-  }
-
-  .simulation-placeholder__inner {
-    height: var(--simulation-height);
-    border: 1px dashed var(--color-border);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--color-bg-panel);
   }
 
   footer {
