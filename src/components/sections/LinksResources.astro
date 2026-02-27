@@ -1,0 +1,91 @@
+---
+// LinksResources.astro
+// Simple resource list with vcav-io namespace prominent
+---
+
+<section class="section" id="links">
+  <div class="container">
+    <h2>Links &amp; Resources</h2>
+    <ul class="resource-list">
+      <li class="resource">
+        <span class="resource__label">GitHub organisation</span>
+        <a
+          href="https://github.com/vcav-io"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="resource__link"
+        >github.com/vcav-io</a>
+      </li>
+      <li class="resource">
+        <span class="resource__label">AgentVault</span>
+        <a
+          href="https://github.com/vcav-io/agentvault"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="resource__link"
+        >github.com/vcav-io/agentvault</a>
+      </li>
+      <li class="resource">
+        <span class="resource__label">VFC (Vault Family Common)</span>
+        <span class="resource__soon">Coming soon — github.com/vcav-io/vfc</span>
+      </li>
+      <li class="resource">
+        <span class="resource__label">Protocol specification</span>
+        <span class="resource__soon">Coming soon</span>
+      </li>
+      <li class="resource">
+        <span class="resource__label">Red team results</span>
+        <span class="resource__soon">Coming soon</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  h2 {
+    margin-bottom: var(--space-2xl);
+  }
+
+  .resource-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 600px;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .resource {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--color-bg-panel);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .resource:last-child {
+    border-bottom: none;
+  }
+
+  .resource__label {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+
+  .resource__link {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+  }
+
+  .resource__soon {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-dim);
+  }
+</style>

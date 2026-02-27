@@ -1,5 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PositioningText from '../components/sections/PositioningText.astro';
+import ProtocolOverview from '../components/sections/ProtocolOverview.astro';
+import VaultFamily from '../components/sections/VaultFamily.astro';
+import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
+import LinksResources from '../components/sections/LinksResources.astro';
 ---
 
 <Layout>
@@ -24,49 +29,11 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </header>
 
-    <!-- Positioning text -->
-    <section class="section" id="positioning">
-      <div class="container">
-        <!-- Issue 3: PositioningText.astro -->
-        <p class="text-secondary">Positioning text placeholder</p>
-      </div>
-    </section>
-
-    <!-- Protocol overview -->
-    <section class="section" id="protocol">
-      <div class="container">
-        <!-- Issue 3: ProtocolOverview.astro -->
-        <h2>Protocol</h2>
-        <p class="text-secondary">Protocol overview placeholder</p>
-      </div>
-    </section>
-
-    <!-- The Vault Family -->
-    <section class="section" id="family">
-      <div class="container">
-        <!-- Issue 3: VaultFamily.astro -->
-        <h2>The Vault Family</h2>
-        <p class="text-secondary">Vault Family placeholder</p>
-      </div>
-    </section>
-
-    <!-- Why this matters -->
-    <section class="section" id="why">
-      <div class="container">
-        <!-- Issue 3: WhyThisMatters.astro -->
-        <h2>Why This Matters</h2>
-        <p class="text-secondary">Why this matters placeholder</p>
-      </div>
-    </section>
-
-    <!-- Links and resources -->
-    <section class="section" id="links">
-      <div class="container">
-        <!-- Issue 3: LinksResources.astro -->
-        <h2>Links &amp; Resources</h2>
-        <p class="text-secondary">Links placeholder</p>
-      </div>
-    </section>
+    <PositioningText />
+    <ProtocolOverview />
+    <VaultFamily />
+    <WhyThisMatters />
+    <LinksResources />
 
     <footer class="section">
       <div class="container">

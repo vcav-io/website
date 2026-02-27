@@ -1,0 +1,169 @@
+---
+// ProtocolOverview.astro
+// Seven-step AgentVault protocol flow — technical summary
+---
+
+<section class="section" id="protocol">
+  <div class="container">
+    <h2>Protocol</h2>
+    <p class="intro text-secondary">
+      AgentVault defines a seven-step session lifecycle. Each step is cryptographically
+      bound to the previous. Contracts are pre-existing documents referenced by hash —
+      they are not negotiated in-protocol.
+    </p>
+
+    <ol class="steps">
+      <li class="step">
+        <span class="step__number">1</span>
+        <div class="step__body">
+          <h3 class="step__title">Discovery</h3>
+          <p>
+            Agents publish signed descriptors containing their Ed25519 public key,
+            declared capabilities, supported model profiles, and policy commitments.
+            Each descriptor is independently signed using domain separation —
+            the prefix <code>VCAV-DESCRIPTOR-V1:</code> is prepended before signing,
+            preventing cross-context signature reuse.
+          </p>
+        </div>
+      </li>
+
+      <li class="step">
+        <span class="step__number">2</span>
+        <div class="step__body">
+          <h3 class="step__title">Proposal</h3>
+          <p>
+            The initiating agent sends a <code>PROPOSE</code> message referencing a
+            specific contract by its SHA-256 hash. The contract — a content-addressed
+            document — specifies the purpose code, output schema, model profile,
+            entropy budget, and execution lane. Signing uses the
+            <code>VCAV-PROPOSE-V1:</code> domain prefix.
+          </p>
+        </div>
+      </li>
+
+      <li class="step">
+        <span class="step__number">3</span>
+        <div class="step__body">
+          <h3 class="step__title">Admission</h3>
+          <p>
+            The responding agent either issues an <code>ADMIT</code> — committing to the
+            same contract hash and returning a one-time admit token — or issues a
+            <code>DENY</code>. Denial responses are constant-shape with no reason field:
+            even refusal must not leak information about internal state or policy.
+          </p>
+        </div>
+      </li>
+
+      <li class="step">
+        <span class="step__number">4</span>
+        <div class="step__body">
+          <h3 class="step__title">Commitment</h3>
+          <p>
+            The initiating agent submits its encrypted input using the admit token.
+            Input is encrypted with <code>XChaCha20-Poly1305</code>; the additional
+            authenticated data (AAD) binds the ciphertext to the contract hash,
+            ensuring the ciphertext cannot be replayed against a different contract.
+            Both agents have now committed private inputs to the relay.
+          </p>
+        </div>
+      </li>
+
+      <li class="step">
+        <span class="step__number">5</span>
+        <div class="step__body">
+          <h3 class="step__title">Relay Execution</h3>
+          <p>
+            The relay is an enforcer, not a pipe. It verifies that the model profile
+            hash matches the cognitive role both agents consented to. It assembles the
+            prompt from a content-addressed <code>PromptProgram</code>, calls the LLM,
+            and validates the output against the contract's JSON Schema — a hard
+            constraint; violation aborts execution. Guardian rules are then applied:
+            <code>GATE</code> rules reject policy violations outright;
+            <code>ADVISORY</code> rules log without blocking.
+          </p>
+        </div>
+      </li>
+
+      <li class="step">
+        <span class="step__number">6</span>
+        <div class="step__body">
+          <h3 class="step__title">Receipt</h3>
+          <p>
+            The relay signs an Ed25519 receipt that binds together the contract hash,
+            guardian policy hash, prompt template hash, model identity, model profile
+            hash, relay build SHA, participant identities, and the output signal.
+            This receipt is the complete provenance chain — any change to any input
+            invalidates it.
+          </p>
+        </div>
+      </li>
+
+      <li class="step">
+        <span class="step__number">7</span>
+        <div class="step__body">
+          <h3 class="step__title">Output Retrieval</h3>
+          <p>
+            Both agents retrieve the bounded output signal and the receipt. The signal
+            is structured data — not natural language. Each agent interprets it for
+            its human principal outside the vault, in their own context, under their
+            own responsibilities.
+          </p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<style>
+  h2 {
+    margin-bottom: var(--space-lg);
+  }
+
+  .intro {
+    max-width: 640px;
+    margin-bottom: var(--space-3xl);
+  }
+
+  .steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+    max-width: 860px;
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: var(--space-lg);
+    align-items: start;
+  }
+
+  .step__number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    background: var(--color-bg-panel);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+  }
+
+  .step__title {
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .step__body p {
+    color: var(--color-text-secondary);
+    max-width: none;
+  }
+</style>

@@ -1,0 +1,40 @@
+---
+// PositioningText.astro
+// Conveys the missing primitive: bounded disclosure between agent delegates
+---
+
+<section class="section" id="positioning">
+  <div class="container">
+    <div class="positioning">
+      <p>
+        Agent coordination today is either shallow — public APIs, no confidentiality — or
+        opaque, routed through black-box intermediaries with no verifiable record of what
+        was disclosed. Neither model supports agents acting as trusted delegates on sensitive
+        problems.
+      </p>
+      <p>
+        What has been missing is a protocol for bounded disclosure: a mechanism by which
+        two agents can exchange a constrained, schema-validated signal under a jointly
+        consented contract, producing a receipt that proves exactly what occurred.
+        The Vault Family introduces that primitive.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .positioning {
+    max-width: 680px;
+  }
+
+  .positioning p {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    max-width: none;
+  }
+
+  .positioning p + p {
+    margin-top: var(--space-lg);
+  }
+</style>

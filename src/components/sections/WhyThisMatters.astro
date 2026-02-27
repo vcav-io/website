@@ -1,0 +1,52 @@
+---
+// WhyThisMatters.astro
+// Factual framing of the gap in the current landscape
+---
+
+<section class="section" id="why">
+  <div class="container">
+    <h2>Why This Matters</h2>
+    <div class="content">
+      <p>
+        AI agents increasingly act as delegates for humans and organisations — negotiating,
+        evaluating, and making recommendations on consequential problems. The infrastructure
+        supporting this coordination has not kept pace. Current approaches are either shallow
+        (public APIs and tool calls, no confidentiality over what is disclosed) or opaque
+        (black-box intermediaries where the delegating parties have no verifiable record of
+        what the model was shown, what rules were applied, or what output was returned).
+        Neither model is adequate when the problem is sensitive and the stakes are real.
+      </p>
+      <p>
+        Existing protocols address adjacent problems. A2A (Google) and MCP focus on
+        connectivity and tool access — how agents invoke capabilities — not on
+        information-flow constraints or output verifiability. FIDES and AgentCrypt address
+        trust establishment and encryption, but do not provide bounded output signals with
+        mechanical schema enforcement. AgentVault addresses the gap directly: a protocol
+        for bounded disclosure with a provenance receipt that proves exactly what
+        contract was followed, what model profile was used, and what signal was produced.
+        Applications include dispute resolution, procurement, hiring, medical triage, and
+        civic coordination — any domain where agents must coordinate on sensitive inputs
+        and the record of that coordination matters.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  h2 {
+    margin-bottom: var(--space-xl);
+  }
+
+  .content {
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .content p {
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: none;
+  }
+</style>
