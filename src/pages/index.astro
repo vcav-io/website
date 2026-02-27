@@ -194,10 +194,9 @@ import LinksResources from '../components/sections/LinksResources.astro';
   .sim-module-header {
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: var(--space-lg);
-    margin-bottom: var(--space-lg);
-    text-align: center;
+    max-width: var(--content-max);
+    margin: 0 auto var(--space-lg);
   }
 
   .sim-module-header__title {
@@ -209,7 +208,6 @@ import LinksResources from '../components/sections/LinksResources.astro';
 
   .sim-module-header__subtitle {
     font-size: var(--text-sm);
-    max-width: var(--content-max);
     line-height: var(--leading-relaxed);
   }
 
@@ -298,7 +296,8 @@ import LinksResources from '../components/sections/LinksResources.astro';
     color: var(--color-text-dim);
     letter-spacing: 0.02em;
     margin-top: var(--space-sm);
-    text-align: center;
+    max-width: var(--content-max);
+    margin: var(--space-sm) auto 0;
   }
 
   @media (max-width: 1023px) {
