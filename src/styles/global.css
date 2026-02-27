@@ -55,8 +55,19 @@
   --space-3xl: 4rem;
   --space-4xl: 5rem;
 
+  /* Principal colours — per-agent colour coding */
+  --color-alice: hsl(210, 50%, 68%);
+  --color-alice-dim: hsl(210, 35%, 48%);
+  --color-alice-bg: hsla(210, 50%, 65%, 0.07);
+  --color-alice-border: hsla(210, 50%, 65%, 0.18);
+  --color-bob: hsl(35, 55%, 68%);
+  --color-bob-dim: hsl(35, 40%, 48%);
+  --color-bob-bg: hsla(35, 55%, 65%, 0.07);
+  --color-bob-border: hsla(35, 55%, 65%, 0.18);
+
   /* Layout */
   --container-max: 1400px;
+  --content-max: 760px;
   --container-padding: 2rem;
   --simulation-height: 600px;
 

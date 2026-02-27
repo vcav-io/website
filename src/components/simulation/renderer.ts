@@ -142,7 +142,8 @@ export class SimulationRenderer {
     const tl = this.els.timeline!;
     const key = this._bubbleKey(msg);
     const el = document.createElement('div');
-    el.className = `tl-chat tl-chat--${msg.panel} tl-chat--${msg.sender}`;
+    el.className = `tl-chat tl-chat--${msg.sender}`;
+    el.dataset.principal = msg.panel === 'left' ? 'alice' : 'bob';
     el.setAttribute('data-tl-key', key);
 
     const name = document.createElement('span');
@@ -172,6 +173,7 @@ export class SimulationRenderer {
   private _createBubble(msg: ChatMessage): HTMLElement {
     const wrap = document.createElement('div');
     wrap.className = `chat-message chat-message--${msg.sender}`;
+    wrap.dataset.principal = msg.panel === 'left' ? 'alice' : 'bob';
 
     const name = document.createElement('span');
     name.className = 'chat-message__name';
