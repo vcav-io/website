@@ -37,6 +37,8 @@ export class SimulationEngine {
   private rafId: number | null = null;
   private scheduled: ScheduledEvent[] = [];
   private activeTypings: Map<string, ActiveTyping> = new Map();
+  private microPauseStartMs: number | null = null;
+  private microPauseDurationMs: number = 800;
 
   constructor(scenario: Scenario, callbacks: EngineCallbacks) {
     this.scenario = scenario;
@@ -80,6 +82,7 @@ export class SimulationEngine {
     }
 
     this.state.phase = 'playing';
+    this._resumeTypings();
     this._tick();
   }
 
@@ -113,6 +116,7 @@ export class SimulationEngine {
 
     this.startTimeMs = null;
     this.pausedAtMs = 0;
+    this.microPauseStartMs = null;
     this.state = {
       phase: 'idle',
       currentPhase: 'pre-session',
@@ -129,6 +133,20 @@ export class SimulationEngine {
 
   private _tick() {
     if (this.state.phase !== 'playing') return;
+
+    // Micro-pause: freeze elapsed time during error display
+    if (this.microPauseStartMs !== null) {
+      const frozenMs = performance.now() - this.microPauseStartMs;
+      if (frozenMs < this.microPauseDurationMs) {
+        // Still paused — keep ticking but don't advance elapsed
+        this.rafId = requestAnimationFrame(() => this._tick());
+        return;
+      }
+      // Micro-pause over — adjust startTimeMs by actual frozen duration
+      // (robust to throttling / background tabs)
+      this.startTimeMs! += frozenMs;
+      this.microPauseStartMs = null;
+    }
 
     const elapsed = this._elapsed();
     this.state.elapsedMs = elapsed;
@@ -167,12 +185,46 @@ export class SimulationEngine {
 
       case 'protocol-card':
         this.callbacks.onProtocolCard(ev.event);
+        if (ev.event.isError) {
+          this.microPauseStartMs = performance.now();
+        }
         break;
 
       case 'signal-flow':
         this.callbacks.onSignalFlow(ev.event.json);
         break;
     }
+  }
+
+  private _resumeTypings() {
+    this.activeTypings.forEach((typing, key) => {
+      if (typing.intervalId === null) {
+        this._scheduleTypingTick(key, typing);
+      }
+    });
+  }
+
+  private _scheduleTypingTick(key: string, typing: ActiveTyping) {
+    const totalChars = typing.text.length;
+    const tick = () => {
+      if (this.state.phase !== 'playing') return;
+      const t = this.activeTypings.get(key);
+      if (!t) return;
+
+      this.callbacks.onChatMessage(t.msg, t.charIndex, totalChars);
+      t.charIndex++;
+
+      if (t.charIndex >= totalChars) {
+        t.intervalId = null;
+        this.activeTypings.delete(key);
+        this.callbacks.onChatMessageComplete(t.msg);
+        return;
+      }
+
+      const jitter = Math.floor(Math.random() * TYPING_JITTER_MS * 2) - TYPING_JITTER_MS;
+      t.intervalId = setTimeout(tick, TYPING_SPEED_MS + jitter) as unknown as ReturnType<typeof setInterval>;
+    };
+    typing.intervalId = setTimeout(tick, TYPING_SPEED_MS) as unknown as ReturnType<typeof setInterval>;
   }
 
   private _startTyping(msg: ChatMessage) {
@@ -182,35 +234,13 @@ export class SimulationEngine {
     // Notify character 0 immediately so the bubble appears
     this.callbacks.onChatMessage(msg, 0, totalChars);
 
-    let charIndex = 1;
-    const tick = () => {
-      if (this.state.phase !== 'playing') return;
-
-      const typing = this.activeTypings.get(key);
-      if (!typing) return;
-
-      this.callbacks.onChatMessage(msg, charIndex, totalChars);
-      charIndex++;
-
-      if (charIndex >= totalChars) {
-        clearInterval(typing.intervalId!);
-        typing.intervalId = null;
-        this.activeTypings.delete(key);
-        this.callbacks.onChatMessageComplete(msg);
-        return;
-      }
-
-      // Reschedule with jitter
-      const jitter = Math.floor(Math.random() * TYPING_JITTER_MS * 2) - TYPING_JITTER_MS;
-      typing.intervalId = setTimeout(tick, TYPING_SPEED_MS + jitter) as unknown as ReturnType<typeof setInterval>;
-    };
-
     const typing: ActiveTyping = {
       msg,
       text: msg.text,
       charIndex: 1,
-      intervalId: setTimeout(tick, TYPING_SPEED_MS) as unknown as ReturnType<typeof setInterval>,
+      intervalId: null,
     };
     this.activeTypings.set(key, typing);
+    this._scheduleTypingTick(key, typing);
   }
 }

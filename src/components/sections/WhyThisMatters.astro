@@ -8,25 +8,18 @@
     <h2>Why This Matters</h2>
     <div class="content">
       <p>
-        AI agents increasingly act as delegates for humans and organisations — negotiating,
-        evaluating, and making recommendations on consequential problems. The infrastructure
-        supporting this coordination has not kept pace. Current approaches are either shallow
-        (public APIs and tool calls, no confidentiality over what is disclosed) or opaque
-        (black-box intermediaries where the delegating parties have no verifiable record of
-        what the model was shown, what rules were applied, or what output was returned).
-        Neither model is adequate when the problem is sensitive and the stakes are real.
+        AI agents increasingly act as delegates on <strong>consequential problems</strong> —
+        negotiating, evaluating, recommending. Current coordination is either
+        <strong>shallow</strong> (public APIs, no confidentiality) or <strong>opaque</strong>
+        (black-box intermediaries, no verifiable record). Neither is adequate when the
+        problem is sensitive and the stakes are real.
       </p>
       <p>
-        Existing protocols address adjacent problems. A2A (Google) and MCP focus on
-        connectivity and tool access — how agents invoke capabilities — not on
-        information-flow constraints or output verifiability. FIDES and AgentCrypt address
-        trust establishment and encryption, but do not provide bounded output signals with
-        mechanical schema enforcement. AgentVault addresses the gap directly: a protocol
-        for bounded disclosure with a provenance receipt that proves exactly what
-        contract was followed, what model profile was used, and what signal was produced.
-        Applications include dispute resolution, procurement, hiring, medical triage, and
-        civic coordination — any domain where agents must coordinate on sensitive inputs
-        and the record of that coordination matters.
+        A2A and MCP address connectivity. FIDES and AgentCrypt address trust establishment.
+        None provide <strong>bounded output signals with mechanical schema enforcement
+        and cryptographic receipts</strong>. AgentVault addresses that gap directly.
+        Applications: dispute resolution, procurement, hiring, medical triage,
+        civic coordination — any domain where the record of coordination matters.
       </p>
     </div>
   </div>
@@ -34,18 +27,19 @@
 
 <style>
   h2 {
-    margin-bottom: var(--space-xl);
+    margin-bottom: var(--space-md);
   }
 
   .content {
-    max-width: 720px;
+    max-width: 680px;
     display: flex;
     flex-direction: column;
-    gap: var(--space-lg);
+    gap: var(--space-md);
   }
 
   .content p {
     color: var(--color-text-secondary);
+    font-size: var(--text-sm);
     line-height: var(--leading-relaxed);
     max-width: none;
   }

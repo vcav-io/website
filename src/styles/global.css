@@ -1,25 +1,33 @@
 /* vcav.io — Design System */
 
 :root {
-  /* Colours */
-  --color-bg: #0a0a0f;
-  --color-bg-elevated: #12121a;
-  --color-bg-panel: #0e0e16;
-  --color-border: #1e1e2e;
-  --color-border-subtle: #16161f;
+  /* Colours — higher contrast, clearer hierarchy */
+  --color-bg: #08080d;
+  --color-bg-alt: #0b0b12;
+  --color-bg-elevated: #131320;
+  --color-bg-panel: #0d0d14;
+  --color-border: #222238;
+  --color-border-subtle: #181828;
 
-  --color-text: #e8e6e3;
-  --color-text-secondary: #8a8a9a;
-  --color-text-dim: #5a5a6a;
+  --color-text: #ededeb;
+  --color-text-secondary: #9494a8;
+  --color-text-dim: #5a5a70;
 
-  --color-accent: #4a9da8;
-  --color-accent-dim: #2a6d78;
-  --color-accent-glow: rgba(74, 157, 168, 0.15);
+  --color-accent: #5ab4c0;
+  --color-accent-bright: #7dd4e0;
+  --color-accent-dim: #2a7080;
+  --color-accent-glow: rgba(90, 180, 192, 0.12);
 
-  --color-success: #4a9868;
-  --color-error: #c84040;
-  --color-error-glow: rgba(200, 64, 64, 0.2);
-  --color-warning: #c8a040;
+  --color-success: #50b070;
+  --color-error: #e04848;
+  --color-error-bright: #ff5555;
+  --color-error-glow: rgba(224, 72, 72, 0.25);
+  --color-warning: #d0a840;
+
+  /* Vault-specific — centre panel trust boundary */
+  --color-vault-bg: #0a0e18;
+  --color-vault-border: #1a2848;
+  --color-vault-glow: rgba(90, 180, 192, 0.06);
 
   /* Typography */
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
@@ -34,10 +42,10 @@
   --text-3xl: 2rem;
 
   --leading-tight: 1.25;
-  --leading-normal: 1.6;
-  --leading-relaxed: 1.75;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
 
-  /* Spacing */
+  /* Spacing — tighter sections, less vertical darkness */
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
@@ -45,7 +53,7 @@
   --space-xl: 2rem;
   --space-2xl: 3rem;
   --space-3xl: 4rem;
-  --space-4xl: 6rem;
+  --space-4xl: 5rem;
 
   /* Layout */
   --container-max: 1400px;
@@ -85,11 +93,12 @@ body {
   min-height: 100vh;
 }
 
-/* Typography */
+/* Typography — sharper hierarchy */
 h1, h2, h3, h4 {
   line-height: var(--leading-tight);
-  font-weight: 500;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
 }
 
 h1 { font-size: var(--text-3xl); }
@@ -100,6 +109,11 @@ p {
   max-width: 65ch;
 }
 
+strong {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
 a {
   color: var(--color-accent);
   text-decoration: none;
@@ -107,7 +121,7 @@ a {
 }
 
 a:hover {
-  color: var(--color-text);
+  color: var(--color-accent-bright);
 }
 
 code, pre {
@@ -115,11 +129,12 @@ code, pre {
 }
 
 code {
-  font-size: 0.9em;
-  color: var(--color-accent);
+  font-size: 0.88em;
+  color: var(--color-accent-bright);
   background: var(--color-bg-elevated);
-  padding: 0.15em 0.35em;
+  padding: 0.15em 0.4em;
   border-radius: 3px;
+  border: 1px solid var(--color-border-subtle);
 }
 
 pre {
@@ -135,6 +150,7 @@ pre {
 pre code {
   background: none;
   padding: 0;
+  border: none;
   color: inherit;
 }
 
@@ -145,9 +161,13 @@ pre code {
   padding: 0 var(--container-padding);
 }
 
-/* Sections */
+/* Sections — tighter, with alternating backgrounds for structure */
 .section {
-  padding: var(--space-4xl) 0;
+  padding: var(--space-3xl) 0;
+}
+
+.section--alt {
+  background: var(--color-bg-alt);
 }
 
 .section + .section {
@@ -179,10 +199,10 @@ pre code {
   border-width: 0;
 }
 
-/* Scroll reveal — elements start invisible, JS adds .revealed */
+/* Scroll reveal */
 .reveal {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(12px);
   transition: opacity var(--duration-slow) var(--ease-out),
               transform var(--duration-slow) var(--ease-out);
 }
