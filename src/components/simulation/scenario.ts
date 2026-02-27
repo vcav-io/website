@@ -47,17 +47,17 @@ const T = {
   step5b: 19400,
   step5c: 20200,
   step5d: 21000,
-  step5e: 23500,
-  step6: 25000,
-  step7: 26500,
+  step5e: 24200,
+  step6: 26000,
+  step7: 28800,
 
   // Phase 3
-  p3Start: 27000,
-  alicePostStart: 27400,
-  bobPostStart: 29200,
+  p3Start: 30800,
+  alicePostStart: 31200,
+  bobPostStart: 33000,
 };
 
-const TOTAL_DURATION_MS = 31000;
+const TOTAL_DURATION_MS = 35000;
 
 // ─── Helper ─────────────────────────────────────────────────────────────────
 function kv(text: string, value: string, comment?: string) {
@@ -258,7 +258,7 @@ const events: ScenarioEvent[] = [
       lines: [
         bullet('Verifying model profile...'),
         kv('  profile:', 'mediation-triage-v1'),
-        kv('  hash:', `${H.modelProfileHash.slice(0, 8)}...${H.modelProfileHash.slice(-4)}`, '✓ matches consent'),
+        kv('  hash:', `${H.modelProfileHash.slice(0, 8)}...${H.modelProfileHash.slice(-4)}`, '✓ both parties consented to this cognitive role'),
         kv('  runtime:', `${H.runtimeHash.slice(0, 8)}...${H.runtimeHash.slice(-4)}`, '(relay build SHA)'),
       ],
       delayMs: T.step5a,
@@ -314,7 +314,7 @@ const events: ScenarioEvent[] = [
         statusErr('Expected: structured JSON signal'),
         statusErr('Received: natural language recommendation'),
         blank(),
-        comment('Illustrative: demonstrates mechanical schema enforcement'),
+        comment('Schema enforcement: free-text rejected. Retrying under contract constraints.'),
       ],
       delayMs: T.step5d,
     },
@@ -368,6 +368,10 @@ const events: ScenarioEvent[] = [
         blank(),
         kv('Ed25519 signature:', `${H.receiptSig.slice(0, 8)}...${H.receiptSig.slice(-4)}`, '(VCAV-RECEIPT-V1)'),
       ],
+      statusLine: {
+        ok: true,
+        text: 'Receipt signed — provenance chain verified',
+      },
       delayMs: T.step6,
     },
   },
