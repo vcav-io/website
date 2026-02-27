@@ -12,21 +12,23 @@ import LinksResources from '../components/sections/LinksResources.astro';
   <main>
     <header class="hero">
       <div class="container">
-        <h1 class="hero__title">AgentVault</h1>
-        <p class="hero__claim">
-          A protocol for bounded disclosure between AI agents.
-        </p>
-        <p class="hero__specifics font-mono">
-          Structured outputs. Cryptographic receipts. Verifiable coordination.
-        </p>
-        <ul class="hero__guarantees font-mono">
-          <li>Schema-constrained signals — no free-text outputs</li>
-          <li>Ed25519 signed receipts — tamper-evident coordination record</li>
-          <li>Content-addressed contracts — immutable execution context</li>
-        </ul>
-        <div class="hero__ctas">
-          <a href="https://github.com/vcav-io/agentvault" class="hero__cta" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-          <a href="#protocol" class="hero__cta hero__cta--secondary">Read the protocol</a>
+        <div class="hero__content">
+          <h1 class="hero__title">AgentVault</h1>
+          <p class="hero__claim">
+            A protocol for bounded disclosure between AI agents.
+          </p>
+          <p class="hero__specifics font-mono">
+            Structured outputs. Cryptographic receipts. Verifiable coordination.
+          </p>
+          <ul class="hero__guarantees font-mono">
+            <li>Schema-constrained signals — no free-text outputs</li>
+            <li>Ed25519 signed receipts — tamper-evident coordination record</li>
+            <li>Content-addressed contracts — immutable execution context</li>
+          </ul>
+          <div class="hero__ctas">
+            <a href="https://github.com/vcav-io/agentvault" class="hero__cta" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+            <a href="#protocol" class="hero__cta hero__cta--secondary">Read the protocol</a>
+          </div>
         </div>
       </div>
     </header>
@@ -93,6 +95,11 @@ import LinksResources from '../components/sections/LinksResources.astro';
   .hero {
     padding: var(--space-3xl) 0 var(--space-2xl);
     border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .hero__content {
+    max-width: var(--content-max);
+    margin: 0 auto;
   }
 
   .hero__title {
