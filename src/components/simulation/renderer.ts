@@ -114,7 +114,7 @@ export class SimulationRenderer {
     container.scrollTop = container.scrollHeight;
 
     // Timeline: show "typing..." placeholder on first character
-    if (charIndex === 0 && this.els.timeline && !this.timelineBubbles.has(key)) {
+    if (this.els.timeline && !this.timelineBubbles.has(key)) {
       this.timelineBubbles.add(key);
       this._appendTimelineChat(msg, true);
     }
