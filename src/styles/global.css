@@ -1,0 +1,180 @@
+/* vcav.io — Design System */
+
+:root {
+  /* Colours */
+  --color-bg: #0a0a0f;
+  --color-bg-elevated: #12121a;
+  --color-bg-panel: #0e0e16;
+  --color-border: #1e1e2e;
+  --color-border-subtle: #16161f;
+
+  --color-text: #e8e6e3;
+  --color-text-secondary: #8a8a9a;
+  --color-text-dim: #5a5a6a;
+
+  --color-accent: #4a9da8;
+  --color-accent-dim: #2a6d78;
+  --color-accent-glow: rgba(74, 157, 168, 0.15);
+
+  --color-success: #4a9868;
+  --color-error: #c84040;
+  --color-error-glow: rgba(200, 64, 64, 0.2);
+  --color-warning: #c8a040;
+
+  /* Typography */
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2rem;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 6rem;
+
+  /* Layout */
+  --container-max: 1400px;
+  --container-padding: 2rem;
+  --simulation-height: 600px;
+
+  /* Animation */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 600ms;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  line-height: var(--leading-tight);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+h1 { font-size: var(--text-3xl); }
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); }
+
+p {
+  max-width: 65ch;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+a:hover {
+  color: var(--color-text);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+code {
+  font-size: 0.9em;
+  color: var(--color-accent);
+  background: var(--color-bg-elevated);
+  padding: 0.15em 0.35em;
+  border-radius: 3px;
+}
+
+pre {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: var(--space-lg);
+  overflow-x: auto;
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* Container */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-padding);
+}
+
+/* Sections */
+.section {
+  padding: var(--space-4xl) 0;
+}
+
+.section + .section {
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+/* Utility */
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-dim {
+  color: var(--color-text-dim);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

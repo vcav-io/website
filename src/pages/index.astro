@@ -1,0 +1,116 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+  <main>
+    <!-- Above-the-fold: definition + simulation -->
+    <header class="hero">
+      <div class="container">
+        <div class="hero__definition">
+          <p>
+            AI agents coordinate on sensitive problems inside cryptographically enforced
+            sessions. Contracts constrain what can be disclosed. The relay executes under
+            those constraints. The receipt proves exactly what happened.
+          </p>
+        </div>
+      </div>
+
+      <!-- Simulation placeholder — Issue 2 will replace this -->
+      <div class="simulation-placeholder container">
+        <div class="simulation-placeholder__inner">
+          <span class="text-dim font-mono">Simulation — three-panel vault demo</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Positioning text -->
+    <section class="section" id="positioning">
+      <div class="container">
+        <!-- Issue 3: PositioningText.astro -->
+        <p class="text-secondary">Positioning text placeholder</p>
+      </div>
+    </section>
+
+    <!-- Protocol overview -->
+    <section class="section" id="protocol">
+      <div class="container">
+        <!-- Issue 3: ProtocolOverview.astro -->
+        <h2>Protocol</h2>
+        <p class="text-secondary">Protocol overview placeholder</p>
+      </div>
+    </section>
+
+    <!-- The Vault Family -->
+    <section class="section" id="family">
+      <div class="container">
+        <!-- Issue 3: VaultFamily.astro -->
+        <h2>The Vault Family</h2>
+        <p class="text-secondary">Vault Family placeholder</p>
+      </div>
+    </section>
+
+    <!-- Why this matters -->
+    <section class="section" id="why">
+      <div class="container">
+        <!-- Issue 3: WhyThisMatters.astro -->
+        <h2>Why This Matters</h2>
+        <p class="text-secondary">Why this matters placeholder</p>
+      </div>
+    </section>
+
+    <!-- Links and resources -->
+    <section class="section" id="links">
+      <div class="container">
+        <!-- Issue 3: LinksResources.astro -->
+        <h2>Links &amp; Resources</h2>
+        <p class="text-secondary">Links placeholder</p>
+      </div>
+    </section>
+
+    <footer class="section">
+      <div class="container">
+        <p class="text-dim" style="font-size: var(--text-sm);">
+          vcav.io — Not affiliated with other projects using the AgentVault name.
+        </p>
+      </div>
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  .hero {
+    padding: var(--space-3xl) 0 var(--space-xl);
+  }
+
+  .hero__definition {
+    max-width: 720px;
+    margin: 0 auto var(--space-2xl);
+    text-align: center;
+  }
+
+  .hero__definition p {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    max-width: none;
+  }
+
+  .simulation-placeholder {
+    margin-bottom: var(--space-xl);
+  }
+
+  .simulation-placeholder__inner {
+    height: var(--simulation-height);
+    border: 1px dashed var(--color-border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-panel);
+  }
+
+  footer {
+    padding-bottom: var(--space-2xl);
+  }
+</style>
