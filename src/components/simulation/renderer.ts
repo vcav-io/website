@@ -449,6 +449,7 @@ export class SimulationRenderer {
     closeBtn.textContent = '\u2715';
     closeBtn.addEventListener('click', () => {
       overlay.classList.remove('signal-overlay--visible');
+      this.els.centre.classList.remove('panel--dim');
     });
     overlay.appendChild(closeBtn);
 
