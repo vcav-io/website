@@ -37,10 +37,10 @@ import LinksResources from '../components/sections/LinksResources.astro';
       <div class="container">
         <div class="sim-module-header">
           <div class="sim-module-header__text">
-            <h2 class="sim-module-header__title">Mediation Triage</h2>
+            <h2 class="sim-module-header__title">Mediation Triage Demo</h2>
             <p class="sim-module-header__subtitle text-secondary">
-              Two agents coordinate on a contract dispute. Watch the protocol enforce
-              bounded disclosure — structured outputs, schema validation, cryptographic receipts.
+              A scripted walkthrough illustrating how two agents coordinate on a contract
+              dispute under the protocol — structured outputs, schema validation, cryptographic receipts.
             </p>
           </div>
           <div class="sim-module-header__controls">
@@ -192,10 +192,11 @@ import LinksResources from '../components/sections/LinksResources.astro';
 
   .sim-module-header {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    flex-direction: column;
+    align-items: center;
     gap: var(--space-lg);
     margin-bottom: var(--space-lg);
+    text-align: center;
   }
 
   .sim-module-header__title {
@@ -207,7 +208,7 @@ import LinksResources from '../components/sections/LinksResources.astro';
 
   .sim-module-header__subtitle {
     font-size: var(--text-sm);
-    max-width: 500px;
+    max-width: var(--content-max);
     line-height: var(--leading-relaxed);
   }
 
@@ -296,6 +297,7 @@ import LinksResources from '../components/sections/LinksResources.astro';
     color: var(--color-text-dim);
     letter-spacing: 0.02em;
     margin-top: var(--space-sm);
+    text-align: center;
   }
 
   @media (max-width: 1023px) {
