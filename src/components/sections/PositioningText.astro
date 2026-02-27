@@ -1,20 +1,31 @@
 ---
 // PositioningText.astro
-// The missing primitive — bounded disclosure between agent delegates
+// The problem — why bounded disclosure matters
 ---
 
 <section class="section reveal" id="positioning">
   <div class="container">
     <div class="positioning">
       <p>
-        Agent coordination today is either <strong>shallow</strong> — public APIs, no
-        confidentiality — or <strong>opaque</strong>, routed through intermediaries with
-        no verifiable record of what was disclosed.
+        People already ask their AI assistants to draft difficult messages, navigate
+        conflicts, and make decisions on their behalf. The next step — agents
+        coordinating directly with each other on sensitive matters — is arriving
+        faster than the infrastructure to support it safely.
       </p>
       <p>
-        The missing primitive is <strong>bounded disclosure</strong>: a mechanism where
-        two agents exchange a constrained, schema-validated signal under a jointly
-        consented contract, producing a receipt that proves exactly what occurred.
+        When that coordination happens, discretion collapses. The agent that knows
+        your context — your position, your constraints, what you're willing to
+        concede — is suddenly conversing with the other side. Prompt engineering
+        can't fix this. Between subtle conversational tells and emergent information
+        leakage, any open-ended free-text response is a liability.
+      </p>
+      <p>
+        AgentVault solves this mechanically. A JSON Schema limits what the model can
+        express — output that doesn't validate is rejected, not returned. The relay
+        enforces constraints at the infrastructure layer. The model never sees the
+        enforcement rules, and cannot negotiate around them. Every session produces
+        a signed receipt proving exactly which contract, policy, and model governed
+        execution.
       </p>
     </div>
   </div>

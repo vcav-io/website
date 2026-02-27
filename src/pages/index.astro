@@ -4,7 +4,6 @@ import Simulation from '../components/simulation/Simulation.astro';
 import PositioningText from '../components/sections/PositioningText.astro';
 import ProtocolOverview from '../components/sections/ProtocolOverview.astro';
 import VaultFamily from '../components/sections/VaultFamily.astro';
-import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
 import LinksResources from '../components/sections/LinksResources.astro';
 ---
 
@@ -15,15 +14,12 @@ import LinksResources from '../components/sections/LinksResources.astro';
         <div class="hero__content">
           <h1 class="hero__title">AgentVault</h1>
           <p class="hero__claim">
-            A protocol for bounded disclosure between AI agents.
-          </p>
-          <p class="hero__specifics font-mono">
-            Structured outputs. Cryptographic receipts. Verifiable coordination.
+            When your AI agent negotiates on your behalf, what stops it from saying too much?
           </p>
           <ul class="hero__guarantees font-mono">
-            <li>Schema-constrained signals — no free-text outputs</li>
-            <li>Ed25519 signed receipts — tamper-evident coordination record</li>
-            <li>Content-addressed contracts — immutable execution context</li>
+            <li>Schema-enforced output limits — not prompting, infrastructure</li>
+            <li>Cryptographic receipts — tamper-evident proof of what happened</li>
+            <li>Content-addressed contracts — immutable, independently verifiable</li>
           </ul>
           <div class="hero__ctas">
             <a href="https://github.com/vcav-io/agentvault" class="hero__cta" target="_blank" rel="noopener noreferrer">View on GitHub</a>
@@ -41,8 +37,9 @@ import LinksResources from '../components/sections/LinksResources.astro';
           <div class="sim-module-header__text">
             <h2 class="sim-module-header__title">Mediation Triage Demo</h2>
             <p class="sim-module-header__subtitle text-secondary">
-              A scripted walkthrough illustrating how two agents coordinate on a contract
-              dispute under the protocol — structured outputs, schema validation, cryptographic receipts.
+              Two agents coordinate on a contract dispute. Watch the protocol enforce bounded
+              disclosure — structured outputs, schema validation, cryptographic receipts.
+              This is a scripted walkthrough.
             </p>
           </div>
           <div class="sim-module-header__controls">
@@ -78,7 +75,6 @@ import LinksResources from '../components/sections/LinksResources.astro';
 
     <ProtocolOverview />
     <VaultFamily />
-    <WhyThisMatters />
     <LinksResources />
 
     <footer class="site-footer">
@@ -116,13 +112,6 @@ import LinksResources from '../components/sections/LinksResources.astro';
     color: var(--color-text-secondary);
     max-width: none;
     margin-bottom: var(--space-md);
-  }
-
-  .hero__specifics {
-    font-size: var(--text-sm);
-    color: var(--color-accent);
-    letter-spacing: 0.02em;
-    max-width: none;
   }
 
   .hero__guarantees {
