@@ -25,39 +25,39 @@ const H = {
 };
 
 // ─── Timing (ms) ────────────────────────────────────────────────────────────
-// Phase 1: 0 – 36000 ms  (Alice chat ~9s + AliceBot ~4s + Bob chat ~7s + BobBot ~4s + gaps)
-// Phase 2: 36000 – 66000 ms  (protocol steps)
-// Phase 3: 66000 – 75000 ms  (post-session chat)
+// Phase 1: 0 – 12s   (pre-session chat)
+// Phase 2: 12 – 27s  (protocol steps)
+// Phase 3: 27 – 31s  (post-session chat)
 
 const T = {
   // Phase 1
   p1Start: 0,
-  aliceTypingStart: 500,
-  aliceBotStart: 12000,
-  bobTypingStart: 18000,
-  bobBotStart: 29000,
+  aliceTypingStart: 400,
+  aliceBotStart: 3800,
+  bobTypingStart: 7000,
+  bobBotStart: 10200,
 
   // Phase 2 — centre panel activates
-  p2Start: 36000,
-  step1: 36500,
-  step2: 40000,
-  step3: 43000,
-  step4: 46000,
-  step5a: 49000,
-  step5b: 51500,
-  step5c: 53000,
-  step5d: 54500,
-  step5e: 58000,
-  step6: 61000,
-  step7: 64000,
+  p2Start: 12000,
+  step1: 12400,
+  step2: 14000,
+  step3: 15600,
+  step4: 17000,
+  step5a: 18400,
+  step5b: 19400,
+  step5c: 20200,
+  step5d: 21000,
+  step5e: 23500,
+  step6: 25000,
+  step7: 26500,
 
   // Phase 3
-  p3Start: 66000,
-  alicePostStart: 66500,
-  bobPostStart: 71000,
+  p3Start: 27000,
+  alicePostStart: 27400,
+  bobPostStart: 29200,
 };
 
-const TOTAL_DURATION_MS = 76000;
+const TOTAL_DURATION_MS = 31000;
 
 // ─── Helper ─────────────────────────────────────────────────────────────────
 function kv(text: string, value: string, comment?: string) {
@@ -98,7 +98,7 @@ const events: ScenarioEvent[] = [
       panel: 'left',
       sender: 'user',
       name: 'Alice',
-      text: "I need to resolve a contract dispute with my counterparty. My position: I completed the software deliverables on time, but the scope expanded significantly beyond the original agreement. I'm open to negotiating compensation for the additional work, but I don't want to disclose my minimum acceptable amount. Find out if there's room for alignment.",
+      text: "I have a contract dispute. I delivered on time but scope expanded beyond the original agreement. Open to negotiating \u2014 don\u2019t disclose my floor.",
       delayMs: T.aliceTypingStart,
     },
   },
@@ -110,7 +110,7 @@ const events: ScenarioEvent[] = [
       panel: 'left',
       sender: 'bot',
       name: 'AliceBot',
-      text: "Understood. I'll initiate a vault session under the mediation-triage contract. This will produce a bounded compatibility signal — not a resolution or recommendation. The vault will assess where your positions align and diverge. Your minimum acceptable amount won't be disclosed. Only the structured signal will be shared.",
+      text: "Opening a vault session under mediation-triage. The output will be a compatibility signal \u2014 not a recommendation. Your floor stays sealed.",
       delayMs: T.aliceBotStart,
     },
   },
@@ -122,7 +122,7 @@ const events: ScenarioEvent[] = [
       panel: 'right',
       sender: 'user',
       name: 'Bob',
-      text: "I've got a dispute with a contractor over scope and payment. My view: the original spec was clear, and some of what they're calling scope creep was actually correcting deficiencies. That said, I've already budgeted for a reasonable settlement — I don't want that figure disclosed. See if there's any basis for agreement.",
+      text: "Scope dispute with a contractor. Some of the \u2018scope creep\u2019 was correcting defects. I\u2019ve budgeted a settlement \u2014 keep that number private.",
       delayMs: T.bobTypingStart,
     },
   },
@@ -134,7 +134,7 @@ const events: ScenarioEvent[] = [
       panel: 'right',
       sender: 'bot',
       name: 'BobBot',
-      text: "Understood. I'll join the vault session under the same mediation-triage contract. The output will be a compatibility signal indicating alignment and divergence — no details of your budgeted settlement will be shared. Only the structured signal emerges from the vault.",
+      text: "Joining the session. Output is a structured compatibility signal \u2014 your settlement budget won\u2019t be disclosed.",
       delayMs: T.bobBotStart,
     },
   },
@@ -400,7 +400,7 @@ const events: ScenarioEvent[] = [
       panel: 'left',
       sender: 'bot',
       name: 'AliceBot',
-      text: "The vault session is complete. The compatibility signal shows: your positions on timeline and scope are aligned — both sides agree on the project completion window and the work that was delivered. There is significant divergence on liability and compensation. The signal flags escalation as required for those two dimensions.",
+      text: "Signal received. Timeline and scope aligned. Liability and compensation diverge \u2014 escalation flagged.",
       delayMs: T.alicePostStart,
     },
   },
@@ -412,7 +412,7 @@ const events: ScenarioEvent[] = [
       panel: 'right',
       sender: 'bot',
       name: 'BobBot',
-      text: "Session complete. The compatibility signal indicates partial alignment. You and the contractor agree on timeline and scope — those dimensions are not in dispute. The divergence is on liability and compensation. The signal flags escalation as required. Those two dimensions are where the positions differ most.",
+      text: "Aligned on timeline and scope. Liability and compensation diverge \u2014 escalation required.",
       delayMs: T.bobPostStart,
     },
   },

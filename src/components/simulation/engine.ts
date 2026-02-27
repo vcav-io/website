@@ -11,8 +11,8 @@ import type {
   ProtocolCard,
 } from './types.ts';
 
-const TYPING_SPEED_MS = 30;   // ms per character
-const TYPING_JITTER_MS = 10;  // ± jitter
+const WORD_SPEED_MS = 80;    // ms per word
+const WORD_JITTER_MS = 20;   // ± jitter
 
 interface ScheduledEvent {
   fireAtMs: number;
@@ -24,6 +24,8 @@ interface ActiveTyping {
   msg: ChatMessage;
   text: string;
   charIndex: number;
+  wordEnds: number[];
+  wordIndex: number;
   intervalId: ReturnType<typeof setInterval> | null;
 }
 
@@ -211,33 +213,54 @@ export class SimulationEngine {
       const t = this.activeTypings.get(key);
       if (!t) return;
 
+      // Jump to next word boundary
+      t.charIndex = t.wordEnds[t.wordIndex++];
       this.callbacks.onChatMessage(t.msg, t.charIndex, totalChars);
-      t.charIndex++;
 
-      if (t.charIndex >= totalChars) {
+      if (t.charIndex >= totalChars - 1) {
         t.intervalId = null;
         this.activeTypings.delete(key);
         this.callbacks.onChatMessageComplete(t.msg);
         return;
       }
 
-      const jitter = Math.floor(Math.random() * TYPING_JITTER_MS * 2) - TYPING_JITTER_MS;
-      t.intervalId = setTimeout(tick, TYPING_SPEED_MS + jitter) as unknown as ReturnType<typeof setInterval>;
+      const jitter = Math.floor(Math.random() * WORD_JITTER_MS * 2) - WORD_JITTER_MS;
+      t.intervalId = setTimeout(tick, WORD_SPEED_MS + jitter) as unknown as ReturnType<typeof setInterval>;
     };
-    typing.intervalId = setTimeout(tick, TYPING_SPEED_MS) as unknown as ReturnType<typeof setInterval>;
+    typing.intervalId = setTimeout(tick, WORD_SPEED_MS) as unknown as ReturnType<typeof setInterval>;
+  }
+
+  private _computeWordEnds(text: string): number[] {
+    const ends: number[] = [];
+    for (let i = 0; i < text.length; i++) {
+      if (text[i] === ' ' || i === text.length - 1) {
+        ends.push(i);
+      }
+    }
+    return ends;
   }
 
   private _startTyping(msg: ChatMessage) {
     const key = `${msg.panel}-${msg.delayMs}`;
     const totalChars = msg.text.length;
+    const wordEnds = this._computeWordEnds(msg.text);
 
-    // Notify character 0 immediately so the bubble appears
-    this.callbacks.onChatMessage(msg, 0, totalChars);
+    // Notify first word immediately so the bubble appears
+    const firstEnd = wordEnds[0];
+    this.callbacks.onChatMessage(msg, firstEnd, totalChars);
+
+    if (wordEnds.length <= 1) {
+      // Single-word message — complete immediately
+      this.callbacks.onChatMessageComplete(msg);
+      return;
+    }
 
     const typing: ActiveTyping = {
       msg,
       text: msg.text,
-      charIndex: 1,
+      charIndex: firstEnd,
+      wordEnds,
+      wordIndex: 1,
       intervalId: null,
     };
     this.activeTypings.set(key, typing);

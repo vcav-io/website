@@ -11,8 +11,8 @@
       <!-- Left panel: Alice's chat -->
       <div class="sim-panel sim-panel--chat panel--dim" id="panel-left" aria-label="Alice's agent chat">
         <div class="sim-panel__header">
-          <span class="sim-panel__agent-name">Alice</span>
-          <span class="sim-panel__agent-id font-mono">alicebot-prod-7</span>
+          <span class="sim-panel__agent-name">Alice <span class="sim-panel__role">(principal)</span></span>
+          <span class="sim-panel__agent-label font-mono">AliceBot</span>
         </div>
         <div class="sim-panel__messages" id="messages-left"></div>
       </div>
@@ -32,8 +32,8 @@
       <!-- Right panel: Bob's chat -->
       <div class="sim-panel sim-panel--chat panel--dim" id="panel-right" aria-label="Bob's agent chat">
         <div class="sim-panel__header">
-          <span class="sim-panel__agent-name">Bob</span>
-          <span class="sim-panel__agent-id font-mono">bobbot-prod-3</span>
+          <span class="sim-panel__agent-name">Bob <span class="sim-panel__role">(principal)</span></span>
+          <span class="sim-panel__agent-label font-mono">BobBot</span>
         </div>
         <div class="sim-panel__messages" id="messages-right"></div>
       </div>
@@ -63,9 +63,25 @@
     const progressBar  = document.getElementById('progress-bar')!   as HTMLElement;
     const progressTime = document.getElementById('progress-time')!  as HTMLElement;
     const signalOverlay= document.getElementById('signal-overlay')! as HTMLElement;
-    const btnPlay      = document.getElementById('btn-play')!       as HTMLButtonElement;
-    const btnPause     = document.getElementById('btn-pause')!      as HTMLButtonElement;
+    const btnToggle    = document.getElementById('btn-toggle')!     as HTMLButtonElement;
     const btnReplay    = document.getElementById('btn-replay')!     as HTMLButtonElement;
+    const toggleIconPlay  = btnToggle.querySelector('.sim-btn__icon-play')!  as HTMLElement;
+    const toggleIconPause = btnToggle.querySelector('.sim-btn__icon-pause')! as HTMLElement;
+    const toggleLabel     = document.getElementById('btn-toggle-label')!     as HTMLElement;
+
+    function setToggleState(state: 'play' | 'pause') {
+      if (state === 'play') {
+        toggleIconPlay.style.display = '';
+        toggleIconPause.style.display = 'none';
+        toggleLabel.textContent = 'Play';
+        btnToggle.setAttribute('aria-label', 'Play simulation');
+      } else {
+        toggleIconPlay.style.display = 'none';
+        toggleIconPause.style.display = '';
+        toggleLabel.textContent = 'Pause';
+        btnToggle.setAttribute('aria-label', 'Pause simulation');
+      }
+    }
 
     const simTimeline  = document.getElementById('sim-timeline') as HTMLElement | null;
 
@@ -108,31 +124,33 @@
       },
       onComplete() {
         renderer.onComplete();
-        btnPause.style.display = 'none';
-        btnPlay.style.display = 'none';
+        btnToggle.style.display = 'none';
         btnReplay.style.display = '';
+        progressBar.classList.remove('sim-progress__bar--paused');
       },
     });
 
     // ── Button handlers ───────────────────────────────────────────────────
-    btnPlay.addEventListener('click', () => {
-      engine.play();
-      btnPlay.style.display = 'none';
-      btnPause.style.display = '';
-      btnReplay.style.display = 'none';
-    });
-
-    btnPause.addEventListener('click', () => {
-      engine.pause();
-      btnPause.style.display = 'none';
-      btnPlay.style.display = '';
+    btnToggle.addEventListener('click', () => {
+      if (engine.getState().phase === 'playing') {
+        engine.pause();
+        setToggleState('play');
+        progressBar.classList.add('sim-progress__bar--paused');
+      } else {
+        engine.play();
+        setToggleState('pause');
+        progressBar.classList.remove('sim-progress__bar--paused');
+        btnReplay.style.display = 'none';
+      }
     });
 
     btnReplay.addEventListener('click', () => {
       engine.reset();
       renderer.reset();
       btnReplay.style.display = 'none';
-      btnPlay.style.display = '';
+      btnToggle.style.display = '';
+      setToggleState('play');
+      progressBar.classList.remove('sim-progress__bar--paused');
     });
 
     // ── IntersectionObserver: auto-play when visible ───────────────────────
@@ -148,8 +166,7 @@
             // Small delay so the panel is visible before animating
             setTimeout(() => {
               engine.play();
-              btnPlay.style.display = 'none';
-              btnPause.style.display = '';
+              setToggleState('pause');
             }, 400);
           }
         },
@@ -167,7 +184,7 @@
   }
 </script>
 
-<style>
+<style is:global>
   /* ── Wrapper & grid ──────────────────────────────────────────────────────── */
   .sim-section {
     width: 100%;
@@ -182,12 +199,12 @@
   .sim-grid {
     display: grid;
     grid-template-columns: 1fr 1.3fr 1fr;
-    gap: 0;
+    gap: 2px;
     height: var(--simulation-height);
     border: 1px solid var(--color-border);
     border-radius: 8px;
     overflow: hidden;
-    background: var(--color-bg-panel);
+    background: var(--color-border-subtle);
   }
 
   /* ── Panels ──────────────────────────────────────────────────────────────── */
@@ -195,16 +212,22 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: opacity 600ms var(--ease-out);
     position: relative;
+    background: var(--color-bg-panel);
   }
 
-  .sim-panel + .sim-panel {
-    border-left: 1px solid var(--color-border);
+  /* Dim state — headers stay readable, content fades */
+  .sim-panel > * {
+    transition: opacity 600ms var(--ease-out);
   }
 
-  .panel--dim {
-    opacity: 0.35;
+  .panel--dim > .sim-panel__header {
+    opacity: 0.55;
+  }
+
+  .panel--dim > .sim-panel__messages,
+  .panel--dim > .sim-panel__vault-scroll {
+    opacity: 0.3;
   }
 
   .panel--error-flash {
@@ -228,22 +251,29 @@
     border-bottom: 1px solid var(--color-border-subtle);
     background: var(--color-bg-elevated);
     flex-shrink: 0;
+    box-shadow: 0 1px 0 var(--color-border-subtle);
   }
 
   .sim-panel__agent-name {
     font-size: var(--text-sm);
-    font-weight: 500;
-    color: var(--color-text-secondary);
+    font-weight: 600;
+    color: var(--color-text);
   }
 
-  .sim-panel__agent-id {
+  .sim-panel__role {
+    font-weight: 400;
+    color: var(--color-text-dim);
+    font-size: var(--text-xs);
+  }
+
+  .sim-panel__agent-label {
     font-size: var(--text-xs);
     color: var(--color-text-dim);
   }
 
   .sim-panel__vault-label {
     font-size: var(--text-xs);
-    color: var(--color-accent);
+    color: var(--color-accent-bright);
     letter-spacing: 0.04em;
     text-transform: uppercase;
     font-weight: 500;
@@ -288,6 +318,7 @@
     line-height: var(--leading-relaxed);
     color: var(--color-text-secondary);
     word-break: break-word;
+    white-space: pre-wrap;
   }
 
   .chat-bubble--user {
@@ -327,14 +358,6 @@
     border-bottom: 1px solid var(--color-vault-border);
   }
 
-  .sim-panel--vault + .sim-panel {
-    border-left-color: var(--color-vault-border);
-  }
-
-  .sim-panel--chat + .sim-panel--vault {
-    border-left-color: var(--color-vault-border);
-  }
-
   .sim-panel__vault-scroll {
     flex: 1;
     overflow-y: auto;
@@ -368,6 +391,10 @@
     box-shadow: 0 0 24px var(--color-error-glow), inset 0 0 24px rgba(224, 72, 72, 0.06);
   }
 
+  .vault-card--success {
+    border-left: 2px solid rgba(80, 176, 112, 0.4);
+  }
+
   .vault-card__header {
     display: flex;
     align-items: center;
@@ -375,6 +402,20 @@
     padding: var(--space-xs) var(--space-sm);
     background: rgba(26, 40, 72, 0.2);
     border-bottom: 1px solid rgba(26, 40, 72, 0.4);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .vault-card__chevron {
+    color: var(--color-text-dim);
+    font-size: 10px;
+    transition: transform 200ms ease;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .vault-card--expanded .vault-card__chevron {
+    transform: rotate(90deg);
   }
 
   .vault-card__step-tag {
@@ -408,9 +449,13 @@
 
   .vault-card__body {
     padding: var(--space-sm);
-    display: flex;
+    display: none;
     flex-direction: column;
     gap: 1px;
+  }
+
+  .vault-card--expanded .vault-card__body {
+    display: flex;
   }
 
   .vault-card__status {
@@ -595,7 +640,7 @@
       display: flex;
       flex-direction: column;
       gap: var(--space-sm);
-      max-height: 70vh;
+      max-height: calc(100vh - 120px);
       overflow-y: auto;
       scroll-behavior: smooth;
       padding: var(--space-md);
@@ -652,6 +697,7 @@
       line-height: var(--leading-relaxed);
       color: var(--color-text-secondary);
       word-break: break-word;
+      white-space: pre-wrap;
     }
 
     .tl-chat--user .tl-chat__text {
@@ -676,6 +722,15 @@
       color: var(--color-accent);
       animation: cursor-blink 1s step-end infinite;
       margin-left: 1px;
+    }
+
+    .tl-chat--fade-in {
+      animation: tl-fade 200ms ease-out;
+    }
+
+    @keyframes tl-fade {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     /* ── Timeline protocol cards ── */

@@ -45,18 +45,15 @@ import LinksResources from '../components/sections/LinksResources.astro';
           </div>
           <div class="sim-module-header__controls">
             <div class="sim-controls" id="sim-controls">
-              <button class="sim-btn sim-btn--play" id="btn-play" aria-label="Play simulation">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+              <button class="sim-btn sim-btn--toggle" id="btn-toggle" aria-label="Play simulation">
+                <svg class="sim-btn__icon-play" width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
                   <polygon points="2,1 13,7 2,13"/>
                 </svg>
-                <span>Play</span>
-              </button>
-              <button class="sim-btn sim-btn--pause" id="btn-pause" aria-label="Pause simulation" style="display:none">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
+                <svg class="sim-btn__icon-pause" width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true" style="display:none">
                   <rect x="2" y="1" width="4" height="12"/>
                   <rect x="8" y="1" width="4" height="12"/>
                 </svg>
-                <span>Pause</span>
+                <span id="btn-toggle-label">Play</span>
               </button>
               <button class="sim-btn sim-btn--replay" id="btn-replay" aria-label="Replay simulation" style="display:none">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">
@@ -73,6 +70,9 @@ import LinksResources from '../components/sections/LinksResources.astro';
             </div>
           </div>
         </div>
+        <p class="sim-legend font-mono">
+          principal = human · agent = LLM delegate · vault = protocol execution
+        </p>
       </div>
       <Simulation />
     </section>
@@ -100,8 +100,8 @@ import LinksResources from '../components/sections/LinksResources.astro';
   }
 
   .hero__title {
-    font-size: 2.5rem;
-    font-weight: 600;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    font-weight: 700;
     letter-spacing: -0.03em;
     color: var(--color-text);
     margin-bottom: var(--space-lg);
@@ -275,17 +275,42 @@ import LinksResources from '../components/sections/LinksResources.astro';
     transition: width 200ms linear;
   }
 
+  .sim-progress__bar--paused {
+    animation: progress-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes progress-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
   .sim-progress__time {
     font-size: var(--text-xs);
     color: var(--color-text-dim);
-    min-width: 28px;
+    min-width: 72px;
     text-align: right;
+  }
+
+  .sim-legend {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    letter-spacing: 0.02em;
+    margin-top: var(--space-sm);
   }
 
   @media (max-width: 1023px) {
     .sim-module-header {
       flex-direction: column;
       align-items: flex-start;
+    }
+
+    .sim-module-header__controls {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--color-bg-alt);
+      padding: var(--space-sm) var(--container-padding);
+      margin: 0 calc(-1 * var(--container-padding));
     }
   }
 

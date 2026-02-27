@@ -128,15 +128,12 @@ export class SimulationRenderer {
       if (textEl) textEl.classList.remove('typing');
     }
 
-    // Timeline: swap placeholder with full text
+    // Timeline: text is already fully shown; just remove typing cursor
     if (this.els.timeline) {
       const tlBubble = this.els.timeline.querySelector(`[data-tl-key="${key}"]`);
       if (tlBubble) {
         const textEl = tlBubble.querySelector('.tl-chat__text') as HTMLElement;
-        if (textEl) {
-          textEl.textContent = msg.text;
-          textEl.classList.remove('tl-chat__text--typing');
-        }
+        if (textEl) textEl.classList.remove('tl-chat__text--typing');
       }
     }
   }
@@ -156,8 +153,9 @@ export class SimulationRenderer {
     const text = document.createElement('span');
     text.className = 'tl-chat__text';
     if (isTyping) {
-      text.textContent = 'typing\u2026';
-      text.classList.add('tl-chat__text--typing');
+      // Show full text immediately with fade-in (no "typing..." placeholder)
+      text.textContent = msg.text;
+      el.classList.add('tl-chat--fade-in');
     } else {
       text.textContent = msg.text;
     }
@@ -291,12 +289,17 @@ export class SimulationRenderer {
 
   private _buildCard(card: ProtocolCard): HTMLElement {
     const el = document.createElement('div');
-    el.className = `vault-card${card.isError ? ' vault-card--error' : ''}`;
+    const cls = card.isError ? ' vault-card--error' : card.statusLine?.ok ? ' vault-card--success' : '';
+    el.className = `vault-card${cls}`;
     el.setAttribute('data-step', card.id);
 
-    // Step label + title
+    // Error cards auto-expand
+    if (card.isError) el.classList.add('vault-card--expanded');
+
+    // Step label + title + chevron
     const header = document.createElement('div');
     header.className = 'vault-card__header';
+    header.addEventListener('click', () => el.classList.toggle('vault-card--expanded'));
 
     const stepTag = document.createElement('span');
     stepTag.className = 'vault-card__step-tag';
@@ -306,25 +309,20 @@ export class SimulationRenderer {
     title.className = 'vault-card__title';
     title.textContent = card.title;
 
+    const chevron = document.createElement('span');
+    chevron.className = 'vault-card__chevron';
+    chevron.textContent = '\u25b8';
+
     header.appendChild(stepTag);
     header.appendChild(title);
+    header.appendChild(chevron);
     el.appendChild(header);
 
-    // Lines
-    if (card.lines.length > 0) {
-      const body = document.createElement('div');
-      body.className = 'vault-card__body';
-      for (const line of card.lines) {
-        body.appendChild(this._buildLine(line));
-      }
-      el.appendChild(body);
-    }
-
-    // Status line
+    // Status line — visible when collapsed
     if (card.statusLine) {
       const status = document.createElement('div');
       status.className = `vault-card__status ${card.statusLine.ok ? 'vault-card__status--ok' : 'vault-card__status--error'}`;
-      const icon = card.statusLine.ok ? '✓' : '✗';
+      const icon = card.statusLine.ok ? '\u2713' : '\u2717';
       status.textContent = `${icon} ${card.statusLine.text}`;
       el.appendChild(status);
 
@@ -334,6 +332,16 @@ export class SimulationRenderer {
         note.textContent = card.statusLine.note;
         el.appendChild(note);
       }
+    }
+
+    // Lines — hidden behind expand
+    if (card.lines.length > 0) {
+      const body = document.createElement('div');
+      body.className = 'vault-card__body';
+      for (const line of card.lines) {
+        body.appendChild(this._buildLine(line));
+      }
+      el.appendChild(body);
     }
 
     return el;
@@ -450,17 +458,15 @@ export class SimulationRenderer {
     const pct = Math.min(100, (elapsedMs / totalMs) * 100);
     this.els.progressBar.style.width = `${pct}%`;
 
-    const totalSec = Math.ceil(totalMs / 1000);
-    const elapsed = Math.floor(elapsedMs / 1000);
-    const remaining = Math.max(0, totalSec - elapsed);
-    this.els.progressTime.textContent = `${remaining}s`;
+    const total = Math.ceil(totalMs / 1000);
+    const elapsed = Math.min(Math.floor(elapsedMs / 1000), total);
+    this.els.progressTime.textContent = `${elapsed}s / ${total}s`;
   }
 
   // ── Complete ──────────────────────────────────────────────────────────────
 
   onComplete() {
     this.els.progressBar.style.width = '100%';
-    this.els.progressTime.textContent = '0s';
   }
 
   // ── Reset ─────────────────────────────────────────────────────────────────
