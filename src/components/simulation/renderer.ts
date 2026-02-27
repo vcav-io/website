@@ -18,6 +18,7 @@ interface PanelElements {
   progressBar: HTMLElement;
   progressTime: HTMLElement;
   signalOverlay: HTMLElement;
+  timeline?: HTMLElement;
 }
 
 type ActiveBubbles = Map<string, HTMLElement>;
@@ -25,9 +26,29 @@ type ActiveBubbles = Map<string, HTMLElement>;
 export class SimulationRenderer {
   private els: PanelElements;
   private activeBubbles: ActiveBubbles = new Map();
+  private pendingTimers: Set<ReturnType<typeof setTimeout>> = new Set();
+  private timelineBubbles: Set<string> = new Set();
 
   constructor(els: PanelElements) {
     this.els = els;
+    // Event delegation for tap-to-expand on mobile timeline
+    if (els.timeline) {
+      els.timeline.addEventListener('click', (e) => {
+        const header = (e.target as HTMLElement).closest('.tl-card__header');
+        if (header) {
+          const card = header.parentElement;
+          if (card) card.classList.toggle('tl-card--expanded');
+        }
+      });
+    }
+  }
+
+  private _setTimeout(fn: () => void, ms: number) {
+    const id = setTimeout(() => {
+      this.pendingTimers.delete(id);
+      fn();
+    }, ms);
+    this.pendingTimers.add(id);
   }
 
   // ── Phase transitions ─────────────────────────────────────────────────────
@@ -48,6 +69,25 @@ export class SimulationRenderer {
       right.classList.remove('panel--dim');
       centre.classList.add('panel--dim');
     }
+
+    // Timeline: phase separator
+    if (this.els.timeline) {
+      this._appendPhaseSeparator(phase);
+    }
+  }
+
+  private _appendPhaseSeparator(phase: PhaseId) {
+    const tl = this.els.timeline!;
+    const sep = document.createElement('div');
+    sep.className = 'tl-phase-separator';
+    const labels: Record<PhaseId, string> = {
+      'pre-session': 'Pre-Session',
+      'protocol': 'Protocol Execution',
+      'post-session': 'Post-Session',
+    };
+    sep.textContent = labels[phase];
+    tl.appendChild(sep);
+    tl.scrollTop = tl.scrollHeight;
   }
 
   // ── Chat messages ─────────────────────────────────────────────────────────
@@ -72,6 +112,12 @@ export class SimulationRenderer {
     // Auto-scroll
     const container = msg.panel === 'left' ? this.els.leftMessages : this.els.rightMessages;
     container.scrollTop = container.scrollHeight;
+
+    // Timeline: show "typing..." placeholder on first character
+    if (charIndex === 0 && this.els.timeline && !this.timelineBubbles.has(key)) {
+      this.timelineBubbles.add(key);
+      this._appendTimelineChat(msg, true);
+    }
   }
 
   onChatMessageComplete(msg: ChatMessage) {
@@ -81,6 +127,44 @@ export class SimulationRenderer {
       const textEl = bubble.querySelector('.chat-bubble__text') as HTMLElement;
       if (textEl) textEl.classList.remove('typing');
     }
+
+    // Timeline: swap placeholder with full text
+    if (this.els.timeline) {
+      const tlBubble = this.els.timeline.querySelector(`[data-tl-key="${key}"]`);
+      if (tlBubble) {
+        const textEl = tlBubble.querySelector('.tl-chat__text') as HTMLElement;
+        if (textEl) {
+          textEl.textContent = msg.text;
+          textEl.classList.remove('tl-chat__text--typing');
+        }
+      }
+    }
+  }
+
+  private _appendTimelineChat(msg: ChatMessage, isTyping: boolean) {
+    const tl = this.els.timeline!;
+    const key = this._bubbleKey(msg);
+    const el = document.createElement('div');
+    el.className = `tl-chat tl-chat--${msg.panel} tl-chat--${msg.sender}`;
+    el.setAttribute('data-tl-key', key);
+
+    const name = document.createElement('span');
+    name.className = 'tl-chat__name';
+    name.textContent = msg.name;
+    el.appendChild(name);
+
+    const text = document.createElement('span');
+    text.className = 'tl-chat__text';
+    if (isTyping) {
+      text.textContent = 'typing\u2026';
+      text.classList.add('tl-chat__text--typing');
+    } else {
+      text.textContent = msg.text;
+    }
+    el.appendChild(text);
+
+    tl.appendChild(el);
+    tl.scrollTop = tl.scrollHeight;
   }
 
   private _bubbleKey(msg: ChatMessage): string {
@@ -125,7 +209,7 @@ export class SimulationRenderer {
     // For error cards: flash red border on panel
     if (card.isError) {
       this.els.centre.classList.add('panel--error-flash');
-      setTimeout(() => {
+      this._setTimeout(() => {
         this.els.centre.classList.remove('panel--error-flash');
       }, 600);
     }
@@ -145,10 +229,64 @@ export class SimulationRenderer {
     // Auto-scroll vault panel
     const vaultScroll = container.parentElement;
     if (vaultScroll) {
-      setTimeout(() => {
+      this._setTimeout(() => {
         vaultScroll.scrollTop = vaultScroll.scrollHeight;
       }, 100);
     }
+
+    // Timeline: append collapsed card
+    if (this.els.timeline) {
+      this._appendTimelineCard(card);
+    }
+  }
+
+  private _appendTimelineCard(card: ProtocolCard) {
+    const tl = this.els.timeline!;
+    const el = document.createElement('div');
+    el.className = `tl-card${card.isError ? ' tl-card--error' : ''}`;
+
+    // Header (always visible, clickable to expand)
+    const header = document.createElement('div');
+    header.className = 'tl-card__header';
+
+    const tag = document.createElement('span');
+    tag.className = 'tl-card__tag';
+    tag.textContent = card.stepLabel;
+
+    const title = document.createElement('span');
+    title.className = 'tl-card__title';
+    title.textContent = card.title;
+
+    const chevron = document.createElement('span');
+    chevron.className = 'tl-card__chevron';
+    chevron.textContent = '\u25b8';
+
+    header.appendChild(tag);
+    header.appendChild(title);
+    header.appendChild(chevron);
+    el.appendChild(header);
+
+    // Status line (always visible if present)
+    if (card.statusLine) {
+      const status = document.createElement('div');
+      status.className = `tl-card__status ${card.statusLine.ok ? 'tl-card__status--ok' : 'tl-card__status--error'}`;
+      const icon = card.statusLine.ok ? '\u2713' : '\u2717';
+      status.textContent = `${icon} ${card.statusLine.text}`;
+      el.appendChild(status);
+    }
+
+    // Body (hidden by default, shown on expand)
+    if (card.lines.length > 0) {
+      const body = document.createElement('div');
+      body.className = 'tl-card__body';
+      for (const line of card.lines) {
+        body.appendChild(this._buildLine(line));
+      }
+      el.appendChild(body);
+    }
+
+    tl.appendChild(el);
+    tl.scrollTop = tl.scrollHeight;
   }
 
   private _buildCard(card: ProtocolCard): HTMLElement {
@@ -237,6 +375,26 @@ export class SimulationRenderer {
   // ── Signal flow ───────────────────────────────────────────────────────────
 
   onSignalFlow(json: string) {
+    // Timeline: signal block
+    if (this.els.timeline) {
+      const tl = this.els.timeline;
+      const el = document.createElement('div');
+      el.className = 'tl-signal';
+
+      const label = document.createElement('div');
+      label.className = 'tl-signal__label';
+      label.textContent = 'Step 7 \u2014 Output Signal';
+      el.appendChild(label);
+
+      const pre = document.createElement('pre');
+      pre.className = 'tl-signal__json';
+      pre.textContent = json;
+      el.appendChild(pre);
+
+      tl.appendChild(el);
+      tl.scrollTop = tl.scrollHeight;
+    }
+
     const overlay = this.els.signalOverlay;
     // Clear previous content safely
     while (overlay.firstChild) {
@@ -261,7 +419,7 @@ export class SimulationRenderer {
     overlay.classList.add('signal-overlay--visible');
 
     // After a short delay, animate copies flowing to left and right panels
-    setTimeout(() => {
+    this._setTimeout(() => {
       const leftCopy = document.createElement('div');
       leftCopy.className = 'signal-block signal-block--left';
       const leftPre = document.createElement('pre');
@@ -309,6 +467,9 @@ export class SimulationRenderer {
 
   reset() {
     this.activeBubbles.clear();
+    this.timelineBubbles.clear();
+    this.pendingTimers.forEach((id) => clearTimeout(id));
+    this.pendingTimers.clear();
 
     // Clear containers safely
     const clearEl = (el: HTMLElement) => {
@@ -318,6 +479,11 @@ export class SimulationRenderer {
     clearEl(this.els.rightMessages);
     clearEl(this.els.vaultEvents);
     clearEl(this.els.signalOverlay);
+
+    // Clear timeline (event delegation listener stays on container)
+    if (this.els.timeline) {
+      clearEl(this.els.timeline);
+    }
 
     this.els.signalOverlay.classList.remove('signal-overlay--visible');
     this.els.progressBar.style.width = '0%';

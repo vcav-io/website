@@ -1,9 +1,9 @@
 ---
 // VaultFamily.astro
-// Three components: AgentVault, VFC, VCAV
+// Three components: AgentVault (primary), VFC (neutral), VCAV (muted)
 ---
 
-<section class="section reveal" id="family">
+<section class="section section--alt reveal" id="family">
   <div class="container">
     <h2>The Vault Family</h2>
     <p class="intro text-secondary">
@@ -13,7 +13,7 @@
     </p>
 
     <div class="cards">
-      <div class="card">
+      <div class="card card--primary">
         <div class="card__header">
           <h3 class="card__name">AgentVault</h3>
           <a
@@ -25,12 +25,10 @@
         </div>
         <p class="card__description">
           The open protocol. Defines how agents discover, contract, submit, and receive
-          bounded signals with provenance receipts. Runs in a software execution lane.
-          The relay is the enforcer: it verifies contracts, validates outputs against
-          schema, applies guardian rules, and signs receipts that prove exactly what
-          occurred.
+          bounded signals with provenance receipts. The relay enforces contracts, validates
+          outputs against schema, applies guardian rules, and signs receipts.
         </p>
-        <div class="card__tag">Open protocol</div>
+        <div class="card__tag card__tag--primary">Open protocol</div>
       </div>
 
       <div class="card">
@@ -39,23 +37,21 @@
           <span class="card__link card__link--muted">vcav-io/vfc — coming soon</span>
         </div>
         <p class="card__description">
-          Vault Family Common. Shared infrastructure across the family: cryptographic
-          primitives, AFAL wire types, receipt signing, and IFC label algebra.
-          AgentVault and VCAV both depend on VFC for the core data structures and
-          signing envelopes that make receipts interoperable.
+          Vault Family Common. Shared cryptographic primitives, AFAL wire types,
+          receipt signing, and IFC label algebra. The core data structures that
+          make receipts interoperable.
         </p>
         <div class="card__tag">Shared foundation</div>
       </div>
 
-      <div class="card">
+      <div class="card card--muted">
         <div class="card__header">
           <h3 class="card__name">VCAV</h3>
-          <span class="card__link card__link--muted card__link--private">Private — in development</span>
+          <span class="card__badge">Private — in development</span>
         </div>
         <p class="card__description">
           Verifiable Confidential Agent Vault. A hardware-backed sealed execution lane
-          that provides stronger isolation guarantees than the software relay.
-          Same protocol, higher assurance boundary. Not yet public.
+          with stronger isolation guarantees. Same protocol, higher assurance boundary.
         </p>
         <div class="card__tag">Sealed execution</div>
       </div>
@@ -70,19 +66,19 @@
 
 <style>
   h2 {
-    margin-bottom: var(--space-lg);
+    margin-bottom: var(--space-md);
   }
 
   .intro {
     max-width: 640px;
-    margin-bottom: var(--space-3xl);
+    margin-bottom: var(--space-2xl);
   }
 
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--space-lg);
-    margin-bottom: var(--space-3xl);
+    margin-bottom: var(--space-2xl);
   }
 
   .card {
@@ -95,6 +91,17 @@
     gap: var(--space-md);
   }
 
+  .card--primary {
+    border-color: var(--color-vault-border);
+    background: var(--color-vault-bg);
+    box-shadow: 0 0 40px var(--color-vault-glow);
+  }
+
+  .card--muted {
+    opacity: 0.6;
+    border-style: dashed;
+  }
+
   .card__header {
     display: flex;
     flex-direction: column;
@@ -103,8 +110,12 @@
 
   .card__name {
     font-size: var(--text-xl);
-    font-weight: 500;
+    font-weight: 600;
     color: var(--color-text);
+  }
+
+  .card--muted .card__name {
+    color: var(--color-text-secondary);
   }
 
   .card__link {
@@ -117,10 +128,15 @@
     color: var(--color-text-dim);
   }
 
-  .card__link--private {
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    letter-spacing: 0;
+  .card__badge {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    border: 1px solid var(--color-border);
+    border-radius: 3px;
+    padding: 0.15em 0.5em;
+    display: inline-block;
+    width: fit-content;
   }
 
   .card__description {
@@ -140,6 +156,11 @@
     padding: 0.2em 0.5em;
     display: inline-block;
     width: fit-content;
+  }
+
+  .card__tag--primary {
+    color: var(--color-accent);
+    border-color: var(--color-accent-dim);
   }
 
   .disambiguation {
