@@ -403,13 +403,55 @@ export class SimulationRenderer {
       tl.scrollTop = tl.scrollHeight;
     }
 
+    // Add signal as a vault card in the step sequence (visible when overlay is dismissed)
+    const card = document.createElement('div');
+    card.className = 'vault-card vault-card--signal vault-card--expanded';
+    card.setAttribute('data-step', 'step-7');
+
+    const cardHeader = document.createElement('div');
+    cardHeader.className = 'vault-card__header';
+    cardHeader.addEventListener('click', () => card.classList.toggle('vault-card--expanded'));
+
+    const stepTag = document.createElement('span');
+    stepTag.className = 'vault-card__step-tag';
+    stepTag.textContent = 'Step 7';
+
+    const cardTitle = document.createElement('span');
+    cardTitle.className = 'vault-card__title';
+    cardTitle.textContent = 'Output Signal';
+
+    const chevron = document.createElement('span');
+    chevron.className = 'vault-card__chevron';
+    chevron.textContent = '\u25b8';
+
+    cardHeader.append(stepTag, cardTitle, chevron);
+    card.appendChild(cardHeader);
+
+    const cardBody = document.createElement('div');
+    cardBody.className = 'vault-card__body';
+    const cardPre = document.createElement('pre');
+    cardPre.className = 'signal-block__json';
+    cardPre.textContent = json;
+    cardBody.appendChild(cardPre);
+    card.appendChild(cardBody);
+
+    this.els.vaultEvents.appendChild(card);
+
+    // Signal overlay — dramatic reveal, dismissable
     const overlay = this.els.signalOverlay;
-    // Clear previous content safely
     while (overlay.firstChild) {
       overlay.removeChild(overlay.firstChild);
     }
 
-    // Centre signal block
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'signal-overlay__close';
+    closeBtn.setAttribute('aria-label', 'Close signal overlay');
+    closeBtn.textContent = '\u2715';
+    closeBtn.addEventListener('click', () => {
+      overlay.classList.remove('signal-overlay--visible');
+    });
+    overlay.appendChild(closeBtn);
+
     const centre = document.createElement('div');
     centre.className = 'signal-block signal-block--centre';
 
