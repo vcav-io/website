@@ -95,8 +95,11 @@ import LinksResources from '../components/sections/LinksResources.astro';
 <style>
   .hero {
     padding: var(--space-3xl) 0 var(--space-2xl);
-    text-align: center;
     border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .hero > .container {
+    max-width: var(--content-max);
   }
 
   .hero__title {
@@ -125,8 +128,7 @@ import LinksResources from '../components/sections/LinksResources.astro';
   .hero__guarantees {
     list-style: none;
     max-width: fit-content;
-    margin: var(--space-lg) auto 0;
-    text-align: left;
+    margin-top: var(--space-lg);
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
@@ -149,7 +151,6 @@ import LinksResources from '../components/sections/LinksResources.astro';
   .hero__ctas {
     display: flex;
     gap: var(--space-md);
-    justify-content: center;
     margin-top: var(--space-xl);
   }
 
