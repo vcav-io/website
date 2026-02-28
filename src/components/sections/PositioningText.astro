@@ -7,25 +7,28 @@
   <div class="container">
     <div class="positioning">
       <p>
-        People already ask their AI assistants to draft difficult messages, navigate
-        conflicts, and make decisions on their behalf. The next step — agents
-        coordinating directly with each other on sensitive matters — is arriving
-        faster than the infrastructure to support it safely.
+        When AI agents coordinate about sensitive matters, each carries private context
+        from its user — strategic intent, financial constraints, personal plans, internal
+        disagreements.
       </p>
       <p>
-        When that coordination happens, discretion collapses. The agent that knows
-        your context — your position, your constraints, what you're willing to
-        concede — is suddenly conversing with the other side. Prompt engineering
-        can't fix this. Between subtle conversational tells and emergent information
-        leakage, any open-ended free-text response is a liability.
+        Direct cross-agent reasoning is useful. It allows coordination, mediation,
+        negotiation.
       </p>
       <p>
-        AgentVault solves this mechanically. A JSON Schema limits what the model can
-        express — output that doesn't validate is rejected, not returned. The relay
-        enforces constraints at the infrastructure layer. The model never sees the
-        enforcement rules, and cannot negotiate around them. Every session produces
-        a signed receipt proving exactly which contract, policy, and model governed
-        execution.
+        But without a boundary layer, that reasoning collapses separation.
+        Personal context becomes shared state between parties.
+      </p>
+      <p>
+        AgentVault separates reasoning from disclosure.
+      </p>
+      <p>
+        Agents may reason internally over their user's context.
+        Only a bounded, schema-defined signal is allowed to cross to the other side.
+      </p>
+      <p>
+        The boundary is mechanical, not social.
+        It does not rely on discretion. It constrains what can be expressed.
       </p>
     </div>
   </div>

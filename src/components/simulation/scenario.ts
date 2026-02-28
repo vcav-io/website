@@ -6,9 +6,9 @@ import type { Scenario, ScenarioEvent } from './types.ts';
 
 // ─── Consistent fake hashes ────────────────────────────────────────────────
 const H = {
-  proposalId:        'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f07890',
+  inviteId:          'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f07890',
   contractHash:      '9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a009876',
-  admitTokenId:      'f0e1d2c3b4a59687f8e9d0c1b2a394857065f4e3d2c1b0a9f8e7d6c5b4a31234',
+  submitToken:       'f0e1d2c3b4a59687f8e9d0c1b2a394857065f4e3d2c1b0a9f8e7d6c5b4a31234',
   modelProfileHash:  'e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d42345',
   promptProgramHash: 'd4c3b2a1f0e9d8c7b6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e57890',
   guardianPolicy:    'c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b27890',
@@ -91,14 +91,14 @@ const events: ScenarioEvent[] = [
     event: { phase: 'pre-session', delayMs: T.p1Start },
   },
 
-  // Alice types her message
+  // Alice tells her agent
   {
     type: 'chat',
     event: {
       panel: 'left',
       sender: 'user',
       name: 'Alice',
-      text: "Contract dispute. I delivered on time but scope expanded beyond the original agreement. The extra work was worth $40k \u2014 my floor is $25k. Don\u2019t disclose either number.",
+      text: "I co-founded a startup with Bob 18 months ago and we\u2019re growing apart on strategy. I think we need to pivot to enterprise. I\u2019ve been approached about an acqui-hire. Don\u2019t disclose that. Start mediation.",
       delayMs: T.aliceTypingStart,
     },
   },
@@ -110,31 +110,31 @@ const events: ScenarioEvent[] = [
       panel: 'left',
       sender: 'bot',
       name: 'AliceBot',
-      text: "Opening a vault session under mediation-triage. The output will be a compatibility signal \u2014 not a recommendation. Your floor stays sealed.",
+      text: "Initiating mediation via the relay. The output will be a bounded signal. Your private context stays inside the boundary.",
       delayMs: T.aliceBotStart,
     },
   },
 
-  // Bob types
+  // Bob asks his agent for help
   {
     type: 'chat',
     event: {
       panel: 'right',
       sender: 'user',
       name: 'Bob',
-      text: "Scope dispute with a contractor. Some of the \u2018scope creep\u2019 was correcting defects. I\u2019ve budgeted up to $18k to settle \u2014 keep that number private.",
+      text: "We\u2019re disagreeing about enterprise vs developer focus. I\u2019ve been exploring other options if we pivot. I want to make it work.",
       delayMs: T.bobTypingStart,
     },
   },
 
-  // BobBot responds
+  // BobBot finds the invite
   {
     type: 'chat',
     event: {
       panel: 'right',
       sender: 'bot',
       name: 'BobBot',
-      text: "Joining the session. Output is a structured compatibility signal \u2014 your settlement budget won\u2019t be disclosed.",
+      text: "Invite received. Contract verified. Bounded signal only \u2014 your private context won\u2019t be shared.",
       delayMs: T.bobBotStart,
     },
   },
@@ -168,55 +168,57 @@ const events: ScenarioEvent[] = [
     },
   },
 
-  // Step 2 — Proposal
+  // Step 2 — Invite Created
   {
     type: 'protocol-card',
     event: {
       id: 'step-2',
       stepLabel: 'Step 2',
-      title: 'Proposal',
+      title: 'Invite Created',
       lines: [
-        heading('PROPOSE'),
+        heading('CREATE_INVITE'),
         blank(),
-        kv('proposal_id:', `${H.proposalId.slice(0, 8)}...${H.proposalId.slice(-4)}`),
+        kv('invite_id:', `${H.inviteId.slice(0, 8)}...${H.inviteId.slice(-4)}`),
         kv('from:', 'alicebot-prod-7'),
         kv('to:', 'bobbot-prod-3'),
         kv('purpose_code:', 'MEDIATION'),
-        kv('lane_id:', 'API_MEDIATED'),
         kv('model_profile:', 'mediation-triage-v1'),
         kv('  hash:', `${H.modelProfileHash.slice(0, 8)}...${H.modelProfileHash.slice(-4)}`),
         kv('output_schema:', 'mediation_compat_signal_v1'),
-        kv('contract ref:', `${H.contractHash.slice(0, 8)}...${H.contractHash.slice(-4)}`),
+        kv('contract_hash:', `${H.contractHash.slice(0, 8)}...${H.contractHash.slice(-4)}`),
+        kv('status:', 'PENDING'),
       ],
       statusLine: {
         ok: true,
-        text: `→ Proposal sent   sig: ${H.alicePropSig.slice(0, 8)}...${H.alicePropSig.slice(-4)}`,
+        text: `→ Deposited in relay inbox   sig: ${H.alicePropSig.slice(0, 8)}...${H.alicePropSig.slice(-4)}`,
       },
       delayMs: T.step2,
     },
   },
 
-  // Step 3 — Admission
+  // Step 3 — Invite Accepted
   {
     type: 'protocol-card',
     event: {
       id: 'step-3',
       stepLabel: 'Step 3',
-      title: 'Admission',
+      title: 'Invite Accepted',
       lines: [
-        heading('ADMIT'),
+        heading('ACCEPT_INVITE'),
         blank(),
-        kv('proposal_id:', `${H.proposalId.slice(0, 8)}...${H.proposalId.slice(-4)}`, '← echoed'),
-        kv('outcome:', 'ADMIT'),
-        kv('contract_hash:', `${H.contractHash.slice(0, 8)}...${H.contractHash.slice(-4)}`, '← same contract'),
-        kv('admit_token_id:', `${H.admitTokenId.slice(0, 8)}...${H.admitTokenId.slice(-4)}`, '← one-time token'),
-        kv('model_profile:', `${H.modelProfileHash.slice(0, 8)}...${H.modelProfileHash.slice(-4)}`, '← confirmed'),
-        kv('lane_id:', 'API_MEDIATED'),
+        kv('invite_id:', `${H.inviteId.slice(0, 8)}...${H.inviteId.slice(-4)}`, '← from inbox'),
+        kv('contract_hash:', `${H.contractHash.slice(0, 8)}...${H.contractHash.slice(-4)}`, '← verified'),
+        kv('status:', 'ACCEPTED'),
+        blank(),
+        heading('SESSION CREATED'),
+        kv('session_id:', `${H.sessionId.slice(0, 8)}...${H.sessionId.slice(-4)}`),
+        kv('execution_lane:', 'API_MEDIATED'),
+        kv('responder_submit_token:', `${H.submitToken.slice(0, 8)}...${H.submitToken.slice(-4)}`, '← Bob only sees his role'),
       ],
       statusLine: {
         ok: true,
-        text: 'Admission granted',
-        note: 'DENY would be constant-shape — no reason field',
+        text: 'Invite accepted — session established',
+        note: 'DECLINE would be constant-shape — no reason field',
       },
       delayMs: T.step3,
     },
@@ -231,13 +233,13 @@ const events: ScenarioEvent[] = [
       title: 'Commitment',
       lines: [
         heading('COMMIT (AliceBot)'),
-        kv('admit_token:', `${H.admitTokenId.slice(0, 8)}...${H.admitTokenId.slice(-4)}`),
+        kv('submit_token:', `${H.submitToken.slice(0, 8)}...${H.submitToken.slice(-4)}`),
         kv('encrypted_input:', `${H.aliceEncInput.slice(0, 8)}...${H.aliceEncInput.slice(-4)}`),
         comment('← encrypted with XChaCha20-Poly1305'),
         comment('← AAD binds to contract hash'),
         blank(),
         heading('COMMIT (BobBot)'),
-        kv('admit_token:', `${H.admitTokenId.slice(0, 8)}...${H.admitTokenId.slice(-4)}`),
+        kv('submit_token:', `${H.submitToken.slice(0, 8)}...${H.submitToken.slice(-4)}`),
         kv('encrypted_input:', `${H.bobEncInput.slice(0, 8)}...${H.bobEncInput.slice(-4)}`),
       ],
       statusLine: {
@@ -384,8 +386,8 @@ const events: ScenarioEvent[] = [
       json: JSON.stringify({
         compatibility_signal: 'PARTIAL_ALIGNMENT',
         friction_band: 'HIGH',
-        aligned_dimensions: ['timeline', 'scope'],
-        divergent_dimensions: ['liability', 'compensation'],
+        aligned_dimensions: ['company_commitment', 'growth_ambition'],
+        divergent_dimensions: ['revenue_strategy', 'product_direction'],
         escalation_required: true,
       }, null, 2),
     },
@@ -404,7 +406,7 @@ const events: ScenarioEvent[] = [
       panel: 'left',
       sender: 'bot',
       name: 'AliceBot',
-      text: "Signal received. Timeline and scope aligned. Liability and compensation diverge \u2014 escalation flagged.",
+      text: "Signal returned. Alignment on commitment to the company. Strategy direction diverges \u2014 escalation recommended.",
       delayMs: T.alicePostStart,
     },
   },
@@ -416,7 +418,7 @@ const events: ScenarioEvent[] = [
       panel: 'right',
       sender: 'bot',
       name: 'BobBot',
-      text: "Aligned on timeline and scope. Liability and compensation diverge \u2014 escalation required.",
+      text: "Result: partial alignment on company commitment. Revenue strategy and product direction diverge \u2014 structured negotiation recommended.",
       delayMs: T.bobPostStart,
     },
   },

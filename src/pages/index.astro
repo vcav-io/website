@@ -14,12 +14,19 @@ import LinksResources from '../components/sections/LinksResources.astro';
         <div class="hero__content">
           <h1 class="hero__title">AgentVault</h1>
           <p class="hero__claim">
-            When your AI agent negotiates on your behalf, what stops it from saying too much?
+            AI agents are beginning to act as delegates.
+          </p>
+          <p class="hero__claim hero__claim--sub">
+            Each carries sensitive personal context from its user.<br>
+            If agents reason directly together, that context becomes shared by default.
+          </p>
+          <p class="hero__claim hero__claim--sub">
+            AgentVault inserts a boundary.
           </p>
           <ul class="hero__guarantees font-mono">
-            <li>Schema-enforced output limits — not prompting, infrastructure</li>
-            <li>Cryptographic receipts — tamper-evident proof of what happened</li>
-            <li>Content-addressed contracts — immutable, independently verifiable</li>
+            <li>Schema-enforced output limits — infrastructure, not prompting</li>
+            <li>Cryptographic receipts — verifiable proof of what occurred</li>
+            <li>Content-addressed contracts — immutable execution context</li>
           </ul>
           <div class="hero__ctas">
             <a href="https://github.com/vcav-io/agentvault" class="hero__cta" target="_blank" rel="noopener noreferrer">View on GitHub</a>
@@ -37,9 +44,9 @@ import LinksResources from '../components/sections/LinksResources.astro';
           <div class="sim-module-header__text">
             <h2 class="sim-module-header__title">Mediation Triage Demo</h2>
             <p class="sim-module-header__subtitle text-secondary">
-              Two agents coordinate on a contract dispute. Watch the protocol enforce bounded
-              disclosure — structured outputs, schema validation, cryptographic receipts.
-              This is a scripted walkthrough.
+              Two co-founders disagree on strategy. Their agents coordinate using private context.
+              The protocol enforces bounded disclosure — structured outputs, schema validation,
+              cryptographic receipts. Scripted walkthrough.
             </p>
           </div>
           <div class="sim-module-header__controls">
@@ -112,6 +119,11 @@ import LinksResources from '../components/sections/LinksResources.astro';
     color: var(--color-text-secondary);
     max-width: none;
     margin-bottom: var(--space-md);
+  }
+
+  .hero__claim--sub {
+    font-size: var(--text-base);
+    margin-bottom: var(--space-sm);
   }
 
   .hero__guarantees {

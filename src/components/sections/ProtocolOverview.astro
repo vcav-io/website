@@ -9,7 +9,7 @@
     <p class="intro text-secondary">
       Seven steps from discovery to receipt. Each cryptographically bound to the
       previous. Contracts are pre-existing documents referenced by hash — not
-      negotiated in-protocol.
+      negotiated mid-session.
     </p>
 
     <ol class="steps">
@@ -18,31 +18,30 @@
         <div class="step__body">
           <h3 class="step__title">Discovery</h3>
           <p>
-            Agents publish <strong>signed descriptors</strong> — Ed25519 keys, capabilities, model profiles. Signatures use domain separation (<code>VCAV-DESCRIPTOR-V1:</code>).
+            Agents publish <strong>signed descriptors</strong> — Ed25519 keys, capabilities, model profiles.
           </p>
-          <p class="step__guarantee font-mono">Domain-separated signatures prevent cross-context descriptor reuse</p>
         </div>
       </li>
 
       <li class="step">
         <span class="step__number">2</span>
         <div class="step__body">
-          <h3 class="step__title">Proposal</h3>
+          <h3 class="step__title">Invite</h3>
           <p>
-            Initiator sends <code>PROPOSE</code> referencing a <strong>content-addressed contract</strong> by SHA-256 hash — purpose code, output schema, model profile, and execution lane.
+            Initiator references a <strong>content-addressed contract</strong> by hash —
+            purpose code, output schema, model profile.
           </p>
-          <p class="step__guarantee font-mono">Content-addressed contract — immutable reference, not in-protocol negotiation</p>
         </div>
       </li>
 
       <li class="step">
         <span class="step__number">3</span>
         <div class="step__body">
-          <h3 class="step__title">Admission</h3>
+          <h3 class="step__title">Accept / Decline</h3>
           <p>
-            Responder issues <code>ADMIT</code> with a <strong>one-time admit token</strong>, confirming the same contract hash — or <code>DENY</code> with no reason field.
+            Responder verifies the contract hash and accepts. Decline is constant-shape —
+            no reason field, no additional information.
           </p>
-          <p class="step__guarantee font-mono">Designed so that denial is constant-shape — no reason field, no information leakage</p>
         </div>
       </li>
 
@@ -51,9 +50,8 @@
         <div class="step__body">
           <h3 class="step__title">Commitment</h3>
           <p>
-            Encrypted inputs submitted via admit token. <strong><code>XChaCha20-Poly1305</code></strong> with AAD binding ciphertext to the contract hash.
+            Encrypted inputs are submitted and bound to the contract hash.
           </p>
-          <p class="step__guarantee font-mono">Encryption with AAD binding — ciphertext is tied to the contract hash</p>
         </div>
       </li>
 
@@ -62,9 +60,9 @@
         <div class="step__body">
           <h3 class="step__title">Relay Execution</h3>
           <p>
-            The relay <strong>enforces</strong>: verifies model profile hash — confirming both parties consented to the same cognitive role — assembles prompt from content-addressed <code>PromptProgram</code>, calls LLM, validates output against <strong>JSON Schema</strong>. <code>GATE</code> rules reject; <code>ADVISORY</code> rules log.
+            Model profile verified. Output validated against <strong>JSON Schema</strong>.
+            Only structured signals pass.
           </p>
-          <p class="step__guarantee font-mono">Schema violation aborts execution — only structured signals pass</p>
         </div>
       </li>
 
@@ -73,9 +71,9 @@
         <div class="step__body">
           <h3 class="step__title">Receipt</h3>
           <p>
-            <strong>Ed25519 signed receipt</strong> binding contract hash, guardian policy, prompt template, model identity, model profile, relay build SHA, participants, and output signal.
+            An <strong>Ed25519-signed receipt</strong> binds contract hash, guardian policy,
+            prompt template, model identity, and output signal.
           </p>
-          <p class="step__guarantee font-mono">Any change to any bound input invalidates the receipt</p>
         </div>
       </li>
 
@@ -84,12 +82,17 @@
         <div class="step__body">
           <h3 class="step__title">Output Retrieval</h3>
           <p>
-            Both agents retrieve the <strong>bounded output signal</strong> and receipt. The signal is structured data — each agent interprets it for its principal outside the vault.
+            Both agents retrieve the bounded signal and receipt. Interpretation happens
+            outside the vault.
           </p>
-          <p class="step__guarantee font-mono">Structured signal, not natural language — agents interpret for their principal</p>
         </div>
       </li>
     </ol>
+
+    <p class="protocol-coda text-secondary">
+      The vault emits compressed informational signals.
+      It does not make decisions.
+    </p>
   </div>
 </section>
 
@@ -166,5 +169,12 @@
     color: var(--color-accent-dim);
     letter-spacing: 0.02em;
     margin-top: var(--space-xs);
+  }
+
+  .protocol-coda {
+    max-width: var(--content-max);
+    margin: var(--space-2xl) auto 0;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
   }
 </style>

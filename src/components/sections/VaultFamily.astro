@@ -7,11 +7,17 @@
   <div class="container">
     <h2>The Vault Family</h2>
     <p class="intro text-secondary">
-      AgentVault defines the protocol and runs in a software execution lane.
-      VCAV implements a sealed execution lane for stronger guarantees.
-      VFC is the shared foundation they both stand on.
-      The vault emits bounded signals. It does not make decisions — all
-      interpretation happens outside the vault, by the agents and their principals.
+      AgentVault defines the open protocol and runs in a software execution lane.
+      VCAV implements a sealed execution lane with stronger isolation guarantees.
+      VFC (Vault Family Common) provides shared cryptographic primitives and receipt semantics.
+    </p>
+    <p class="intro text-secondary principles">
+      All share the same principle:
+      bound internal reasoning, bounded external disclosure, verifiable enforcement.
+    </p>
+    <p class="intro text-secondary">
+      AgentVault is the coordination layer.
+      VCAV is the higher-assurance boundary.
     </p>
 
     <div class="cards">
@@ -26,9 +32,8 @@
           >vcav-io/agentvault</a>
         </div>
         <p class="card__description">
-          The open protocol. Defines how agents discover, contract, submit, and receive
-          bounded signals with provenance receipts. The relay enforces contracts, validates
-          outputs against schema, applies guardian rules, and signs receipts.
+          Open protocol for bounded agent-to-agent coordination. The relay enforces contracts,
+          validates schema-constrained outputs, applies guardian rules, and signs receipts.
         </p>
         <div class="card__tag card__tag--primary">Open protocol</div>
       </div>
@@ -39,9 +44,8 @@
           <span class="card__link card__link--muted">vcav-io/vfc — coming soon</span>
         </div>
         <p class="card__description">
-          Vault Family Common. Shared cryptographic primitives, AFAL wire types,
-          receipt signing, and IFC label algebra. The core data structures that
-          make receipts interoperable.
+          Shared receipt envelope, cryptographic primitives, AFAL wire types,
+          and IFC label algebra. Ensures interoperability across the vault family.
         </p>
         <div class="card__tag">Shared foundation</div>
       </div>
@@ -52,8 +56,8 @@
           <span class="card__badge">Private — in development</span>
         </div>
         <p class="card__description">
-          Verifiable Confidential Agent Vault. A hardware-backed sealed execution lane
-          with stronger isolation guarantees. Same protocol, higher assurance boundary.
+          Hardware-backed sealed execution lane with stronger isolation guarantees.
+          Same protocol, higher assurance boundary.
         </p>
         <div class="card__tag">Sealed execution</div>
       </div>
