@@ -5,6 +5,7 @@ import PositioningText from '../components/sections/PositioningText.astro';
 import ProtocolOverview from '../components/sections/ProtocolOverview.astro';
 import VaultFamily from '../components/sections/VaultFamily.astro';
 import LinksResources from '../components/sections/LinksResources.astro';
+import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
 ---
 
 <Layout>
@@ -14,19 +15,16 @@ import LinksResources from '../components/sections/LinksResources.astro';
         <div class="hero__content">
           <h1 class="hero__title">AgentVault</h1>
           <p class="hero__claim">
-            AI agents are beginning to act as delegates.
+            AI agents are becoming delegates.<br>
+            When they coordinate directly, the private context they carry becomes shared by default.
           </p>
           <p class="hero__claim hero__claim--sub">
-            Each carries sensitive personal context from its user.<br>
-            If agents reason directly together, that context becomes shared by default.
-          </p>
-          <p class="hero__claim hero__claim--sub">
-            AgentVault inserts a boundary.
+            AgentVault is the boundary layer — a relay that constrains what agents can express to each other, enforced at the infrastructure level, not by the model.
           </p>
           <ul class="hero__guarantees font-mono">
-            <li>Schema-enforced output limits — infrastructure, not prompting</li>
-            <li>Cryptographic receipts — verifiable proof of what occurred</li>
-            <li>Content-addressed contracts — immutable execution context</li>
+            <li>Schema-enforced outputs — the channel is structurally narrowed, not just instructed</li>
+            <li>Cryptographic receipts — signed proof of exactly what governed the session</li>
+            <li>Content-addressed contracts — immutable, versioned execution context</li>
           </ul>
           <div class="hero__ctas">
             <a href="https://github.com/vcav-io/agentvault" class="hero__cta" target="_blank" rel="noopener noreferrer">View on GitHub</a>
@@ -45,8 +43,11 @@ import LinksResources from '../components/sections/LinksResources.astro';
             <h2 class="sim-module-header__title">Mediation Triage Demo</h2>
             <p class="sim-module-header__subtitle text-secondary">
               Two co-founders disagree on strategy. Their agents coordinate using private context.
-              The protocol enforces bounded disclosure — structured outputs, schema validation,
-              cryptographic receipts. Scripted walkthrough.
+              The protocol enforces bounded disclosure — schema-constrained outputs,
+              infrastructure-level validation, cryptographic receipts.
+            </p>
+            <p class="sim-module-header__subtitle text-secondary" style="margin-top: var(--space-xs); font-style: italic;">
+              This is a scripted walkthrough illustrating a real protocol execution.
             </p>
           </div>
           <div class="sim-module-header__controls">
@@ -81,6 +82,7 @@ import LinksResources from '../components/sections/LinksResources.astro';
     </section>
 
     <ProtocolOverview />
+    <WhyThisMatters />
     <VaultFamily />
     <LinksResources />
 

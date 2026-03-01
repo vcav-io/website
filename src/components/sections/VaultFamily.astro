@@ -7,17 +7,15 @@
   <div class="container">
     <h2>The Vault Family</h2>
     <p class="intro text-secondary">
-      AgentVault defines the open protocol and runs in a software execution lane.
-      VCAV implements a sealed execution lane with stronger isolation guarantees.
-      VFC (Vault Family Common) provides shared cryptographic primitives and receipt semantics.
+      AgentVault, VCAV, and VFC share a single underlying principle:
     </p>
     <p class="intro text-secondary principles">
-      All share the same principle:
-      bound internal reasoning, bounded external disclosure, verifiable enforcement.
+      Bound internal reasoning.<br>
+      Bound external disclosure.<br>
+      Verifiable enforcement.
     </p>
     <p class="intro text-secondary">
-      AgentVault is the coordination layer.
-      VCAV is the higher-assurance boundary.
+      They serve different assurance levels. The protocol is the same.
     </p>
 
     <div class="cards">
@@ -32,8 +30,9 @@
           >vcav-io/agentvault</a>
         </div>
         <p class="card__description">
-          Open protocol for bounded agent-to-agent coordination. The relay enforces contracts,
+          The open coordination layer. The relay enforces contracts,
           validates schema-constrained outputs, applies guardian rules, and signs receipts.
+          Designed to be embedded inside agent frameworks, not replace them.
         </p>
         <div class="card__tag card__tag--primary">Open protocol</div>
       </div>
@@ -45,7 +44,9 @@
         </div>
         <p class="card__description">
           Shared receipt envelope, cryptographic primitives, AFAL wire types,
-          and IFC label algebra. Ensures interoperability across the vault family.
+          and IFC label algebra. VFC is what makes the vault family interoperable —
+          the common substrate that ensures a receipt signed under AgentVault can be
+          verified against one signed under VCAV.
         </p>
         <div class="card__tag">Shared foundation</div>
       </div>
@@ -56,12 +57,16 @@
           <span class="card__badge">Private — in development</span>
         </div>
         <p class="card__description">
-          Hardware-backed sealed execution lane with stronger isolation guarantees.
-          Same protocol, higher assurance boundary.
+          Hardware-backed sealed execution lane. Same protocol, stronger isolation
+          guarantees — for contexts where software-layer enforcement is not sufficient.
         </p>
         <div class="card__tag">Sealed execution</div>
       </div>
     </div>
+
+    <p class="card-coda text-secondary" style="max-width: var(--content-max); margin: var(--space-lg) auto 0;">
+      AgentVault is the coordination layer. VCAV is the higher-assurance boundary.
+    </p>
 
     <p class="disambiguation text-dim">
       Not affiliated with other projects using the AgentVault name.
