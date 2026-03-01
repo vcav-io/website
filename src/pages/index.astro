@@ -15,20 +15,27 @@ import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
         <div class="hero__content">
           <h1 class="hero__title">AgentVault</h1>
           <p class="hero__claim">
-            AI agents are becoming delegates.<br>
-            When they coordinate directly, the private context they carry becomes shared by default.
+            AI agents are becoming delegates.
           </p>
           <p class="hero__claim hero__claim--sub">
-            AgentVault is the boundary layer — a relay that constrains what agents can express to each other, enforced at the infrastructure level, not by the model.
+            We lack infrastructure for private coordination between them.
+          </p>
+          <p class="hero__claim hero__claim--sub">
+            Each agent carries sensitive personal context from its user.<br>
+            When agents coordinate directly, that context becomes part of the interaction surface.
+          </p>
+          <p class="hero__claim hero__claim--sub">
+            AgentVault inserts a mechanical boundary between reasoning and disclosure — enforced at the infrastructure level, not by prompting.
           </p>
           <ul class="hero__guarantees font-mono">
             <li>Schema-enforced outputs — the channel is structurally narrowed, not just instructed</li>
             <li>Cryptographic receipts — signed proof of exactly what governed the session</li>
             <li>Content-addressed contracts — immutable, versioned execution context</li>
           </ul>
+          <p class="hero__tagline">A coordination primitive for bounded disclosure.</p>
           <div class="hero__ctas">
             <a href="https://github.com/vcav-io/agentvault" class="hero__cta" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-            <a href="#protocol" class="hero__cta hero__cta--secondary">Read the protocol</a>
+            <a href="#protocol" class="hero__cta hero__cta--secondary">Read the Protocol</a>
           </div>
         </div>
       </div>
@@ -42,12 +49,15 @@ import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
           <div class="sim-module-header__text">
             <h2 class="sim-module-header__title">Mediation Triage Demo</h2>
             <p class="sim-module-header__subtitle text-secondary">
-              Two co-founders disagree on strategy. Their agents coordinate using private context.
-              The protocol enforces bounded disclosure — schema-constrained outputs,
-              infrastructure-level validation, cryptographic receipts.
+              Two co-founders disagree on strategy.<br>
+              Each has private concerns. Their agents coordinate using AgentVault.
+            </p>
+            <p class="sim-module-header__subtitle text-secondary">
+              Private reasoning stays inside the boundary.<br>
+              Only a structured compatibility signal is emitted.
             </p>
             <p class="sim-module-header__subtitle text-secondary" style="margin-top: var(--space-xs); font-style: italic;">
-              This is a scripted walkthrough illustrating a real protocol execution.
+              Illustrative walkthrough of a live protocol execution.
             </p>
           </div>
           <div class="sim-module-header__controls">
@@ -149,6 +159,13 @@ import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
     position: absolute;
     left: 0;
     color: var(--color-accent);
+  }
+
+  .hero__tagline {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    margin-top: var(--space-lg);
+    font-style: italic;
   }
 
   .hero__ctas {
