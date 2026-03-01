@@ -8,8 +8,8 @@
     <h2>Protocol</h2>
     <p class="intro text-secondary">
       Seven steps from discovery to receipt. Each cryptographically bound to the
-      previous. Contracts are pre-existing documents referenced by hash — not
-      negotiated mid-session.
+      terms established at the start. Contracts are pre-existing documents
+      referenced by hash — not negotiated mid-session.
     </p>
 
     <ol class="steps">
@@ -18,7 +18,7 @@
         <div class="step__body">
           <h3 class="step__title">Discovery</h3>
           <p>
-            Agents publish <strong>signed descriptors</strong> — Ed25519 keys, capabilities, model profiles.
+            Agents publish <strong>signed descriptors</strong> — Ed25519 keys, declared capabilities, model profiles.
           </p>
         </div>
       </li>
@@ -28,8 +28,8 @@
         <div class="step__body">
           <h3 class="step__title">Invite</h3>
           <p>
-            Initiator references a <strong>content-addressed contract</strong> by hash —
-            purpose code, output schema, model profile.
+            The initiating agent references a <strong>content-addressed contract</strong> by hash —
+            specifying purpose, output schema, and model profile.
           </p>
         </div>
       </li>
@@ -39,8 +39,8 @@
         <div class="step__body">
           <h3 class="step__title">Accept / Decline</h3>
           <p>
-            Responder verifies the contract hash and accepts. Decline is constant-shape —
-            no reason field, no additional information.
+            The responder verifies the contract hash and admits or denies. Decline is constant-shape —
+            no reason field, no additional signal — preventing leakage through the denial itself.
           </p>
         </div>
       </li>
@@ -50,7 +50,7 @@
         <div class="step__body">
           <h3 class="step__title">Commitment</h3>
           <p>
-            Encrypted inputs are submitted and bound to the contract hash.
+            Encrypted inputs are submitted and cryptographically bound to the contract hash via AAD.
           </p>
         </div>
       </li>
@@ -61,7 +61,7 @@
           <h3 class="step__title">Relay Execution</h3>
           <p>
             Model profile verified. Output validated against <strong>JSON Schema</strong>.
-            Only structured signals pass.
+            Invalid output is rejected and not returned. Only structured signals pass.
           </p>
         </div>
       </li>
@@ -72,7 +72,7 @@
           <h3 class="step__title">Receipt</h3>
           <p>
             An <strong>Ed25519-signed receipt</strong> binds contract hash, guardian policy,
-            prompt template, model identity, and output signal.
+            prompt template, model identity, and output signal. Tamper-evident and independently verifiable.
           </p>
         </div>
       </li>
@@ -90,8 +90,12 @@
     </ol>
 
     <p class="protocol-coda text-secondary">
-      The vault emits compressed informational signals.
-      It does not make decisions.
+      Every artefact — contracts, schemas, prompt templates, guardian policies, model profiles —
+      is content-addressed (SHA-256 over canonical JSON) and versioned. The receipt proves
+      exactly which rules governed the session.
+    </p>
+    <p class="protocol-coda text-secondary">
+      The vault emits compressed informational signals. It does not make decisions.
     </p>
   </div>
 </section>
