@@ -9,14 +9,14 @@
   --color-border: #222238;
   --color-border-subtle: #181828;
 
-  --color-text: #ededeb;
-  --color-text-secondary: #9494a8;
-  --color-text-dim: #5a5a70;
+  --color-text: #f5f5f3;
+  --color-text-secondary: #b8b8cc;
+  --color-text-dim: #78788e;
 
-  --color-accent: #5ab4c0;
-  --color-accent-bright: #7dd4e0;
-  --color-accent-dim: #2a7080;
-  --color-accent-glow: rgba(90, 180, 192, 0.12);
+  --color-accent: #6ba3f7;
+  --color-accent-bright: #93bfff;
+  --color-accent-dim: #3a5a8a;
+  --color-accent-glow: rgba(107, 163, 247, 0.12);
 
   --color-success: #50b070;
   --color-error: #e04848;
@@ -27,7 +27,7 @@
   /* Vault-specific — centre panel trust boundary */
   --color-vault-bg: #0a0e18;
   --color-vault-border: #1a2848;
-  --color-vault-glow: rgba(90, 180, 192, 0.06);
+  --color-vault-glow: rgba(107, 163, 247, 0.06);
 
   /* Typography */
   --font-body: 'Outfit', system-ui, -apple-system, sans-serif;
@@ -56,12 +56,12 @@
   --space-4xl: 5rem;
 
   /* Principal colours — per-agent colour coding */
-  --color-alice: hsl(210, 50%, 68%);
-  --color-alice-dim: hsl(210, 35%, 48%);
+  --color-alice: hsl(210, 50%, 72%);
+  --color-alice-dim: hsl(210, 35%, 52%);
   --color-alice-bg: hsla(210, 50%, 65%, 0.07);
   --color-alice-border: hsla(210, 50%, 65%, 0.18);
-  --color-bob: hsl(35, 55%, 68%);
-  --color-bob-dim: hsl(35, 40%, 48%);
+  --color-bob: hsl(35, 55%, 72%);
+  --color-bob-dim: hsl(35, 40%, 52%);
   --color-bob-bg: hsla(35, 55%, 65%, 0.07);
   --color-bob-border: hsla(35, 55%, 65%, 0.18);
 
@@ -115,7 +115,7 @@ body::before {
   height: 100vh;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(90, 180, 192, 0.04), transparent);
+  background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(107, 163, 247, 0.04), transparent);
 }
 
 /* Film grain noise — adds depth to flat dark backgrounds */
