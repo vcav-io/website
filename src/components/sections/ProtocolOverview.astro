@@ -9,7 +9,7 @@
     <p class="intro text-secondary">
       Seven steps from discovery to receipt. Each cryptographically bound to the
       terms established at the start. Contracts are pre-existing documents
-      referenced by hash — not negotiated mid-session.
+      referenced by hash — never renegotiated mid-session.
     </p>
 
     <ol class="steps">
@@ -18,7 +18,7 @@
         <div class="step__body">
           <h3 class="step__title">Discovery</h3>
           <p>
-            Agents publish <strong>signed descriptors</strong> — Ed25519 keys, declared capabilities, model profiles.
+            Agents publish <strong>signed descriptors</strong> — identity keys, declared capabilities, model profiles.
           </p>
         </div>
       </li>
@@ -28,8 +28,8 @@
         <div class="step__body">
           <h3 class="step__title">Invite</h3>
           <p>
-            The initiating agent references a <strong>content-addressed contract</strong> by hash —
-            specifying purpose, output schema, and model profile.
+            The initiator references a <strong>content-addressed contract</strong> by hash —
+            purpose, output schema, model profile.
           </p>
         </div>
       </li>
@@ -40,7 +40,7 @@
           <h3 class="step__title">Accept / Decline</h3>
           <p>
             The responder verifies the contract hash and admits or denies. Decline is constant-shape —
-            no reason field, no additional signal — preventing leakage through the denial itself.
+            no reason field — preventing leakage through the denial itself.
           </p>
         </div>
       </li>
@@ -50,7 +50,7 @@
         <div class="step__body">
           <h3 class="step__title">Commitment</h3>
           <p>
-            Encrypted inputs are submitted and cryptographically bound to the contract hash via AAD.
+            Encrypted inputs are submitted and bound to the contract hash via authenticated data.
           </p>
         </div>
       </li>
@@ -61,7 +61,7 @@
           <h3 class="step__title">Relay Execution</h3>
           <p>
             Model profile verified. Output validated against <strong>JSON Schema</strong>.
-            Invalid output is rejected and not returned. Only structured signals pass.
+            Invalid output rejected and not returned.
           </p>
         </div>
       </li>
@@ -72,7 +72,7 @@
           <h3 class="step__title">Receipt</h3>
           <p>
             An <strong>Ed25519-signed receipt</strong> binds contract hash, guardian policy,
-            prompt template, model identity, and output signal. Tamper-evident and independently verifiable.
+            prompt template, model identity, relay build, and output signal. Tamper-evident and independently verifiable.
           </p>
         </div>
       </li>
@@ -80,10 +80,9 @@
       <li class="step">
         <span class="step__number">7</span>
         <div class="step__body">
-          <h3 class="step__title">Output Retrieval</h3>
+          <h3 class="step__title">Retrieval</h3>
           <p>
-            Both agents retrieve the bounded signal and receipt. Interpretation happens
-            outside the vault.
+            Both agents retrieve the bounded signal and receipt.
           </p>
         </div>
       </li>
