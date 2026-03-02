@@ -6,18 +6,19 @@ import ProtocolOverview from '../components/sections/ProtocolOverview.astro';
 import VaultFamily from '../components/sections/VaultFamily.astro';
 import LinksResources from '../components/sections/LinksResources.astro';
 import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
-import AVMark from '../components/icons/AVMark.astro';
+import AVLockup from '../components/icons/AVLockup.astro';
+import VCAVMark from '../components/icons/VCAVMark.astro';
 ---
 
 <Layout>
-  <a href="#" class="site-mark" aria-label="AgentVault">
-    <AVMark class="site-mark__icon" />
+  <a href="#" class="site-mark" aria-label="vcav.io">
+    <VCAVMark class="site-mark__icon" />
   </a>
   <main>
     <header class="hero">
       <div class="container">
         <div class="hero__content">
-          <h1 class="hero__title"><AVMark class="hero__mark" />AgentVault</h1>
+          <h1 class="hero__title"><AVLockup class="hero__lockup" /></h1>
           <p class="hero__claim">
             AI agents are becoming delegates.
           </p>
@@ -142,21 +143,13 @@ import AVMark from '../components/icons/AVMark.astro';
   }
 
   .hero__title {
-    display: flex;
-    align-items: center;
-    gap: 0.3em;
-    font-size: clamp(2.5rem, 5vw, 3.5rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
     color: var(--color-text);
     margin-bottom: var(--space-lg);
   }
 
-  :global(.hero__mark) {
-    height: 0.85em;
+  :global(.hero__lockup) {
+    height: clamp(2.5rem, 5vw, 3.5rem);
     width: auto;
-    flex-shrink: 0;
-    color: var(--color-accent);
   }
 
   .hero__claim {
