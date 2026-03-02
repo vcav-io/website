@@ -40,7 +40,7 @@ import VCAVMark from '../components/icons/VCAVMark.astro';
           <p class="hero__tagline">A coordination primitive for bounded disclosure.</p>
           <div class="hero__ctas">
             <a href="https://github.com/vcav-io/agentvault" class="hero__cta" target="_blank" rel="noopener noreferrer">View on GitHub</a>
-            <a href="#protocol" class="hero__cta hero__cta--secondary">Read the Protocol</a>
+            <a href="#protocol" class="hero__cta">Read the Protocol</a>
           </div>
         </div>
       </div>
@@ -198,7 +198,7 @@ import VCAVMark from '../components/icons/VCAVMark.astro';
   .hero__ctas {
     display: flex;
     gap: var(--space-md);
-    margin-top: var(--space-xl);
+    margin-top: var(--space-md);
   }
 
   .hero__cta {
@@ -223,19 +223,8 @@ import VCAVMark from '../components/icons/VCAVMark.astro';
     background: rgba(90, 180, 192, 0.05);
   }
 
-  .hero__cta--secondary {
-    border-color: var(--color-border);
-    color: var(--color-text-secondary);
-  }
-
-  .hero__cta--secondary:hover {
-    color: var(--color-text);
-    border-color: var(--color-text-dim);
-    background: rgba(255, 255, 255, 0.03);
-  }
-
   .simulation-section {
-    padding: var(--space-2xl) 0 var(--space-3xl);
+    padding: var(--space-2xl) 0;
   }
 
   .sim-module-header {

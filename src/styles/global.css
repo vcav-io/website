@@ -201,7 +201,7 @@ pre code {
 
 /* Sections — tighter, with alternating backgrounds for structure */
 .section {
-  padding: var(--space-3xl) 0;
+  padding: var(--space-2xl) 0;
 }
 
 .section--alt {
