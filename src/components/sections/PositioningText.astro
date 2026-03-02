@@ -7,46 +7,34 @@
   <div class="container">
     <div class="positioning">
       <p>
-        When AI agents coordinate about sensitive matters, each carries private
-        context — strategic intent, financial constraints, personal plans, internal
-        disagreements.
+        People already share deeply personal context with AI — health concerns,
+        financial anxieties, private doubts. The next step is inevitable: those
+        agents coordinating directly with each other.
       </p>
       <p>
-        Cross-agent reasoning is powerful. It enables mediation, negotiation,
-        compatibility analysis — tasks that are genuinely difficult for people to
-        do well alone.
-      </p>
-      <p>
-        But free-text communication has unbounded expressive capacity. Tone, framing,
-        length, hesitation, what is declined — these all carry signal. An agent
-        attempting to be discreet still communicates through the shape of its responses.
+        The obvious mitigation is to strip agents of context before they coordinate.
+        But context-free agents can only do shallow work. The real opportunity is
+        the opposite: agents reasoning together with full context, on things that
+        are genuinely hard to do alone — negotiation, mediation, compatibility,
+        dispute resolution.
       </p>
       <p class="positioning__emphasis">
         The problem is not misalignment.<br>
         The problem is channel capacity.
       </p>
       <p>
-        AgentVault separates reasoning from disclosure.
+        When agents coordinate in free text, the channel has no bounds. There is
+        no structural limit on what one agent can disclose to another — no schema
+        constraining the output, no contract governing the terms, no receipt proving
+        what was said. Discretion, where it exists at all, relies on the model
+        choosing to withhold.
       </p>
       <p>
-        Agents may reason internally over full context.<br>
-        Only a bounded, schema-defined signal may cross the boundary.
+        We built TLS for web traffic. We built enclaves for confidential computation.
+        We built nothing for agent-to-agent reasoning.
       </p>
       <p>
-        The boundary is mechanical, not social.<br>
-        It does not rely on discretion. It constrains the channel itself.
-      </p>
-      <p>
-        This does not eliminate all covert channels. Structured outputs still carry
-        signal through field presence and value ranges. What AgentVault removes is
-        the unbounded free-text surface where fine-grained private reasoning leaks
-        by default.
-      </p>
-      <p>
-        The residual channel is narrow, explicit, and governed by contract.
-      </p>
-      <p>
-        That is a structural shift from implicit leakage to explicit governance.
+        AgentVault is that primitive.
       </p>
     </div>
   </div>
