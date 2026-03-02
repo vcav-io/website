@@ -1,6 +1,8 @@
 ---
 // VaultFamily.astro
 // Three components: AgentVault (primary), VFC (neutral), VCAV (muted)
+import AVMark from '../icons/AVMark.astro';
+import VCAVMark from '../icons/VCAVMark.astro';
 ---
 
 <section class="section section--alt reveal" id="family">
@@ -22,7 +24,10 @@
     <div class="cards">
       <div class="card card--primary">
         <div class="card__header">
-          <h3 class="card__name">AgentVault</h3>
+          <div class="card__name-row">
+            <AVMark class="card__icon" />
+            <h3 class="card__name">AgentVault</h3>
+          </div>
           <a
             href="https://github.com/vcav-io/agentvault"
             class="card__link"
@@ -40,7 +45,10 @@
 
       <div class="card card--muted">
         <div class="card__header">
-          <h3 class="card__name">VCAV</h3>
+          <div class="card__name-row">
+            <VCAVMark class="card__icon" />
+            <h3 class="card__name">VCAV</h3>
+          </div>
           <span class="card__badge">Private — in development</span>
         </div>
         <p class="card__description">
@@ -127,6 +135,27 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-xs);
+  }
+
+  .card__name-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+  }
+
+  :global(.card__icon) {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .card--primary :global(.card__icon) {
+    color: var(--color-accent);
+  }
+
+  .card--muted :global(.card__icon) {
+    color: var(--color-text-dim);
   }
 
   .card__name {
