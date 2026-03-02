@@ -134,7 +134,7 @@
     top: calc(-1 * var(--space-lg));
     height: var(--space-lg);
     width: 1px;
-    background: var(--color-vault-border);
+    background: var(--color-border);
   }
 
   .step__number {
@@ -176,8 +176,12 @@
 
   .protocol-coda {
     max-width: var(--content-max);
-    margin: var(--space-2xl) auto 0;
+    margin: var(--space-lg) auto 0;
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed);
+  }
+
+  .protocol-coda + .protocol-coda {
+    margin-top: var(--space-xs);
   }
 </style>
