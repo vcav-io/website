@@ -6,14 +6,18 @@ import ProtocolOverview from '../components/sections/ProtocolOverview.astro';
 import VaultFamily from '../components/sections/VaultFamily.astro';
 import LinksResources from '../components/sections/LinksResources.astro';
 import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
+import AVMark from '../components/icons/AVMark.astro';
 ---
 
 <Layout>
+  <a href="#" class="site-mark" aria-label="AgentVault">
+    <AVMark class="site-mark__icon" />
+  </a>
   <main>
     <header class="hero">
       <div class="container">
         <div class="hero__content">
-          <h1 class="hero__title">AgentVault</h1>
+          <h1 class="hero__title"><AVMark class="hero__mark" />AgentVault</h1>
           <p class="hero__claim">
             AI agents are becoming delegates.
           </p>
@@ -107,6 +111,26 @@ import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
 </Layout>
 
 <style>
+  .site-mark {
+    position: fixed;
+    top: var(--space-lg);
+    left: var(--space-lg);
+    z-index: 100;
+    display: block;
+    opacity: 0.5;
+    color: var(--color-text);
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+
+  .site-mark:hover {
+    opacity: 1;
+  }
+
+  :global(.site-mark__icon) {
+    width: 24px;
+    height: 24px;
+  }
+
   .hero {
     padding: var(--space-3xl) 0 var(--space-2xl);
     border-bottom: 1px solid var(--color-border-subtle);
@@ -118,11 +142,21 @@ import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
   }
 
   .hero__title {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
     font-size: clamp(2.5rem, 5vw, 3.5rem);
     font-weight: 700;
     letter-spacing: -0.03em;
     color: var(--color-text);
     margin-bottom: var(--space-lg);
+  }
+
+  :global(.hero__mark) {
+    height: 0.85em;
+    width: auto;
+    flex-shrink: 0;
+    color: var(--color-accent);
   }
 
   .hero__claim {
