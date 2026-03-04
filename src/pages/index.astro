@@ -11,8 +11,9 @@ import VCAVMark from '../components/icons/VCAVMark.astro';
 ---
 
 <Layout>
-  <a href="#" class="site-mark" aria-label="vcav.io">
+  <a href="https://vcav.io" class="site-mark" aria-label="vcav.io">
     <VCAVMark class="site-mark__icon" />
+    <span class="site-mark__label">vcav</span>
   </a>
   <main>
     <header class="hero">
@@ -94,6 +95,11 @@ import VCAVMark from '../components/icons/VCAVMark.astro';
         </div>
       </div>
       <Simulation />
+      <div class="container">
+        <p class="sim-run-cta text-secondary">
+          <a href="https://github.com/vcav-io/agentvault/blob/main/docs/getting-started.md" class="sim-run-cta__link" target="_blank" rel="noopener noreferrer">Run the demo locally &rarr;</a>
+        </p>
+      </div>
     </section>
 
     <ProtocolOverview />
@@ -117,9 +123,12 @@ import VCAVMark from '../components/icons/VCAVMark.astro';
     top: var(--space-lg);
     left: var(--space-lg);
     z-index: 100;
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
     opacity: 0.5;
     color: var(--color-text);
+    text-decoration: none;
     transition: opacity var(--duration-fast) var(--ease-out);
   }
 
@@ -130,6 +139,14 @@ import VCAVMark from '../components/icons/VCAVMark.astro';
   :global(.site-mark__icon) {
     width: 24px;
     height: 24px;
+  }
+
+  .site-mark__label {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
   }
 
   .hero {
@@ -341,6 +358,23 @@ import VCAVMark from '../components/icons/VCAVMark.astro';
       padding: var(--space-sm) var(--container-padding);
       margin: 0 calc(-1 * var(--container-padding));
     }
+  }
+
+  .sim-run-cta {
+    text-align: center;
+    margin-top: var(--space-xl);
+    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+  }
+
+  .sim-run-cta__link {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .sim-run-cta__link:hover {
+    color: var(--color-accent-bright);
   }
 
   .site-footer {
