@@ -1,6 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "astro",
+  "redirects": [
+    { "source": "/", "destination": "/agentvault", "permanent": false }
+  ],
   "headers": [
     {
       "source": "/fonts/(.*)",
