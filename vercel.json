@@ -4,6 +4,10 @@
   "redirects": [
     { "source": "/", "destination": "/agentvault", "permanent": false }
   ],
+  "rewrites": [
+    { "source": "/agentvault", "destination": "/index.html" },
+    { "source": "/agentvault/(.*)", "destination": "/$1" }
+  ],
   "headers": [
     {
       "source": "/fonts/(.*)",
