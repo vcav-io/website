@@ -7,13 +7,12 @@ import VaultFamily from '../components/sections/VaultFamily.astro';
 import LinksResources from '../components/sections/LinksResources.astro';
 import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
 import AVLockup from '../components/icons/AVLockup.astro';
-import VCAVMark from '../components/icons/VCAVMark.astro';
+import VCAVLockup from '../components/icons/VCAVLockup.astro';
 ---
 
 <Layout>
   <a href="https://vcav.io" class="site-mark" aria-label="vcav.io">
-    <VCAVMark class="site-mark__icon" />
-    <span class="site-mark__label">vcav</span>
+    <VCAVLockup class="site-mark__lockup" />
   </a>
   <main>
     <header class="hero">
@@ -136,17 +135,15 @@ import VCAVMark from '../components/icons/VCAVMark.astro';
     opacity: 1;
   }
 
-  :global(.site-mark__icon) {
-    width: 24px;
-    height: 24px;
+  :global(.site-mark__lockup) {
+    height: 20px;
+    width: auto;
   }
 
-  .site-mark__label {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--color-text-dim);
+  @media (max-width: 767px) {
+    .site-mark {
+      display: none;
+    }
   }
 
   .hero {
