@@ -48,7 +48,11 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>What structured outputs miss</h2>
 
     <p>
-      When two agents coordinate on sensitive matters, several additional conditions must hold beyond format consistency.
+      For narrow, purpose-built agents that handle routine tasks, structured outputs may be all that's needed. A tightly scoped agent exchanging public information or performing a well-defined function can operate safely with format constraints alone. But when agents act as delegates — reasoning over real user constraints like budget limits, health details, or negotiation boundaries — the stakes change. The context is what makes the agent worth having; removing it is not a viable path to privacy. The question becomes how to let agents reason with sensitive context while still constraining what they can reveal.
+    </p>
+
+    <p>
+      In that harder case, several additional conditions must hold beyond format consistency.
     </p>
 
     <p>
@@ -94,7 +98,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <ul>
       <li><strong><a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>Coordination contracts</a></strong> establish the schema as part of a pre-agreed, content-addressed document. Both parties agree to identical terms — purpose, schema, prompt template, guardian policy — before any private context enters the system. The contract is referenced by its SHA-256 hash and cannot be modified during the session.</li>
       <li><strong>Relay enforcement</strong> validates every output against the contract's schema at an external point. The relay sits between the agents and rejects any output that falls outside the agreed structure. This is enforcement outside the model — an independent structural constraint that neither party controls.</li>
-      <li><strong>Channel-capacity bounding.</strong> AgentVault treats the schema as a channel-capacity constraint. A field accepting an integer between 1 and 5 carries at most ~2.3 bits. A three-value enum carries ~1.6 bits. The total information capacity of the output is the sum of its fields' capacities — a measurable, finite bound on disclosure.</li>
+      <li><strong>Channel-capacity constraints.</strong> AgentVault treats the schema as a channel-capacity limit. A field accepting an integer between 1 and 5 carries at most ~2.3 bits. A three-value enum carries ~1.6 bits. The total information capacity of the output is the sum of its fields' capacities — a measurable, finite bound on disclosure.</li>
       <li><strong>Cryptographic receipts</strong> bind the contract hash, schema, model identity, and output to a signed record. After the session, either party can verify that the output was produced under the agreed terms. The receipt makes the governance auditable, not just aspirational.</li>
     </ul>
 
@@ -102,10 +106,6 @@ import ConceptPage from '../components/ConceptPage.astro';
 
     <p>
       None of this diminishes the value of structured outputs. They are a genuine improvement over free-text generation, and they provide the format layer on which disclosure constraints can be built. A system without structured outputs would need to solve format consistency and disclosure control simultaneously.
-    </p>
-
-    <p>
-      For narrow, purpose-built agents that handle tasks with no privacy sensitivity, structured outputs may be all that's needed. Tightly scoped A2A agents exchanging public information or performing well-defined functions can operate safely with format constraints alone. AgentVault is aimed at a harder class of problems — where agents act as delegates, reasoning about real user context like budget limits, health constraints, or negotiation boundaries. In those cases, the context is what makes the agent useful, and removing it is not a viable path to privacy. The challenge becomes: how do you let agents reason with sensitive context without turning coordination into unconstrained disclosure?
     </p>
 
     <p>

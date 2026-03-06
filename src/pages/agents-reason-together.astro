@@ -78,7 +78,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>The shared-state problem</h2>
 
     <p>
-      When agents reason together, context becomes shared state. This is not a metaphor — it is a precise description of what happens during coordination.
+      The problem is structural, not behavioral. In a coordination session, the private context each agent carries is not safely compartmentalized — it actively shapes every output the model produces.
     </p>
 
     <p>
@@ -114,18 +114,14 @@ import ConceptPage from '../components/ConceptPage.astro';
       The result is a coordination architecture where private context informs the reasoning but does not flow unbounded through the output. The model processes each user's context to produce a useful signal, but the signal is structurally constrained to carry only what the schema permits.
     </p>
 
-    <h2>The trust envelope</h2>
+    <h2>Sensitivity is not binary</h2>
 
     <p>
-      Not all coordination requires the same level of protection. Two agents exchanging restaurant preferences need less disclosure control than two agents assessing medical compatibility. The trust requirements vary with the sensitivity of the context involved.
+      Not all coordination requires the same level of protection. Two agents comparing restaurant preferences need far less disclosure control than two agents assessing medical compatibility. The architecture should adapt to the stakes rather than imposing one level of constraint on every interaction.
     </p>
 
     <p>
-      AgentVault addresses this through a trust envelope that can be tightened as stakes rise. At its most permissive, the envelope includes the model, the relay, and a broad output schema. At its most restrictive, it adds guardian policies, narrower schemas, and — for the highest-stakes scenarios — confidential execution environments where even the relay operator cannot observe the private context during processing.
-    </p>
-
-    <p>
-      The envelope shrinks as sensitivity increases. For casual coordination, a standard relay with a reasonable schema is sufficient. For sensitive coordination involving health data, financial information, or personal relationships, the schema narrows, the policies tighten, and the receipt provides stronger assurance. The architecture adapts to the trust requirement rather than imposing a single level of protection on every interaction.
+      AgentVault handles this through what might be called a trust envelope. At its most permissive, the envelope includes the model, the relay, and a broad output schema — sufficient for low-sensitivity coordination. As stakes rise, the envelope tightens: narrower schemas, stricter guardian policies, and — for the highest-stakes scenarios — confidential execution environments where even the relay operator cannot observe the private context during processing. The same bounded-disclosure principle applies throughout; only the tightness of the boundary changes.
     </p>
 
     <h2>The foundational claim</h2>

@@ -20,7 +20,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      A health agent knows about diagnoses, medications, family medical history, and mental health status. A financial agent knows about income, debt, spending patterns, and investment strategy. A personal assistant knows about relationship dynamics, daily routines, emotional state, and private preferences. This context is what makes agents genuinely useful. It is also what makes agent-to-agent coordination genuinely dangerous.
+      A health agent knows about diagnoses, medications, family medical history, and mental health status. A financial agent knows about income, debt, spending patterns, and investment strategy. A personal assistant knows about relationship dynamics, daily routines, emotional state, and private preferences. That depth of understanding is precisely why these agents are worth having. It is also what makes coordination between them a disclosure problem.
     </p>
 
     <p>
@@ -32,7 +32,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      AgentVault is designed for this harder case: agents that need sensitive context to be useful, coordinating with other agents that carry similarly sensitive context. The question is not how to prevent agents from ever seeing private data. It is how to let them reason with it without turning coordination into unconstrained disclosure.
+      AgentVault is designed for this harder case: agents that need sensitive context to be useful, coordinating with other agents that carry similarly sensitive context. The goal is not to prevent agents from ever seeing private data — it is to let them reason with it while keeping coordination structurally bounded.
     </p>
 
     <p>
@@ -46,23 +46,19 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Why "be careful" does not work</h2>
 
     <p>
-      The most common approach to preventing agent disclosure is prompting. Tell the agent to be discreet. Instruct it not to share sensitive information. Add guardrails to the system prompt.
+      The problem is not that agents have sensitive context. The problem is that free-text coordination gives them no structural limit on what they can reveal.
     </p>
 
     <p>
-      This approach has a fundamental problem: it treats disclosure as a behavioral issue when it is actually a <strong>channel capacity</strong> issue.
+      The most common mitigation is prompting: tell the agent to be discreet, add guardrails to the system prompt. But this treats disclosure as a behavioral issue when it is actually a <strong>channel capacity</strong> issue.
     </p>
 
     <p>
-      A free-text channel between two agents has effectively unlimited information capacity. Any piece of context the agent has access to can be encoded in the response — directly, through implication, through word choice, through hedging patterns, or through statistical correlations in the text. A model instructed to "not share medical information" might still reveal a user's health status through the specificity of its dietary preferences, the timing of its scheduling constraints, or the way it frames risk tolerance.
+      A free-text channel between two agents has effectively unlimited information capacity. A model instructed to "not share medical information" might still reveal a user's health status through the specificity of its dietary preferences, the timing of its scheduling constraints, or the way it frames risk tolerance. Models are opaque, probabilistic systems — they cannot reliably track what they have revealed across a conversation, and they cannot guarantee that subtle correlations in their output do not leak private facts.
     </p>
 
     <p>
-      Prompting is advisory. It asks the model to be careful. But models are opaque, probabilistic systems. They do not have reliable mechanisms for tracking what information they have revealed across a conversation. They cannot guarantee that subtle correlations in their output do not leak private facts. Even a well-intentioned model cannot promise that a free-text response carries zero bits of unintended information.
-    </p>
-
-    <p>
-      The only way to guarantee bounded disclosure is to bound the channel itself — to structurally constrain the output so that the total amount of information it can carry is finite and measurable, regardless of what the model attempts to express.
+      The only way to guarantee bounded disclosure is to bound the channel itself — to structurally constrain the output so that the total information it can carry is finite and measurable, regardless of what the model attempts to express.
     </p>
 
     <h2>Four structural approaches</h2>
