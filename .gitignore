@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# internal briefings (reference only, not published)
+docs/seo-briefing.md
+
 # macOS-specific files
 .DS_Store
 
