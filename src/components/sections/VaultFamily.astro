@@ -7,16 +7,17 @@ import VCAVMark from '../icons/VCAVMark.astro';
 
 <section class="section section--alt reveal" id="family">
   <div class="container">
-    <h2>Assurance Levels</h2>
+    <h2>Execution Lanes and Trust Boundaries</h2>
     <p class="intro">
-      AgentVault assumes you already trust your AI model provider — most
-      consumers do. That assumption makes the protocol lightweight and
-      general. VCAV removes even the provider from the trust envelope,
-      using local models and hardware attestation.
+      AgentVault runs in two execution lanes. In the <strong>software lane</strong>,
+      the relay operator can see your data — you trust them the way you trust any
+      SaaS provider. In the <strong>TEE lane</strong>, coordination runs inside
+      hardware-isolated memory that the operator cannot read, even with root access.
+      Same protocol, same receipts — the difference is who can see your plaintext.
     </p>
     <p class="intro intro--paired">
-      Same bounded-disclosure principle.<br>
-      The trust envelope shrinks as the stakes rise.
+      VCAV goes further: local models, hardware attestation, and side-channel
+      hardening shrink the trust boundary to the sealed VM itself.
     </p>
 
     <div class="cards">
