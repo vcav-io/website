@@ -16,7 +16,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>The core developer question</h2>
 
     <p>
-      Before integrating any coordination protocol, a developer needs to know precisely what it guarantees and what it does not. AgentVault is an agent-native bounded-disclosure coordination protocol. It enforces constraints on what information flows between participants. It does not evaluate whether a signal is correct, truthful, or aligned with anyone's intent. This page defines those boundaries precisely, qualified by execution lane.
+      Before integrating any coordination protocol, a developer needs to know precisely what it guarantees and what it does not. AgentVault is an agent-native bounded-disclosure coordination protocol. It constrains what can be emitted between participants by bounding the output channel with a contract, schema validation, and receipt-bound governance artefacts. It does not evaluate whether a signal is correct, truthful, or aligned with anyone's intent. Today, all production deployments operate at <code>SELF_ASSERTED</code>, which proves signed provenance of declared rules, not execution integrity. This page defines those boundaries, and distinguishes what is guaranteed by protocol structure from what still depends on the execution lane and trust model.
     </p>
 
     <h2>Layered responsibility model</h2>
@@ -26,7 +26,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      <strong>The vault (relay + guardian)</strong> enforces the consent boundary. It validates that the output conforms to the contract's JSON Schema, applies the guardian enforcement policy, signs a receipt binding all governance artefacts, and delivers only the bounded output to participants. The vault is a coordination primitive — it constrains the channel mechanically, without evaluating what the signal means.
+      <strong>The vault (relay + guardian)</strong> enforces the agreed output boundary and the declared session governance. It validates that the output conforms to the contract's JSON Schema, applies the guardian enforcement policy, signs a receipt binding all governance artefacts, and delivers only the bounded output to participants. The vault is a coordination primitive — it constrains the channel mechanically, without evaluating what the signal means.
     </p>
 
     <p>
@@ -34,7 +34,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      <strong>Participants (humans)</strong> define the consent boundary by agreeing to the coordination contract before any context is exchanged. The contract specifies the purpose, output schema, enforcement policy, and model constraints. Participants are responsible for schema design — which is a security decision, because the schema determines the channel capacity.
+      <strong>Participants (humans)</strong> define the consent boundary by agreeing to the coordination contract before any context is exchanged. The contract specifies the purpose, output schema, referenced enforcement policy, and execution constraints such as model profile or model-selection requirements. Participants are responsible for schema design — which is a security decision, because the schema determines the channel capacity.
     </p>
 
     <h2>Architecture</h2>
@@ -70,25 +70,25 @@ import ConceptPage from '../components/ConceptPage.astro';
    └──────────────────────────────────────────────────┘</pre>
 
     <p>
-      Verifier independence is the central result of the protocol's design. A third party can verify everything about how a session was governed without needing access to the relay, the operator, or the model that produced the output.
+      Verifier independence is the central result of the protocol's design. A third party can verify the declared governance artefacts and receipt commitments for a session without needing access to the relay, the operator, or the model that produced the output.
     </p>
 
     <h2>What AgentVault guarantees</h2>
 
     <p>
-      <strong>Consent boundary enforcement.</strong> Neither participant sees the other's raw input. The relay routes inputs and outputs separately. The output that leaves the relay conforms to the JSON Schema specified in the coordination contract. Output that fails schema validation is rejected — it never reaches either participant.
+      <strong>Participant boundary enforcement.</strong> Neither participant receives the other's raw input from the relay. The relay routes inputs and outputs separately. The output that leaves the relay conforms to the JSON Schema specified in the coordination contract. Output that fails schema validation is rejected — it never reaches either participant.
     </p>
 
     <p>
-      <strong>Signal compression.</strong> The output channel is structurally narrowed. An all-enum output schema with a 25-bit entropy budget carries at most 25 bits of information, regardless of what the model attempts to produce. This is a structural property of the schema, not a property of the model's compliance. The relay enforces it mechanically — the guardian never evaluates whether a signal is correct, only whether the signal is allowed.
+      <strong>Signal compression.</strong> The output channel is structurally narrowed. An all-enum output schema with a computed channel capacity of 25 bits can carry at most 25 bits through the bounded output channel, regardless of what the model attempts to produce. This is a structural property of the schema, not a property of the model's compliance. The relay enforces it mechanically — the guardian never evaluates whether a signal is correct, only whether the signal is allowed.
     </p>
 
     <p>
-      <strong>Cryptographic binding.</strong> Every completed session produces a signed receipt (Ed25519) that binds the contract hash, output schema hash, prompt template hash, guardian policy hash, model profile hash, relay build hash, bounded output hash, and per-participant input commitment hashes. A recipient with the relay's public key can verify that the receipt was produced by the relay and that none of the bound fields have been modified since signing.
+      <strong>Cryptographic binding.</strong> Every completed session produces a signed receipt (Ed25519) that binds the session to specific governance artefacts and output commitments — including the contract hash, output schema hash, prompt template hash, guardian policy hash, model profile hash, relay build hash, bounded output hash, and per-participant input commitment hashes. A recipient with the relay's public key can verify that the receipt was produced by the relay and that none of the bound fields have been modified since signing.
     </p>
 
     <p>
-      <strong>Independent verification.</strong> Verification requires the receipt, the contract, the policy, and the relay's public key. It does not require the runtime, the operator, or the model. A verifier who holds these artefacts can independently recompute all commitment hashes and confirm they match the receipt.
+      <strong>Independent verification.</strong> Verification requires the receipt, the contract, the policy, and the relay's public key. It does not require the runtime, the operator, or the model. A verifier who holds these artefacts can independently recompute all commitment hashes and confirm they match the receipt. At <code>SELF_ASSERTED</code>, this proves provenance and consistency of declarations, not honest execution.
     </p>
 
     <h2>What AgentVault does not guarantee</h2>
@@ -112,7 +112,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Execution lanes: what each adds</h2>
 
     <p>
-      AgentVault defines two execution lanes. Every guarantee statement must specify which lane it applies to.
+      AgentVault defines two execution lanes. The protocol structure is stable across lanes; what changes is who must be trusted for truthful execution. Every guarantee statement must specify which lane it applies to.
     </p>
 
     <p>

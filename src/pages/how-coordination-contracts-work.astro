@@ -4,7 +4,7 @@ import ConceptPage from '../components/ConceptPage.astro';
 
 const contractExample = `{
   "purpose_code": "COMPATIBILITY",
-  "output_schema_id": "vcav_e_compatibility_signal_v2",
+  "output_schema_id": "agentvault_compatibility_signal_v2",
 
   "output_schema": {
     "type": "object",
@@ -47,11 +47,11 @@ const contractExample = `{
     <h2>Why contracts exist</h2>
 
     <p>
-      A coordination contract defines the semantics of the bounded signal before any reasoning occurs. The vault enforces those semantics mechanically. Models cannot redefine them. This is the distinction between a schema (which constrains structure) and a contract (which binds governance).
+      A coordination contract defines the declared meaning, allowed structure, and governing artefacts for the bounded signal before any reasoning occurs. The vault enforces the agreed structure and referenced governance mechanically. Models cannot expand the channel beyond those constraints. This is the distinction between a schema (which constrains structure) and a contract (which binds governance).
     </p>
 
     <p>
-      An API schema tells you what shape the data has. A coordination contract tells you what both participants agreed to, what enforcement policy governs the session, what prompt template will be used, and what entropy budget bounds the output channel. The contract is a bilateral agreement — not a unilateral definition imposed by one party. Both participants must agree to the contract before any private context is exchanged.
+      An API schema tells you what shape the data has. A coordination contract tells you what both participants agreed to, what enforcement policy governs the session, what prompt template will be used, and what declared information budget and schema constraints govern the output channel. The contract is a bilateral agreement — not a unilateral definition imposed by one party. Both participants must agree to the contract before any private context is exchanged.
     </p>
 
     <h2>Three-part structure</h2>
@@ -61,7 +61,7 @@ const contractExample = `{
     </p>
 
     <p>
-      <strong>Consent boundary.</strong> The contract defines who participates (<code>participants</code>), what the session is for (<code>purpose_code</code>), and what constraints apply (<code>enforcement_policy_hash</code>, <code>model_constraints</code>). This establishes the consent boundary — what both parties have agreed to before any context is exchanged. The consent boundary is locked at session creation and cannot be modified mid-session.
+      <strong>Consent boundary.</strong> The contract defines who participates (<code>participants</code>), what the session is for (<code>purpose_code</code>), and what execution constraints apply (<code>enforcement_policy_hash</code>, <code>model_profile_id</code>, and related execution parameters). This establishes the consent boundary — what both parties have agreed to before any context is exchanged. The consent boundary is locked at session creation and cannot be modified mid-session.
     </p>
 
     <p>
@@ -87,7 +87,7 @@ const contractExample = `{
     </p>
 
     <p>
-      The contract hash is the root of the verification chain. From the contract, you can derive the expected schema hash, enforcement policy hash, prompt template hash, and model profile hash. If any of these artefacts were substituted after the contract was agreed, the hash chain breaks and verification fails.
+      The contract hash is the root of the verification chain. From the contract, a verifier can derive the expected hashes of the schema, enforcement policy, prompt template, and model profile reference. If any of these artefacts were substituted after the contract was agreed, the hash chain breaks and verification fails.
     </p>
 
     <p>
@@ -101,7 +101,7 @@ const contractExample = `{
     </p>
 
     <p>
-      A coordination contract is a bilateral agreement. Both participants agree to the same contract before submitting private context. The contract is content-addressed and immutable for the session duration. Neither party can change the terms mid-session. The contract binds not just the output structure but the prompt template, the enforcement policy, the model constraints, and the entropy budget. The receipt proves — after the fact — that this specific contract governed the session.
+      A coordination contract is a bilateral agreement. Both participants agree to the same contract before submitting private context. The contract is content-addressed and immutable for the session duration. Neither party can change the terms mid-session. The contract binds not just the output structure but the referenced governance artefacts and execution parameters that were agreed for the session. The receipt proves — after the fact — that this specific contract governed the session.
     </p>
 
     <p>
@@ -115,7 +115,7 @@ const contractExample = `{
     </p>
 
     <p>
-      <strong><code>entropy_budget_bits</code></strong> declares the advisory upper bound on output information content. The relay computes the actual channel capacity from the schema structure and records it in the receipt. A verifier can compare the declared budget against the computed capacity to check whether the schema is consistent with the claimed bound.
+      <strong><code>entropy_budget_bits</code></strong> declares the advisory upper bound on output information content. Where supported by the active receipt version and runtime, the relay computes the actual channel capacity from the schema structure and records it in the receipt. A verifier can compare the declared budget against the computed capacity to check whether the schema is consistent with the claimed bound.
     </p>
 
     <p>
@@ -123,7 +123,7 @@ const contractExample = `{
     </p>
 
     <p>
-      <strong><code>model_constraints</code></strong> specifies which providers and models are acceptable. The relay selects a model satisfying all constraints. The receipt records which model was actually used (as a claim at <code>SELF_ASSERTED</code> level, as an attestation at <code>PROVIDER_ATTESTED</code> level).
+      The contract can constrain the permitted model class or profile for the session via <strong><code>model_profile_id</code></strong>. The relay selects a model satisfying the profile requirements. The receipt records which model was actually used (as a claim at <code>SELF_ASSERTED</code> level, as an attestation at <code>PROVIDER_ATTESTED</code> level).
     </p>
 
     <p>
@@ -133,7 +133,7 @@ const contractExample = `{
     <h2>Key takeaway</h2>
 
     <p>
-      A coordination contract is the single root of trust for an AgentVault session. Everything that governs the session is either in the contract or referenced by content hash from the contract. The receipt proves, cryptographically, that this specific contract governed this specific session. Schema design is a security decision. Contract design is a governance decision. They are distinct concerns, bound together by content addressing.
+      A coordination contract is the root governance object for an AgentVault session. Everything that governs the session is either in the contract or referenced by content hash from the contract. The receipt proves, cryptographically, that this specific contract governed this specific session. Schema design is a security decision. Contract design is a governance decision. They are distinct concerns, bound together by content addressing.
     </p>
   </ConceptPage>
 </Layout>
