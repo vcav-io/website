@@ -1,0 +1,139 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="How Receipt Verification Works — AgentVault"
+  description="Receipt verification requires the receipt, contract, policy, and public keys. It does not require the runtime, the operator, or the model. Step-by-step walkthrough of independent verification."
+  canonicalPath="/agentvault/how-receipt-verification-works/"
+>
+  <ConceptPage
+    title="How Receipt Verification Works"
+    subtitle="What can a third party verify independently?"
+    currentSlug="how-receipt-verification-works"
+  >
+    <h2>Verification independence</h2>
+
+    <p>
+      Verification requires the receipt, the contract, the enforcement policy, and the relay's public key. It does not require the runtime, the operator, or the model. This is the central result of the protocol's design: a third party who was not present during the session can verify everything about how it was governed.
+    </p>
+
+    <p>
+      "Receipt verified" must always be reported with its assurance level. A <code>SELF_ASSERTED</code> receipt proves the relay's stated rules were declared. A <code>TEE_ATTESTED</code> receipt proves hardware attestation binds the receipt to an enclave measurement. These are different security claims, and presenting them without qualification is misleading.
+    </p>
+
+    <h2>v2 commitments vs claims</h2>
+
+    <p>
+      Receipt v2 (schema version <code>"2.0.0"</code>) organises fields into two sections that correspond to different trust properties:
+    </p>
+
+    <p>
+      <strong>Commitments</strong> are independently verifiable. A third party who holds the source artefacts can recompute each hash and confirm it matches the receipt. Commitment fields include: <code>contract_hash</code>, <code>schema_hash</code>, <code>output_hash</code>, <code>input_commitments</code> (per-participant), <code>assembled_prompt_hash</code>, <code>prompt_template_hash</code>, and the <code>preflight_bundle</code> (policy hash, model profile hash, schema hash, enforcement parameters).
+    </p>
+
+    <p>
+      <strong>Claims</strong> are relay assertions. The relay reports what it believes to be true, but these fields cannot be independently verified from the receipt alone. Claim fields include: <code>model_identity_asserted</code> (the model ID returned by the provider API), <code>runtime_hash_asserted</code> (SHA-256 of the relay's build), <code>provider_latency_ms</code>, <code>token_usage</code>, and <code>budget_enforcement_mode</code>.
+    </p>
+
+    <p>
+      This separation makes the trust model explicit. When you verify a receipt, commitments are cryptographically checkable. Claims are taken on trust — the relay asserts them but cannot prove them without additional attestation infrastructure.
+    </p>
+
+    <h2>Step-by-step verification walkthrough</h2>
+
+    <p>
+      <strong>Step 1: Check the canonicalization marker.</strong> Read <code>receipt_canonicalization</code>. It must be <code>"JCS_V1"</code>. Reject any other value (fail-closed).
+    </p>
+
+    <p>
+      <strong>Step 2: Extract the signature object.</strong> Read <code>signature.alg</code> (must be <code>"Ed25519"</code>) and <code>signature.value</code> (base64url-encoded, 64 bytes when decoded). Remove the entire <code>signature</code> object from the receipt.
+    </p>
+
+    <p>
+      <strong>Step 3: Canonicalize.</strong> JCS-canonicalize the remaining receipt document using RFC 8785 (sorted keys, no whitespace). Standard JSON serialisers do not produce canonical output — you must use a JCS library.
+    </p>
+
+    <p>
+      <strong>Step 4: Build the signing message.</strong> Prepend the domain separator: <code>"VCAV-RECEIPT-V2:" + canonical_json_string</code>. The colon is part of the separator. No null byte, no length prefix, no newline.
+    </p>
+
+    <p>
+      <strong>Step 5: Compute the digest.</strong> <code>SHA-256(utf8_bytes(signing_message))</code>. Ed25519 signs the hash, not the raw message bytes.
+    </p>
+
+    <p>
+      <strong>Step 6: Verify.</strong> Base64url-decode the signature value. Hex-decode the verifying key (32 bytes). Verify the Ed25519 signature over the digest. If verification passes, the receipt was signed by the entity holding the corresponding private key and has not been modified since signing.
+    </p>
+
+    <h2>What each commitment field proves</h2>
+
+    <p>
+      <strong><code>contract_hash</code></strong> — SHA-256(JCS(contract)). Proves this specific contract governed the session. A verifier who holds the contract recomputes the hash and confirms it matches.
+    </p>
+
+    <p>
+      <strong><code>schema_hash</code></strong> — SHA-256(JCS(output_schema)). Proves this specific schema constrained the output channel. The schema determines the channel capacity.
+    </p>
+
+    <p>
+      <strong><code>output_hash</code></strong> — SHA-256(JCS(output)). Proves the output has not been modified after signing. The <code>commitments.output</code> inline field is a convenience copy — verifiers must check that its hash matches <code>output_hash</code>.
+    </p>
+
+    <p>
+      <strong><code>input_commitments</code></strong> — per-participant <code>{'{ participant_id, input_hash, hash_alg, canonicalization }'}</code>. Each participant can verify their own input commitment (recompute SHA-256(JCS(own_input)) and confirm it matches). Participants cannot verify the counterparty's commitment without the counterparty's input — this is by design.
+    </p>
+
+    <p>
+      <strong><code>assembled_prompt_hash</code></strong> — SHA-256 of the assembled prompt bytes. Proves what prompt was sent to the model. Verifying this requires access to the relay's prompt assembly implementation, as the assembly algorithm is not specified in the contract.
+    </p>
+
+    <p>
+      <strong><code>preflight_bundle</code></strong> — contains <code>policy_hash</code>, <code>prompt_template_hash</code>, <code>model_profile_hash</code>, <code>schema_hash</code>, and <code>enforcement_parameters</code>. This bundle represents the complete governance configuration that was locked before inference. Each field can be verified independently by hashing the source artefact.
+    </p>
+
+    <h2>Assurance levels</h2>
+
+    <p>
+      The <code>assurance_level</code> field describes what external evidence backs the receipt. It is not a quality score — it is a precise statement about what attestation infrastructure was active.
+    </p>
+
+    <ul>
+      <li><strong><code>SELF_ASSERTED</code></strong> — The relay signs its own receipt. No external attestation. Claims are relay assertions only. This is the current implementation level for all AgentVault deployments. "Receipt verified" at this level means the relay operator's key signed this receipt — a provenance statement, not an integrity guarantee about the underlying execution.</li>
+      <li><strong><code>OPERATOR_AUDITED</code></strong> — The operator publishes a verifiable audit trail alongside the receipt. Claims can be cross-checked against the audit log. Trust is externally checkable but still rests on the operator.</li>
+      <li><strong><code>PROVIDER_ATTESTED</code></strong> — The model provider supplied signed inference metadata. <code>model_identity_attested</code> becomes a commitment verifiable against the provider's public key, not just a relay claim.</li>
+      <li><strong><code>TEE_ATTESTED</code></strong> — Hardware TEE attestation binds the receipt to a CVM measurement. The relay build hash is hardware-verified. The operator cannot observe inputs or fabricate outputs without breaking the attestation. The <code>tee_attestation</code> field in the receipt carries the attestation hash, transcript hash, and receipt signing pubkey for independent verification.</li>
+    </ul>
+
+    <h2>What a receipt does and does not prove</h2>
+
+    <p>
+      <strong>A verified receipt proves:</strong>
+    </p>
+
+    <ul>
+      <li>The receipt was signed by the entity holding the corresponding private key.</li>
+      <li>The receipt content has not been modified since signing.</li>
+      <li>The contract, schema, policy, and prompt template bound into the receipt are the exact artefacts that the relay declared governed the session (via content hashes).</li>
+      <li>The bounded output hash matches the output in the receipt.</li>
+      <li>Each participant's input commitment was computed by the same relay that signed the receipt.</li>
+    </ul>
+
+    <p>
+      <strong>A verified receipt does not prove:</strong>
+    </p>
+
+    <ul>
+      <li>That inference actually occurred. A malicious relay can fabricate a conforming output, compute correct hashes, and produce a verifiable receipt.</li>
+      <li>That the claimed model was used. <code>model_identity_asserted</code> is an operator assertion at <code>SELF_ASSERTED</code>.</li>
+      <li>That enforcement code executed correctly. A compromised relay could skip enforcement and sign a receipt claiming it passed.</li>
+      <li>That the relay did not observe or log inputs. Correct commitment hashes do not prove inputs were not retained.</li>
+      <li>That both participants received the same output simultaneously.</li>
+    </ul>
+
+    <p>
+      These non-guarantees are not weaknesses to be papered over — they are architectural properties of the <code>SELF_ASSERTED</code> tier. Each higher assurance level progressively closes these gaps: <code>OPERATOR_AUDITED</code> adds external audit trails, <code>PROVIDER_ATTESTED</code> adds model identity verification, and <code>TEE_ATTESTED</code> removes the relay operator from the trust envelope entirely.
+    </p>
+  </ConceptPage>
+</Layout>

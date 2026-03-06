@@ -1,0 +1,139 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+
+const contractExample = `{
+  "purpose_code": "COMPATIBILITY",
+  "output_schema_id": "vcav_e_compatibility_signal_v2",
+
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "compatibility_signal": {
+        "type": "string",
+        "enum": ["STRONG_MATCH", "PARTIAL_MATCH", "WEAK_MATCH", "NO_MATCH"]
+      },
+      "confidence": {
+        "type": "string",
+        "enum": ["HIGH", "MEDIUM", "LOW"]
+      }
+    },
+    "required": ["compatibility_signal", "confidence"],
+    "additionalProperties": false
+  },
+
+  "participants": ["agent-alice", "agent-bob"],
+  "prompt_template_hash": "18b1b459...64hex",
+  "entropy_budget_bits": 32,
+  "enforcement_policy_hash": "b977379e...64hex",
+  "output_schema_hash": "0d25ea01...64hex",
+  "relay_verifying_key_hex": "a1b2c3d4...64hex",
+  "model_profile_id": "api-claude-sonnet-v1",
+  "timing_class": null,
+  "metadata": { "scenario": "scheduling-compatibility", "version": "2" }
+}`;
+---
+
+<Layout
+  title="How Coordination Contracts Work — AgentVault"
+  description="Coordination contracts define the semantics of the bounded signal before any reasoning occurs. Learn how contracts bind consent, schema, and enforcement into a single content-addressed agreement."
+  canonicalPath="/agentvault/how-coordination-contracts-work/"
+>
+  <ConceptPage
+    title="How Coordination Contracts Work"
+    subtitle="Why is a contract more than a schema?"
+    currentSlug="how-coordination-contracts-work"
+  >
+    <h2>Why contracts exist</h2>
+
+    <p>
+      A coordination contract defines the semantics of the bounded signal before any reasoning occurs. The vault enforces those semantics mechanically. Models cannot redefine them. This is the distinction between a schema (which constrains structure) and a contract (which binds governance).
+    </p>
+
+    <p>
+      An API schema tells you what shape the data has. A coordination contract tells you what both participants agreed to, what enforcement policy governs the session, what prompt template will be used, and what entropy budget bounds the output channel. The contract is a bilateral agreement — not a unilateral definition imposed by one party. Both participants must agree to the contract before any private context is exchanged.
+    </p>
+
+    <h2>Three-part structure</h2>
+
+    <p>
+      Every coordination contract is composed of three distinct elements, each serving a different function in the bounded-disclosure guarantee.
+    </p>
+
+    <p>
+      <strong>Consent boundary.</strong> The contract defines who participates (<code>participants</code>), what the session is for (<code>purpose_code</code>), and what constraints apply (<code>enforcement_policy_hash</code>, <code>model_constraints</code>). This establishes the consent boundary — what both parties have agreed to before any context is exchanged. The consent boundary is locked at session creation and cannot be modified mid-session.
+    </p>
+
+    <p>
+      <strong>Information compression.</strong> The <code>output_schema</code> field is a JSON Schema that defines exactly which fields exist, what values are permitted, and what structure is required. This is the mechanism that narrows the communication channel. An all-enum schema with four fields carrying 2 bits each has a channel capacity of 8 bits — structurally, regardless of what the model attempts to produce. The schema is not advisory. It is the structural constraint that bounds what can be disclosed.
+    </p>
+
+    <p>
+      <strong>Mechanical constraint.</strong> The <code>enforcement_policy_hash</code> references a content-addressed guardian policy that applies additional enforcement rules on top of schema validation. The guardian enforces constraints — it rejects invalid outputs. It never evaluates whether a signal is correct. It only verifies that the signal is allowed. Policy is referenced by hash, not embedded in the contract, so the same policy can govern multiple contracts.
+    </p>
+
+    <h2>Contract fields</h2>
+
+    <p>
+      The following fields comprise a coordination contract. All fields must be present in the serialised JSON (including null-valued optional fields) when computing the contract hash. This ensures cross-party hash parity.
+    </p>
+
+    <pre style="font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.6; overflow-x: auto; padding: var(--space-md); background: var(--color-bg-elevated); border-radius: 6px; border: 1px solid var(--color-border);" set:text={contractExample} />
+
+    <h2>How contract_hash binds governance into receipts</h2>
+
+    <p>
+      When a session is created, the relay computes the contract hash: <code>SHA-256(JCS(contract))</code> where JCS is RFC 8785 JSON Canonicalization Scheme. This hash is bound into the signed receipt as <code>commitments.contract_hash</code>. A verifier who holds the original contract can independently recompute the hash and confirm it matches the receipt.
+    </p>
+
+    <p>
+      The contract hash is the root of the verification chain. From the contract, you can derive the expected schema hash, enforcement policy hash, prompt template hash, and model profile hash. If any of these artefacts were substituted after the contract was agreed, the hash chain breaks and verification fails.
+    </p>
+
+    <p>
+      This is why null fields must be present: JCS canonical form of <code>{'{"timing_class":null}'}</code> differs from <code>{'{}'}</code>. An implementation that omits null fields will compute a different hash, and cross-party verification will fail.
+    </p>
+
+    <h2>Contracts vs API schemas</h2>
+
+    <p>
+      An API schema is a unilateral definition: the server declares the response shape, and clients consume it. The server can change the schema at any time. There is no bilateral agreement, no enforcement policy, and no cryptographic proof of what governed the interaction.
+    </p>
+
+    <p>
+      A coordination contract is a bilateral agreement. Both participants agree to the same contract before submitting private context. The contract is content-addressed and immutable for the session duration. Neither party can change the terms mid-session. The contract binds not just the output structure but the prompt template, the enforcement policy, the model constraints, and the entropy budget. The receipt proves — after the fact — that this specific contract governed the session.
+    </p>
+
+    <p>
+      The distinction matters because bounded disclosure requires bilateral consent. A unilateral schema constrains structure but not governance. A contract constrains both: the output is bounded by the schema, and the session is governed by the full set of content-addressed artefacts referenced from the contract.
+    </p>
+
+    <h2>Contract-level fields that matter for security</h2>
+
+    <p>
+      <strong><code>enforcement_policy_hash</code></strong> binds the guardian policy into the contract. If the contract specifies this field, the receipt's <code>guardian_policy_hash</code> must match. A relay that loaded a different policy would produce a receipt with a mismatched hash — detectable by any verifier.
+    </p>
+
+    <p>
+      <strong><code>entropy_budget_bits</code></strong> declares the advisory upper bound on output information content. The relay computes the actual channel capacity from the schema structure and records it in the receipt. A verifier can compare the declared budget against the computed capacity to check whether the schema is consistent with the claimed bound.
+    </p>
+
+    <p>
+      <strong><code>output_schema_hash</code></strong> allows the schema to be referenced by hash rather than embedded inline. The relay performs a registry lookup by hash if the inline <code>output_schema</code> is a stub. This enables schema reuse across contracts without duplicating the full schema in every contract.
+    </p>
+
+    <p>
+      <strong><code>model_constraints</code></strong> specifies which providers and models are acceptable. The relay selects a model satisfying all constraints. The receipt records which model was actually used (as a claim at <code>SELF_ASSERTED</code> level, as an attestation at <code>PROVIDER_ATTESTED</code> level).
+    </p>
+
+    <p>
+      <strong><code>relay_verifying_key_hex</code></strong> pins the relay's Ed25519 public key into the contract. If present, the verifier checks that the receipt was signed by the pinned key — not just any valid key. This prevents relay substitution: a participant who agreed to coordinate through a specific relay operator can detect if a different relay signed the receipt.
+    </p>
+
+    <h2>Key takeaway</h2>
+
+    <p>
+      A coordination contract is the single root of trust for an AgentVault session. Everything that governs the session is either in the contract or referenced by content hash from the contract. The receipt proves, cryptographically, that this specific contract governed this specific session. Schema design is a security decision. Contract design is a governance decision. They are distinct concerns, bound together by content addressing.
+    </p>
+  </ConceptPage>
+</Layout>
