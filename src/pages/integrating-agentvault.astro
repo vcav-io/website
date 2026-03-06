@@ -145,7 +145,11 @@ curl http://localhost:3100/health
       The <code>agentvault-client</code> package is a standalone fetch-based library with no framework dependencies. Install it from the repository:
     </p>
 
-    <pre style={codeStyle}>npm install agentvault-client</pre>
+    <pre style={codeStyle}>npm install github:vcav-io/agentvault#main -- --workspace=packages/agentvault-client</pre>
+
+    <p>
+      The package is not yet published to npm. Install directly from the repository, or use a <code>file:</code> dependency if you have a local checkout.
+    </p>
 
     <h3>Initiator side</h3>
 

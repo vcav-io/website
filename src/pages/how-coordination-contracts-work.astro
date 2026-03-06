@@ -27,6 +27,7 @@ const contractExample = `{
   "entropy_budget_bits": 32,
   "enforcement_policy_hash": "b977379e...64hex",
   "output_schema_hash": "0d25ea01...64hex",
+  "relay_verifying_key_hex": "a1b2c3d4...64hex",
   "model_profile_id": "api-claude-sonnet-v1",
   "timing_class": null,
   "metadata": { "scenario": "scheduling-compatibility", "version": "2" }
@@ -123,6 +124,10 @@ const contractExample = `{
 
     <p>
       <strong><code>model_constraints</code></strong> specifies which providers and models are acceptable. The relay selects a model satisfying all constraints. The receipt records which model was actually used (as a claim at <code>SELF_ASSERTED</code> level, as an attestation at <code>PROVIDER_ATTESTED</code> level).
+    </p>
+
+    <p>
+      <strong><code>relay_verifying_key_hex</code></strong> pins the relay's Ed25519 public key into the contract. If present, the verifier checks that the receipt was signed by the pinned key — not just any valid key. This prevents relay substitution: a participant who agreed to coordinate through a specific relay operator can detect if a different relay signed the receipt.
     </p>
 
     <h2>Key takeaway</h2>
