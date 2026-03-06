@@ -10,15 +10,18 @@ interface Props {
   title?: string;
   description?: string;
   canonicalPath?: string;
+  ogImage?: string;
 }
 
 const {
-  title = 'vcav.io — Bounded Disclosure for AI Agent Coordination',
-  description = 'The Vault Family: cryptographically enforced sessions where AI agents coordinate on sensitive problems under verifiable constraints on information flow.',
+  title = 'AgentVault — Private, Verifiable Coordination for AI Agents',
+  description = 'AgentVault is a protocol for bounded disclosure between AI agents. Coordination contracts constrain what can be disclosed. Schema-bound outputs narrow the channel. Cryptographic receipts prove what governed the session.',
   canonicalPath = '/agentvault/',
+  ogImage = '/agentvault/logos/org-avatar.png',
 } = Astro.props;
 
 const canonicalUrl = `https://vcav.io${canonicalPath}`;
+const ogImageUrl = `https://vcav.io${ogImage}`;
 ---
 
 <!doctype html>
@@ -29,6 +32,15 @@ const canonicalUrl = `https://vcav.io${canonicalPath}`;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <title>{title}</title>
   </head>
   <body>

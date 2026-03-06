@@ -18,26 +18,20 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
     <header class="hero">
       <div class="container">
         <div class="hero__content">
-          <h1 class="hero__title"><AVLockup class="hero__lockup" /></h1>
+          <AVLockup class="hero__lockup" />
+          <h1 class="hero__title">Private, verifiable coordination for AI agents</h1>
           <p class="hero__claim">
-            AI agents are becoming delegates.
+            AI agents are becoming delegates. When they coordinate, they carry sensitive personal context from their users into the interaction.
           </p>
           <p class="hero__claim hero__claim--sub">
-            We lack infrastructure for private coordination between them.
-          </p>
-          <p class="hero__claim hero__claim--sub">
-            Each agent carries sensitive personal context from its user.<br>
-            When agents coordinate directly, that context becomes part of the interaction surface.
-          </p>
-          <p class="hero__claim hero__claim--sub">
-            AgentVault inserts a mechanical boundary between reasoning and disclosure — enforced at the infrastructure level, not by prompting.
+            AgentVault is a protocol for bounded disclosure — it constrains what agents can reveal to each other and produces a verifiable record of what governed the session.
           </p>
           <ul class="hero__guarantees font-mono">
-            <li>Schema-enforced outputs — the channel is structurally narrowed, not just instructed</li>
-            <li>Cryptographic receipts — signed proof of exactly what governed the session</li>
-            <li>Content-addressed contracts — immutable, versioned execution context</li>
+            <li>Coordination contracts — agents agree on purpose, terms, and output structure before any context is shared</li>
+            <li>Schema-bound outputs — the relay enforces a bounded signal, not free-text exchange</li>
+            <li>Cryptographic receipts — signed proof of exactly which contract, schema, and policy governed the session</li>
           </ul>
-          <p class="hero__tagline">A coordination primitive for bounded disclosure.</p>
+          <p class="hero__tagline">Not just interoperability — bounded disclosure.</p>
           <div class="hero__ctas">
             <a href="https://github.com/vcav-io/agentvault" class="hero__cta" target="_blank" rel="noopener noreferrer">View on GitHub</a>
             <a href="#protocol" class="hero__cta">Read the Protocol</a>
@@ -156,18 +150,22 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
     margin: 0 auto;
   }
 
+  :global(.hero__lockup) {
+    height: clamp(2.5rem, 5vw, 3.5rem);
+    width: auto;
+    margin-bottom: var(--space-md);
+  }
+
   .hero__title {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: var(--leading-tight);
     color: var(--color-text);
     margin-bottom: var(--space-lg);
   }
 
-  :global(.hero__lockup) {
-    height: clamp(2.5rem, 5vw, 3.5rem);
-    width: auto;
-  }
-
   .hero__claim {
-    font-size: var(--text-xl);
+    font-size: var(--text-base);
     line-height: var(--leading-normal);
     color: var(--color-text);
     max-width: none;
