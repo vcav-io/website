@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="Why Agent Interoperability Needs a Privacy Layer — AgentVault"
+  description="Agent interoperability protocols make agents compatible. But compatibility without disclosure constraints creates privacy risk. AgentVault adds the missing privacy layer."
+  canonicalPath="/agentvault/why-agent-interoperability-needs-a-privacy-layer/"
+>
+  <ConceptPage
+    title="Why Agent Interoperability Needs a Privacy Layer"
+    subtitle="Interoperability makes agents compatible. A privacy layer makes them safe to coordinate on sensitive matters."
+    currentSlug="why-agent-interoperability-needs-a-privacy-layer"
+  >
+    <h2>Interoperability is necessary but not sufficient</h2>
+
+    <p>
+      The agent ecosystem is converging on interoperability. Protocols are emerging for how agents discover each other, authenticate, establish sessions, and exchange messages in standard formats. This is important work. Without interoperability, agents remain siloed — unable to coordinate across vendors, platforms, or organizational boundaries.
+    </p>
+
+    <p>
+      But interoperability solves only half the problem. It answers the question: <strong>can these agents communicate?</strong> It does not answer a harder question: <strong>what should these agents be allowed to disclose when they do?</strong>
+    </p>
+
+    <p>
+      When two agents coordinate on behalf of their users, they carry rich private context. A healthcare agent knows about diagnoses and medications. A financial agent knows about income and spending patterns. A personal assistant knows about relationships, preferences, and emotional state. This context is what makes agents useful — and what makes unstructured coordination between them dangerous.
+    </p>
+
+    <p>
+      Interoperability protocols create the pipe. A privacy layer constrains what flows through it. Without that constraint, the privacy of every agent interaction depends entirely on the discretion of the model — and model discretion is not a guarantee anyone should rely on.
+    </p>
+
+    <h2>What interoperability protocols solve</h2>
+
+    <p>
+      Modern agent interoperability protocols address real and important problems. They standardize how agents discover each other — through capability declarations, service registries, and agent cards. They handle authentication, so agents can verify identity before establishing a session. They define message formats and task lifecycles, so agents built by different vendors can exchange data without bespoke integrations. And they handle routing, ensuring that multi-step coordination flows reach the right participants.
+    </p>
+
+    <p>
+      These are well-understood problems with mature solution patterns. The ecosystem benefits enormously from standardizing them. Agents from different vendors can interoperate. Multi-agent systems can compose without custom glue code. The overall infrastructure becomes more reliable and more extensible.
+    </p>
+
+    <h2>What interoperability protocols do not solve</h2>
+
+    <p>
+      None of these capabilities address disclosure control. An interoperability protocol that provides discovery, authentication, and message exchange has created a fully functional communication channel between two agents. That channel is typically free-text or loosely structured — the agents can send arbitrary content within the protocol's message envelope.
+    </p>
+
+    <p>
+      This means that an agent with access to a user's complete medical history can transmit that history to its counterpart. An agent carrying financial data can share salary details, debt obligations, or transaction records. An agent aware of personal preferences can reveal relationship dynamics, political views, or psychological patterns. The protocol makes this possible. It does nothing to prevent it.
+    </p>
+
+    <p>
+      The standard response is that TLS protects the channel. And it does — against eavesdroppers. Transport encryption ensures that no third party on the network can read the messages. But TLS places no constraint on what the agents themselves choose to share with each other. The threat model for <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a> is not about the wire. It is about the endpoints.
+    </p>
+
+    <h2>Why TLS is not enough</h2>
+
+    <p>
+      Transport Layer Security encrypts data in transit. This is essential and non-negotiable. But it addresses a different threat: external interception. When the privacy concern is about what the agents disclose to each other — not what an eavesdropper might capture — encryption is orthogonal.
+    </p>
+
+    <p>
+      Consider an analogy. Two people in a soundproof room can speak freely without anyone outside overhearing. The room is secure. But that security does nothing to prevent one person from revealing secrets to the other. The threat is not the room's insulation. The threat is what each party chooses to say.
+    </p>
+
+    <p>
+      Agent-to-agent coordination over an encrypted, authenticated channel has exactly this property. The channel is secure against outsiders. But the agents can disclose anything within it. If one agent is instructed to coordinate on a sensitive matter, it may — through prompt-following, context leakage, or model behavior — reveal far more than its user intended.
+    </p>
+
+    <p>
+      The core issue is <strong>channel capacity</strong>. A free-text channel between two agents has effectively unlimited information capacity. Any amount of private context can flow through it. Privacy requires not just securing the channel but narrowing it — constraining how much information the channel's structure permits to pass.
+    </p>
+
+    <h2>Why this matters as agents become delegates</h2>
+
+    <p>
+      The privacy gap becomes critical as agents transition from tools to delegates. A tool executes a specific function when called. A delegate acts on behalf of a user, carrying their context, preferences, and private information into interactions with other agents.
+    </p>
+
+    <p>
+      This context is not incidental — it is what makes delegation valuable. An agent negotiating on your behalf is only useful if it understands your budget limits, your priorities, and your walk-away conditions. An agent assessing compatibility is only useful if it knows your real constraints, not a sanitized summary. The point of delegation is that the agent can exercise judgment on your behalf — and judgment requires context. Remove that context and you remove most of the value of having a delegate in the first place.
+    </p>
+
+    <p>
+      When two delegates coordinate — to assess compatibility between their users, to negotiate terms, to synthesize information across domains — the private context each delegate carries becomes part of the interaction surface. Every piece of information the model has access to is potentially expressible through the communication channel.
+    </p>
+
+    <p>
+      This is not a hypothetical risk. It is a structural property of any system where context-rich agents communicate over unconstrained channels. As agents gain access to more personal data — calendars, health records, financial accounts, communications — the disclosure surface grows with every new integration.
+    </p>
+
+    <h2>How a privacy layer works</h2>
+
+    <p>
+      A privacy layer sits on top of existing interoperability infrastructure. It does not replace transport, discovery, or routing. It adds disclosure constraints that operate at a different level of the stack.
+    </p>
+
+    <p>
+      AgentVault implements this through four mechanisms that work together:
+    </p>
+
+    <ul>
+      <li><strong><a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>Coordination contracts</a></strong> define the session's purpose, permitted output structure, and disclosure terms before any private context enters the system. Both parties agree to identical, content-addressed terms.</li>
+      <li><strong>Schema enforcement</strong> constrains the output channel. The relay validates every output against the contract's JSON Schema, rejecting anything outside the agreed structure. This bounds the information that can flow between agents.</li>
+      <li><strong>Relay enforcement</strong> provides an external point of control. The relay is not a participant in the reasoning — it is a structural enforcement layer that ensures neither agent can bypass the agreed constraints.</li>
+      <li><strong>Cryptographic receipts</strong> provide after-the-fact verification. Each party receives a signed record binding the contract, schema, and output — proof that the session was conducted under the agreed terms.</li>
+    </ul>
+
+    <p>
+      These mechanisms are transport-agnostic. They could operate over any interoperability protocol that provides basic message exchange. The privacy layer does not compete with interoperability — it completes it.
+    </p>
+
+    <h2>Layered, not competitive</h2>
+
+    <p>
+      The relationship between interoperability and privacy is not either-or. It is layered. Interoperability protocols handle the lower layers of the stack: discovery, authentication, transport, message format. A privacy layer handles the higher layer: <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>disclosure control</a>.
+    </p>
+
+    <p>
+      You need both. An agent that cannot communicate is useless. An agent that communicates without disclosure constraints is dangerous when it carries sensitive context. The goal is not to restrict agent communication but to make it safe — to ensure that agents can coordinate effectively while revealing only what their users agreed to disclose.
+    </p>
+
+    <p>
+      As the agent ecosystem matures, privacy will not be an optional add-on. It will be a required layer — as fundamental to agent coordination as TLS is to web communication. The question is not whether agent interoperability needs a privacy layer. The question is how quickly the ecosystem recognizes it. <a href="https://github.com/vcav-io/agentvault" target="_blank" rel="noopener noreferrer">AgentVault</a> provides that layer today.
+    </p>
+  </ConceptPage>
+</Layout>

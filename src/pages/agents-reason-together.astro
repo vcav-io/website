@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="When Agents Reason Together, Context Becomes Shared State — AgentVault"
+  description="AI agents increasingly act as delegates. When two agents reason together on a sensitive matter, the private context they carry becomes part of the interaction surface. This is the foundational problem AgentVault addresses."
+  canonicalPath="/agentvault/agents-reason-together/"
+>
+  <ConceptPage
+    title="When Agents Reason Together, Context Becomes Shared State"
+    subtitle="The moment two delegate agents coordinate, private context becomes part of the interaction surface."
+    currentSlug="agents-reason-together"
+  >
+    <h2>Agents as delegates</h2>
+
+    <p>
+      The trajectory of AI agents is clear: from tools to delegates. Early agents executed specific functions — search this database, summarize this document, call this API. They operated in isolation, producing outputs for a single user without interacting with other agents.
+    </p>
+
+    <p>
+      The next generation of agents operates differently. They act as representatives. A health agent does not just retrieve information about medications — it understands a patient's full medical context, weighs trade-offs, and makes recommendations that account for the patient's history, preferences, and circumstances. A financial agent does not just execute trades — it understands a client's risk tolerance, long-term goals, and current life situation.
+    </p>
+
+    <p>
+      This representational capacity is what makes modern agents valuable. They carry context. They understand nuance. They act with the kind of personalized judgment that previously required a human intermediary.
+    </p>
+
+    <p>
+      But representation creates a new problem the moment agents need to interact with each other.
+    </p>
+
+    <h2>What changes when agents coordinate</h2>
+
+    <p>
+      When a single agent operates in isolation, privacy is a standard access-control problem. The agent has access to certain data. The user controls what the agent can see. The boundary is between the user and their agent.
+    </p>
+
+    <p>
+      When two agents coordinate, the boundary shifts. Now there is a communication channel between agents, and everything each agent knows is potentially expressible through that channel. The private context that made each agent a good representative — the medical history, the financial details, the personal preferences — is now part of the interaction surface.
+    </p>
+
+    <p>
+      Consider two agents coordinating to assess whether their users would be compatible business partners. Each agent has access to its user's professional background, financial situation, work style, personality traits, and private concerns. Over a free-text channel, either agent could disclose any of this — directly, through implication, or through patterns that a sophisticated counterpart could decode.
+    </p>
+
+    <p>
+      The coordination is useful. Both users want to know if the partnership makes sense. But the amount of private context exposed during the assessment should be bounded — each user wants a useful signal without revealing their full profile to the other party's agent.
+    </p>
+
+    <p>
+      This is the fundamental tension: <strong>coordination requires shared reasoning, but shared reasoning exposes private context.</strong>
+    </p>
+
+    <h2>Why this is different from traditional privacy</h2>
+
+    <p>
+      Traditional privacy frameworks — GDPR, data protection regulations, privacy-by-design principles — govern how organizations collect, store, and process personal data. They address questions like: What data do you hold? Who can access it? How long do you retain it? Can the user request deletion?
+    </p>
+
+    <p>
+      These are important protections. But they address a different threat model. They govern data at rest and data in processing. Agent-to-agent coordination creates a different problem: <strong>data in disclosure</strong>.
+    </p>
+
+    <p>
+      When two agents reason together, the question is not whether the data exists or who has stored it. The question is how much of it flows through the coordination channel during a live interaction. This is a real-time disclosure problem, not a data-governance problem.
+    </p>
+
+    <p>
+      A user might be fully comfortable with their health agent having access to their complete medical history. That is a consensual data relationship. But that same user might not want their medical history disclosed — even partially, even implicitly — during a coordination session between their health agent and a partner's insurance agent.
+    </p>
+
+    <p>
+      The privacy boundary is not between the user and their own agent. It is between agents during coordination. Traditional privacy frameworks do not address this boundary because it did not exist before agents began acting as delegates in multi-agent interactions.
+    </p>
+
+    <h2>The shared-state problem</h2>
+
+    <p>
+      The problem is structural, not behavioral. In a coordination session, the private context each agent carries is not safely compartmentalized — it actively shapes every output the model produces.
+    </p>
+
+    <p>
+      In a free-text coordination session, each agent's response is conditioned on the full context available to it. The model does not have a clean separation between "context I am using for reasoning" and "context I am revealing through my output." Every word in the output is shaped by the full context, and a sufficiently capable observer could potentially reverse-engineer private facts from the patterns, specificity, and framing of the response.
+    </p>
+
+    <p>
+      This is the channel capacity argument. A free-text channel between two agents has effectively unlimited information capacity. The model's entire context window — including all private user data — is potentially expressible through the output. Instructing the model to "be discreet" does not change the channel's capacity. It only makes the encoding less obvious.
+    </p>
+
+    <p>
+      The shared-state problem is not about malicious agents. It is about the fundamental information-theoretic properties of unconstrained communication channels. Even a perfectly aligned model cannot guarantee that its free-text output carries zero bits of unintended information about the private context it processed.
+    </p>
+
+    <h2>How bounded disclosure addresses it</h2>
+
+    <p>
+      <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>Bounded disclosure</a> is the principle that coordination between agents should reveal only a bounded amount of information, determined by the structure of the output channel rather than by model behavior.
+    </p>
+
+    <p>
+      The implementation follows a clear chain:
+    </p>
+
+    <ul>
+      <li><strong>Contracts define scope.</strong> Before any private context enters the system, both parties agree to a coordination contract — a machine-readable document specifying the session's purpose, the output schema, and the disclosure terms. The contract is content-addressed and immutable for the session's duration.</li>
+      <li><strong>Schemas constrain output.</strong> The contract's output schema uses bounded fields — integers within fixed ranges, categorical enums, boolean flags — rather than free text. Each field has a measurable information capacity. The total capacity of the schema determines the maximum disclosure.</li>
+      <li><strong>The relay enforces.</strong> An external relay validates every output against the schema. Anything outside the agreed structure is rejected before it reaches either party. The relay provides structural enforcement that holds regardless of model behavior.</li>
+      <li><strong>Receipts verify.</strong> After the session, both parties receive a cryptographic receipt — a signed record binding the contract, schema, and output. The receipt provides after-the-fact evidence that the coordination was conducted under the agreed terms.</li>
+    </ul>
+
+    <p>
+      The result is a coordination architecture where private context informs the reasoning but does not flow unbounded through the output. The model processes each user's context to produce a useful signal, but the signal is structurally constrained to carry only what the schema permits.
+    </p>
+
+    <h2>Sensitivity is not binary</h2>
+
+    <p>
+      Not all coordination requires the same level of protection. Two agents comparing restaurant preferences need far less disclosure control than two agents assessing medical compatibility. The architecture should adapt to the stakes rather than imposing one level of constraint on every interaction.
+    </p>
+
+    <p>
+      AgentVault handles this through what might be called a trust envelope. At its most permissive, the envelope includes the model, the relay, and a broad output schema — sufficient for low-sensitivity coordination. As stakes rise, the envelope tightens: narrower schemas, stricter guardian policies, and — for the highest-stakes scenarios — confidential execution environments where even the relay operator cannot observe the private context during processing. The same bounded-disclosure principle applies throughout; only the tightness of the boundary changes.
+    </p>
+
+    <h2>The foundational claim</h2>
+
+    <p>
+      When agents reason together, context becomes shared state. This is the foundational problem that <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a> must address — not as a feature, not as a compliance checkbox, but as an architectural requirement for any system where delegate agents coordinate on sensitive matters.
+    </p>
+
+    <p>
+      The answer is not to prevent agents from coordinating. Coordination is valuable. The answer is to structurally bound what coordination reveals — to ensure that agents can reason together productively while disclosing only what both parties agreed to share, enforced independently of the models, and verifiable after the fact.
+    </p>
+
+    <p>
+      To see how this architecture works in practice, explore the <a href="https://github.com/vcav-io/agentvault/blob/main/docs/protocol.md" target="_blank" rel="noopener noreferrer">protocol specification</a>.
+    </p>
+  </ConceptPage>
+</Layout>
