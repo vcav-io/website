@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "astro",
   "redirects": [
-    { "source": "/", "destination": "/agentvault", "permanent": false }
+    { "source": "/", "destination": "/agentvault", "permanent": true }
   ],
   "rewrites": [
     { "source": "/agentvault", "destination": "/index.html" },
