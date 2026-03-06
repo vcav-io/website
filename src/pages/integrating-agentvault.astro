@@ -1,0 +1,245 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+
+const codeStyle = "font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.6; overflow-x: auto; padding: var(--space-md); background: var(--color-bg-elevated); border-radius: 6px; border: 1px solid var(--color-border);";
+
+const initiatorCode = `import {
+  createAndSubmit,
+  pollUntilDone,
+} from 'agentvault-client';
+import {
+  buildRelayContract,
+  computeRelayContractHash,
+} from 'agentvault-client/relay-contracts';
+
+// 1. Build a contract from a bundled template
+const contract = buildRelayContract('COMPATIBILITY', [
+  'agent-alice',
+  'agent-bob',
+]);
+
+// 2. Create session and submit initiator input
+const config = { relayUrl: 'http://localhost:3100' };
+const result = await createAndSubmit(
+  config,
+  contract,
+  { context: 'Alice private context here' },
+  'agent-alice',
+);
+
+// result contains:
+//   sessionId, contractHash,
+//   responderSubmitToken, responderReadToken,
+//   initiatorReadToken
+
+// 3. Send responder tokens to Bob (out-of-band)
+// Bob needs: sessionId, contractHash,
+//   responderSubmitToken, responderReadToken
+
+// 4. Poll until done
+const output = await pollUntilDone(
+  config,
+  result.sessionId,
+  result.initiatorReadToken,
+);
+// output.state === 'COMPLETED' | 'ABORTED'
+// output.receipt contains the signed receipt
+// output.output contains the bounded signal`;
+
+const responderCode = `import { joinAndWait } from 'agentvault-client';
+
+// Tokens received from initiator (out-of-band)
+const output = await joinAndWait(
+  { relayUrl: 'http://localhost:3100' },
+  sessionId,
+  responderSubmitToken,
+  responderReadToken,
+  expectedContractHash, // relay verifies server-side
+  { context: 'Bob private context here' },
+  'agent-bob',
+);
+
+if (output.state === 'COMPLETED') {
+  console.log('Signal:', output.output);
+  console.log('Receipt:', output.receipt);
+}`;
+
+const schemaRefCode = `import {
+  buildRelayContractWithSchemaRef,
+} from 'agentvault-client/relay-contracts';
+
+// Schema-by-reference — relay looks up by hash
+const contract = buildRelayContractWithSchemaRef(
+  'MEDIATION',
+  ['agent-alice', 'agent-bob'],
+  { policyHash: 'custom-policy-hash-here' },
+);`;
+
+const envConfig = `# Core — required for both modes
+AV_RELAY_URL=http://localhost:3100
+AV_AGENT_ID=my-agent
+
+# INITIATE mode — needs the peer's descriptor URL
+AV_AFAL_SEED_HEX=<64-char-hex-ed25519-seed>
+AV_AFAL_PEER_DESCRIPTOR_URL=http://peer:4850/descriptor
+
+# RESPOND mode — runs an HTTP server for incoming invites
+AV_AFAL_HTTP_PORT=4850
+AV_AFAL_BIND_ADDRESS=127.0.0.1
+AV_AFAL_TRUSTED_AGENTS='[{"agentId":"peer","publicKeyHex":"..."}]'
+AV_AFAL_ALLOWED_PURPOSES=MEDIATION,COMPATIBILITY`;
+
+const mcpCode = `// Agent calls the MCP tool to initiate coordination
+const result = await mcpClient.callTool(
+  'agentvault.initiate_session',
+  {
+    purpose: 'COMPATIBILITY',
+    peer_agent_id: 'agent-bob',
+    context: { /* private context */ },
+  },
+);
+
+// The MCP server handles:
+//   1. Building the contract
+//   2. Creating the relay session
+//   3. Sending the invite to the peer
+//   4. Polling until completion
+//   5. Returning the bounded signal + receipt`;
+
+const relayCode = `# Start the relay
+ANTHROPIC_API_KEY=sk-... cargo run -p agentvault-relay
+
+# Verify it's running
+curl http://localhost:3100/health
+# Returns: { "status": "ok", "verifying_key_hex": "..." }`;
+---
+
+<Layout
+  title="Integrating AgentVault — AgentVault"
+  description="The shortest path to a working AgentVault implementation. TypeScript client library, MCP server tools, contract builders, and minimal working examples for both integration paths."
+  canonicalPath="/agentvault/integrating-agentvault/"
+>
+  <ConceptPage
+    title="Integrating AgentVault"
+    subtitle="What is the shortest path to a working implementation?"
+    currentSlug="integrating-agentvault"
+  >
+    <h2>Two integration paths</h2>
+
+    <p>
+      AgentVault provides two integration paths: a TypeScript client library for direct relay interaction, and an MCP server that exposes AgentVault operations as tools. The client library is lower-level and gives full control over session lifecycle. The MCP server is higher-level and designed for agents that already speak the MCP protocol.
+    </p>
+
+    <p>
+      <strong>Use the client library</strong> when you are building a custom agent runtime, need fine-grained control over contract construction and session polling, or want to embed AgentVault calls directly in application code.
+    </p>
+
+    <p>
+      <strong>Use the MCP server</strong> when your agent framework already supports MCP tools, you want to expose AgentVault coordination as a tool the agent can call, or you need both INITIATE and RESPOND modes without managing session state manually.
+    </p>
+
+    <h2>TypeScript client: minimal working example</h2>
+
+    <p>
+      The <code>agentvault-client</code> package is a standalone fetch-based library with no framework dependencies. Install it from the repository:
+    </p>
+
+    <pre style={codeStyle}>npm install agentvault-client</pre>
+
+    <h3>Initiator side</h3>
+
+    <p>
+      The initiator creates the session, submits their input, and distributes the responder's tokens:
+    </p>
+
+    <pre style={codeStyle} set:text={initiatorCode} />
+
+    <h3>Responder side</h3>
+
+    <p>
+      The responder joins an existing session, verifies the contract hash, and waits for the result:
+    </p>
+
+    <pre style={codeStyle} set:text={responderCode} />
+
+    <p>
+      The <code>expectedContractHash</code> parameter is critical: the relay verifies it matches the session's actual contract hash and rejects with <code>CONTRACT_MISMATCH</code> if not. This prevents contract substitution attacks — the responder confirms they are joining the session they agreed to.
+    </p>
+
+    <h3>Contract builders</h3>
+
+    <p>
+      The client provides two contract-building functions:
+    </p>
+
+    <p>
+      <strong><code>buildRelayContract(purpose, participants)</code></strong> — builds a full contract from a bundled template with the output schema embedded inline. Available purpose codes: <code>COMPATIBILITY</code>, <code>MEDIATION</code>.
+    </p>
+
+    <p>
+      <strong><code>buildRelayContractWithSchemaRef(purpose, participants, opts?)</code></strong> — builds a contract that references the schema by hash rather than embedding it. The relay performs a registry lookup. Use this when you want schema reuse without duplicating the full schema in every contract. Optional <code>opts.policyHash</code> overrides the default enforcement policy hash.
+    </p>
+
+    <pre style={codeStyle} set:text={schemaRefCode} />
+
+    <h2>MCP server</h2>
+
+    <p>
+      The <code>agentvault-mcp-server</code> package exposes AgentVault operations as MCP tools. It supports two session modes:
+    </p>
+
+    <p>
+      <strong>INITIATE mode</strong> — the agent creates a session, submits its input, sends an invite to the peer, and polls for the result. The MCP server manages the full lifecycle.
+    </p>
+
+    <p>
+      <strong>RESPOND mode</strong> — the agent listens for incoming invites, accepts or declines them, submits input to accepted sessions, and returns the result. Requires the AFAL HTTP server (<code>AV_AFAL_HTTP_PORT</code>).
+    </p>
+
+    <h3>Environment configuration</h3>
+
+    <pre style={codeStyle} set:text={envConfig} />
+
+    <h3>Available tools</h3>
+
+    <p>
+      The MCP server exposes the following tools:
+    </p>
+
+    <ul>
+      <li><code>agentvault.initiate_session</code> — create a session and submit the initiator's input.</li>
+      <li><code>agentvault.respond_to_invite</code> — accept an invite and submit the responder's input.</li>
+      <li><code>agentvault.check_inbox</code> — list pending invites.</li>
+      <li><code>agentvault.get_session_result</code> — retrieve the output and receipt for a completed session.</li>
+      <li><code>agentvault.verify_receipt</code> — verify a receipt signature and optionally check commitment hashes.</li>
+      <li><code>agentvault.list_purposes</code> — list available contract templates.</li>
+    </ul>
+
+    <h3>Minimal MCP integration</h3>
+
+    <pre style={codeStyle} set:text={mcpCode} />
+
+    <h2>When to use client vs MCP server</h2>
+
+    <p>
+      The client library is the right choice when you need to construct custom contracts, control polling intervals, handle session tokens directly, or integrate with a non-MCP agent framework. It is a thin HTTP wrapper with no opinions about agent architecture.
+    </p>
+
+    <p>
+      The MCP server is the right choice when your agent already uses MCP, you want the full INITIATE/RESPOND lifecycle managed for you, or you need AFAL direct transport (agent-to-agent without an orchestrator). The MCP server builds on the client library internally.
+    </p>
+
+    <h2>Relay requirements</h2>
+
+    <p>
+      Both integration paths require a running AgentVault relay. The relay is a Rust binary (<code>agentvault-relay</code>) that needs at minimum an <code>ANTHROPIC_API_KEY</code>. For development:
+    </p>
+
+    <pre style={codeStyle} set:text={relayCode} />
+
+    <p>
+      The <code>verifying_key_hex</code> from the health endpoint is the Ed25519 public key needed for receipt verification. For production, set <code>AV_SIGNING_KEY_HEX</code> to a persistent key so receipts remain verifiable across relay restarts.
+    </p>
+  </ConceptPage>
+</Layout>
