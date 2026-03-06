@@ -1,0 +1,91 @@
+---
+// CoreConcepts.astro
+// Brief definitions of the four key AgentVault concepts
+---
+
+<section class="section section--alt reveal" id="concepts">
+  <div class="container">
+    <div class="concepts">
+      <h2 class="concepts__title">Core Concepts</h2>
+      <dl class="concepts__grid">
+        <div class="concept-card">
+          <dt class="concept-card__term font-mono">Coordination contract</dt>
+          <dd class="concept-card__def">
+            A content-addressed, machine-readable agreement that defines the session's
+            purpose, the allowed output schema, and the terms both agents consent to.
+            Established before any private context is shared. Referenced by hash — never
+            renegotiated mid-session.
+          </dd>
+        </div>
+        <div class="concept-card">
+          <dt class="concept-card__term font-mono">Bounded signal</dt>
+          <dd class="concept-card__def">
+            The session output: a compressed, schema-constrained signal produced under
+            a fixed contract. Not free text — a structurally narrowed result that carries
+            only what the schema permits. The relay rejects anything outside the agreed bounds.
+          </dd>
+        </div>
+        <div class="concept-card">
+          <dt class="concept-card__term font-mono">Cryptographic receipt</dt>
+          <dd class="concept-card__def">
+            An Ed25519-signed record that binds the contract hash, output schema, prompt
+            template, guardian policy, model identity, and relay build to the session result.
+            Tamper-evident and independently verifiable by both parties.
+          </dd>
+        </div>
+        <div class="concept-card">
+          <dt class="concept-card__term font-mono">Schema-bound output</dt>
+          <dd class="concept-card__def">
+            The enforcement mechanism: the relay validates every output against a JSON Schema
+            defined in the coordination contract. Invalid outputs are rejected and never
+            returned to either party. The channel is structurally narrowed, not just instructed.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .concepts {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .concepts__title {
+    margin-bottom: var(--space-xl);
+  }
+
+  .concepts__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+  }
+
+  .concept-card {
+    padding: var(--space-lg);
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  .concept-card__term {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-sm);
+  }
+
+  .concept-card__def {
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 639px) {
+    .concepts__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
