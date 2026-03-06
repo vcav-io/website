@@ -1,0 +1,150 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="Understanding AgentVault Guarantees — AgentVault"
+  description="What AgentVault promises and what it does not. Lane-qualified guarantees, trust boundaries, and the layered responsibility model for bounded-disclosure coordination."
+  canonicalPath="/agentvault/understanding-agentvault-guarantees/"
+>
+  <ConceptPage
+    title="Understanding AgentVault Guarantees"
+    subtitle="What exactly does AgentVault promise, and in which lane?"
+    currentSlug="understanding-agentvault-guarantees"
+  >
+    <h2>The core developer question</h2>
+
+    <p>
+      Before integrating any coordination protocol, a developer needs to know precisely what it guarantees and what it does not. AgentVault is an agent-native bounded-disclosure coordination protocol. It enforces constraints on what information flows between participants. It does not evaluate whether a signal is correct, truthful, or aligned with anyone's intent. This page defines those boundaries precisely, qualified by execution lane.
+    </p>
+
+    <h2>Layered responsibility model</h2>
+
+    <p>
+      AgentVault distributes responsibility across three layers. Each layer has a distinct role, and no layer substitutes for another.
+    </p>
+
+    <p>
+      <strong>The vault (relay + guardian)</strong> enforces the consent boundary. It validates that the output conforms to the contract's JSON Schema, applies the guardian enforcement policy, signs a receipt binding all governance artefacts, and delivers only the bounded output to participants. The vault is a coordination primitive — it constrains the channel mechanically, without evaluating what the signal means.
+    </p>
+
+    <p>
+      <strong>Agents</strong> submit context on behalf of their participants and interpret the bounded signal they receive. Agents choose what context to submit (input minimisation is a participant-side decision) and how to act on the output. The vault does not govern what agents do with the signal after delivery.
+    </p>
+
+    <p>
+      <strong>Participants (humans)</strong> define the consent boundary by agreeing to the coordination contract before any context is exchanged. The contract specifies the purpose, output schema, enforcement policy, and model constraints. Participants are responsible for schema design — which is a security decision, because the schema determines the channel capacity.
+    </p>
+
+    <h2>Architecture</h2>
+
+    <p>
+      The following diagram shows the trust boundaries and information flow in an AgentVault session. Note that the verifier sits adjacent to the execution path — it consumes the receipt, contract, policy, and public keys independently. Verification does not require the runtime, the operator, or the model.
+    </p>
+
+    <pre style="font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.5; overflow-x: auto; padding: var(--space-md); background: var(--color-bg-elevated); border-radius: 6px; border: 1px solid var(--color-border);">
+                          Relay Operator Trust Boundary
+                    ┌─────────────────────────────────────┐
+                    │                                     │
+  Participant A ──► │  ┌─────────────────────────────┐    │
+    (agent)         │  │     AgentVault Relay         │    │──► LLM Provider
+                    │  │                              │    │     (inference)
+  Participant B ──► │  │  guardian ── schema ── sign  │ ◄──│
+    (agent)         │  └─────────────────────────────┘    │
+                    │              │                       │
+                    └──────────────┼───────────────────────┘
+                                   │
+                        bounded output + receipt
+                            │            │
+                            ▼            ▼
+                      Participant A   Participant B
+
+
+   ┌──────────────────────────────────────────────────┐
+   │              Independent Verifier                 │
+   │                                                   │
+   │  Inputs: receipt + contract + policy + public key │
+   │  Does NOT require: runtime, operator, or model    │
+   │  Output: signature valid/invalid + assurance level│
+   └──────────────────────────────────────────────────┘</pre>
+
+    <p>
+      Verifier independence is the central result of the protocol's design. A third party can verify everything about how a session was governed without needing access to the relay, the operator, or the model that produced the output.
+    </p>
+
+    <h2>What AgentVault guarantees</h2>
+
+    <p>
+      <strong>Consent boundary enforcement.</strong> Neither participant sees the other's raw input. The relay routes inputs and outputs separately. The output that leaves the relay conforms to the JSON Schema specified in the coordination contract. Output that fails schema validation is rejected — it never reaches either participant.
+    </p>
+
+    <p>
+      <strong>Signal compression.</strong> The output channel is structurally narrowed. An all-enum output schema with a 25-bit entropy budget carries at most 25 bits of information, regardless of what the model attempts to produce. This is a structural property of the schema, not a property of the model's compliance. The relay enforces it mechanically — the guardian never evaluates whether a signal is correct, only whether the signal is allowed.
+    </p>
+
+    <p>
+      <strong>Cryptographic binding.</strong> Every completed session produces a signed receipt (Ed25519) that binds the contract hash, output schema hash, prompt template hash, guardian policy hash, model profile hash, relay build hash, bounded output hash, and per-participant input commitment hashes. A recipient with the relay's public key can verify that the receipt was produced by the relay and that none of the bound fields have been modified since signing.
+    </p>
+
+    <p>
+      <strong>Independent verification.</strong> Verification requires the receipt, the contract, the policy, and the relay's public key. It does not require the runtime, the operator, or the model. A verifier who holds these artefacts can independently recompute all commitment hashes and confirm they match the receipt.
+    </p>
+
+    <h2>What AgentVault does not guarantee</h2>
+
+    <p>
+      <strong>Correctness.</strong> The protocol does not evaluate whether the bounded signal is correct. If the model produces <code>"STRONG_MATCH"</code> when the inputs suggest otherwise, the relay delivers the signal — it passed schema validation and the guardian policy. Correctness is a model quality question, not a protocol guarantee.
+    </p>
+
+    <p>
+      <strong>Intent alignment.</strong> The protocol does not guarantee that the signal reflects either participant's intent. The bounded signal is what the model produced within the schema constraints. Whether that signal serves the participants' goals is outside the protocol's scope.
+    </p>
+
+    <p>
+      <strong>Output truthfulness.</strong> A model can produce a schema-valid signal that misrepresents the relationship between the inputs. The protocol constrains what can be said (channel capacity), not whether what is said is true.
+    </p>
+
+    <p>
+      <strong>Relay honesty.</strong> At <code>SELF_ASSERTED</code> assurance level (the current implementation), the receipt proves the relay's stated rules were declared. It does not prove the relay followed them. A malicious relay operator could fabricate a conforming output, compute correct hashes, and sign a receipt that would verify. Detection requires either implausible output or a higher assurance tier.
+    </p>
+
+    <h2>Execution lanes: what each adds</h2>
+
+    <p>
+      AgentVault defines two execution lanes. Every guarantee statement must specify which lane it applies to.
+    </p>
+
+    <p>
+      <strong>API-mediated (software lane).</strong> The relay assembles the prompt from both inputs, calls an external LLM provider, and validates the output. The relay operator sees both inputs in plaintext — this is architectural, not a bug. The LLM provider sees the assembled prompt. Guarantees in this lane: consent boundary enforcement between participants, signal compression via schema validation, cryptographic binding in the receipt. Trust requirements: the relay operator and LLM provider are trusted parties.
+    </p>
+
+    <p>
+      <strong>Confidential (TEE lane).</strong> The relay runs inside a confidential virtual machine (CVM) with hardware attestation (e.g., AMD SEV-SNP). The TEE lane adds: the relay operator cannot observe inputs or fabricate outputs without breaking the hardware attestation. The trust boundary shrinks to the hardware and the attested code running inside it. Assurance level: <code>TEE_ATTESTED</code>. The receipt includes TEE attestation data (attestation hash, transcript hash, receipt signing pubkey) that can be verified against the hardware vendor's root of trust.
+    </p>
+
+    <p>
+      <strong>What the TEE lane does not change.</strong> Both lanes enforce the same consent boundary, the same schema validation, and the same receipt structure. The difference is the trust envelope — who must be trusted. The API-mediated lane requires trusting the relay operator and provider. The TEE lane replaces operator trust with hardware attestation.
+    </p>
+
+    <h2>Trust boundaries</h2>
+
+    <p>
+      <strong>Relay operator.</strong> In the API-mediated lane, the relay operator has full visibility: both inputs, the assembled prompt, the raw LLM output, the bounded result, and all runtime state. Deploying AgentVault does not constrain operator access. The operator is a trusted party. In the TEE lane, the operator is excluded from the trust envelope — the CVM prevents the operator from observing plaintext inputs.
+    </p>
+
+    <p>
+      <strong>LLM provider.</strong> The provider sees the assembled prompt (both inputs merged into the prompt template) and produces the raw output. Provider data retention and logging policies are outside the protocol's scope. A provider attestation tier (<code>PROVIDER_ATTESTED</code>) is defined in the receipt schema but not yet implemented.
+    </p>
+
+    <p>
+      <strong>Participants.</strong> Each participant sees only their own input and the bounded output. The consent boundary prevents cross-participant input disclosure. The bounded output is the only information that flows between participants — structurally constrained by the schema.
+    </p>
+
+    <h2>Current limitations</h2>
+
+    <p>
+      All current AgentVault deployments operate at <code>SELF_ASSERTED</code> assurance level. Receipt verification proves provenance (which relay signed it), not integrity of the underlying execution. The TEE lane and provider attestation are defined in the schema and receipt spec but are not yet active in production. Inputs travel over TLS but are not encrypted end-to-end — the relay has plaintext access. Cross-session entropy budget accumulation is not yet implemented (the budget resets per session). Fair exchange (simultaneous delivery to both participants) is not addressed by the protocol.
+    </p>
+  </ConceptPage>
+</Layout>
