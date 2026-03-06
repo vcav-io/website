@@ -1,0 +1,112 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="Bounded Disclosure for AI Agents — AgentVault"
+  description="Bounded disclosure constrains what AI agents can reveal during coordination. Learn how contracts, schemas, and relay enforcement create a structurally narrowed channel."
+  canonicalPath="/agentvault/bounded-disclosure/"
+>
+  <ConceptPage
+    title="Bounded Disclosure for AI Agents"
+    subtitle="Constraining what agents can reveal during coordination — not just whether they can communicate."
+    currentSlug="bounded-disclosure"
+  >
+    <h2>What is bounded disclosure?</h2>
+
+    <p>
+      Bounded disclosure is the principle that coordination between AI agents should reveal only what is necessary for the task, and no more. It is the umbrella concept behind <a href={import.meta.env.BASE_URL}>AgentVault</a> — the idea that shapes every layer of the protocol, from session negotiation to receipt verification.
+    </p>
+
+    <p>
+      Bounded disclosure is not about preventing communication. Agents need to coordinate — that is the whole point. It is about constraining <strong>how much information flows through the communication channel</strong> when they do. When two agents coordinate on a sensitive matter — mediation between disputing parties, a compatibility assessment, a negotiation — each agent carries rich private context from its user. That context might include financial details, relationship history, strategic priorities, health information, or legal positions. The agent needs this context to act effectively on behalf of its user. But the other party's agent does not need all of it, and the other party certainly should not receive it.
+    </p>
+
+    <p>
+      Bounded disclosure means the output of that coordination is <strong>structurally narrowed</strong> — compressed into a schema-constrained signal rather than transmitted as free text. The term describes both a design principle and a concrete enforcement mechanism. In AgentVault, bounded disclosure is achieved through four layers working together: <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contracts</a> define the session's bounds, JSON Schema constrains the output structure, relay enforcement rejects anything outside those bounds, and <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipts</a> prove what governed the session. These layers are not aspirational — they are enforced at the infrastructure level.
+    </p>
+
+    <h2>The channel capacity problem</h2>
+
+    <p>
+      Most approaches to AI privacy rely on instructing the model to be careful. System prompts say "don't share sensitive information" or "respect user privacy." Fine-tuning reinforces cooperative behaviour. Guardrails filter outputs for known categories of sensitive data. These are all prompt-level or model-level constraints. They depend entirely on the model following instructions reliably, consistently, and adversarially — which is precisely the property that no current model can guarantee.
+    </p>
+
+    <p>
+      The fundamental problem is <strong>channel capacity</strong>. If the communication channel between two agents permits free text, the channel has enough capacity to carry any information, regardless of what instructions govern the model producing that text. A free-text channel between two agents is like an open pipe — you can ask the model to be careful about what flows through it, but the pipe itself is unconstrained. A sufficiently capable model, whether through adversarial prompting, capability overhang, or simple instruction-following failure, can encode arbitrary information in free-text output. The instruction says "be careful." The channel says "anything goes." When these conflict, the channel wins.
+    </p>
+
+    <p>
+      Bounded disclosure addresses this at the <strong>channel level</strong>, not the instruction level. By replacing free text with a schema-constrained output, the channel capacity itself is reduced. The pipe is physically narrowed. The output must conform to a JSON Schema that defines exactly which fields exist, what values are permitted, and what structure is required. The relay validates every output against the schema before delivery. An output that does not conform is rejected — it never reaches the other party. Even a perfectly adversarial model cannot disclose more than the schema permits, because the enforcement point is outside the model's control.
+    </p>
+
+    <p>
+      This is the difference between asking someone to whisper in a room with open doors and giving them a form with fixed fields to fill out. The whisper depends on cooperation. The form constrains the channel structurally. Channel capacity is not a metaphor in AgentVault — it is a <strong>measurable, computable property</strong> of the output schema. The schema's structural entropy defines the upper bound of information that can flow through the channel. AgentVault quantifies this and includes it in the session receipt, so both parties can verify exactly how much disclosure the channel permitted.
+    </p>
+
+    <h2>The four enforcement layers</h2>
+
+    <p>
+      AgentVault implements bounded disclosure through four layers, each addressing a different failure mode. No single layer is sufficient on its own. Together, they create a defence-in-depth architecture where each layer compensates for the limitations of the others.
+    </p>
+
+    <p>
+      <strong>Layer 1: Coordination contracts.</strong> Before any private context is shared, both agents agree to a <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a> that defines the session's purpose, the allowed output structure, the prompt template, and the guardian policy. The contract is content-addressed — referenced by its SHA-256 hash — and immutable for the session duration. Neither party can change the terms mid-session. The contract prevents scope creep: even if both models are cooperative, the session cannot drift beyond its declared purpose because the contract is locked at session initiation.
+    </p>
+
+    <p>
+      <strong>Layer 2: Schema-bound outputs.</strong> The output schema embedded in the contract is a JSON Schema that defines exactly what the coordination result may contain. This is the mechanism that narrows the channel. A schema permitting only an enum field with three values (<code>"compatible"</code>, <code>"incompatible"</code>, <code>"partially_compatible"</code>) has far less channel capacity than a free-text field. The schema is not advisory — it is the structural constraint that bounds what can be disclosed. Schema design is where the privacy properties of a coordination session are primarily determined. A well-designed schema carries exactly the <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signal</a> the task requires and nothing more.
+    </p>
+
+    <p>
+      <strong>Layer 3: Relay enforcement.</strong> The relay validates every output against the schema. Outputs that fail validation are rejected and never delivered to either party. The relay is not a passive message router — it is a structural enforcement point. It checks that the output conforms to the declared schema, that the session has not exceeded its time bounds, and that the guardian policy has not triggered an abort. The relay cannot see inside TEE-executed sessions, but it can enforce structural properties of the session lifecycle. In the software execution lane, the relay is the entity that ensures bounded disclosure is not merely declared but enforced.
+    </p>
+
+    <p>
+      <strong>Layer 4: Cryptographic receipts.</strong> After the session completes, both parties receive a signed <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipt</a> that binds the contract hash, output schema, prompt template hash, guardian policy hash, model identity, relay build identity, and channel capacity measurement to the session result. The receipt is independently verifiable — either party can check that the session was governed by the contract they agreed to, with the schema they expected, producing a result within the declared bounds. Receipts address the after-the-fact verification problem: even if everything worked correctly during the session, both parties need proof of what governed it.
+    </p>
+
+    <p>
+      These layers are not redundant — they are complementary. Contracts prevent scope creep. Schemas constrain capacity. Relay enforcement prevents bypass. Receipts provide auditability. Remove any one layer and the system has a gap that the remaining layers cannot fully cover.
+    </p>
+
+    <h2>Bounded disclosure vs. privacy-preserving computation</h2>
+
+    <p>
+      Privacy-preserving computation — multi-party computation, homomorphic encryption, differential privacy — aims to compute on data without revealing inputs to the computing party. These are powerful techniques, and they solve a different problem than bounded disclosure. MPC lets two parties compute a joint function without either party seeing the other's inputs. Homomorphic encryption lets a server compute on encrypted data without decrypting it. Differential privacy adds calibrated noise to outputs to prevent reconstruction of individual inputs.
+    </p>
+
+    <p>
+      Bounded disclosure takes a different approach. It constrains what the <strong>output channel</strong> can carry, rather than hiding the inputs during computation. In AgentVault's software execution lane, the model provider sees the private context during processing — the model needs the context to reason effectively. Bounded disclosure does not hide inputs from the model. What it guarantees is that the output — what flows between the two parties — is structurally narrowed to only what the coordination task requires.
+    </p>
+
+    <p>
+      For higher assurance, AgentVault provides a <strong>TEE execution lane</strong> that removes the relay operator from the trust envelope. Using confidential virtual machines with hardware attestation, the TEE lane ensures that even the infrastructure operator cannot observe plaintext context during processing. The trust boundary shrinks to the hardware and the attested code running inside it. And <strong>VCAV</strong>, the highest assurance tier, removes the model provider entirely — using local models running inside attested hardware with side-channel hardening, so that no external party sees the private context at any point. Bounded disclosure is the unifying principle across all three tiers. What changes between tiers is not the principle but the trust envelope — who must be trusted, and what hardware or cryptographic guarantees replace that trust.
+    </p>
+
+    <h2>How bounded disclosure connects to other concepts</h2>
+
+    <p>
+      Bounded disclosure is the overarching principle in AgentVault's architecture. It connects to every other concept in the protocol, and each concept implements a specific aspect of the bounded disclosure guarantee.
+    </p>
+
+    <p>
+      The problem that bounded disclosure addresses is <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a> — the challenge that arises when AI agents carry sensitive personal context into coordination with other agents. Privacy is the motivation; bounded disclosure is the response. The mechanism through which bounded disclosure is established for a given session is <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contracts</a> — machine-readable agreements that lock the session's purpose, schema, and policy before any context is exchanged. The output model that bounded disclosure produces is <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signals</a> — schema-constrained results that carry only the information the task requires, with measurable channel capacity. And the assurance layer that makes bounded disclosure verifiable after the fact is <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipts</a> — signed proof that the session was governed by the declared contract and schema.
+    </p>
+
+    <p>
+      These concepts form a coherent architecture. Bounded disclosure is the thread that connects them — the design principle that each layer serves and that none of them alone can fully deliver.
+    </p>
+
+    <h2>Key takeaway</h2>
+
+    <p>
+      Bounded disclosure is not about asking models to be careful. It is about structurally constraining what the communication channel can carry. The distinction matters because instructions can fail, but a validated schema cannot be exceeded — the relay rejects what does not conform, regardless of what the model intended.
+    </p>
+
+    <p>
+      <a href={import.meta.env.BASE_URL}>AgentVault</a> implements this through contracts, schemas, enforcement, and receipts — four layers that together reduce channel capacity to only what the task requires. The result is coordination that is <strong>private by construction, not by instruction</strong>.
+    </p>
+  </ConceptPage>
+</Layout>

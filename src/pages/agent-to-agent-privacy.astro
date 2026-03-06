@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="Agent-to-Agent Privacy — AgentVault"
+  description="Agent-to-agent privacy is the problem of preventing sensitive personal context from leaking when AI agents coordinate. AgentVault provides the missing disclosure-boundary layer."
+  canonicalPath="/agentvault/agent-to-agent-privacy/"
+>
+  <ConceptPage
+    title="Agent-to-Agent Privacy"
+    subtitle="Why privacy is the missing layer in agent interoperability."
+    currentSlug="agent-to-agent-privacy"
+  >
+    <h2>What is agent-to-agent privacy?</h2>
+
+    <p>
+      Agent-to-agent privacy is the problem of preventing sensitive personal context from leaking when AI agents coordinate on behalf of their users. It is not about whether agents can communicate — it is about how much they reveal when they do.
+    </p>
+
+    <p>
+      When AI agents act as delegates, they carry rich private context. A health agent knows about diagnoses, medications, and symptoms. A financial agent knows about income, debt, and spending patterns. A personal assistant knows about relationship dynamics, emotional state, and private preferences. This context is what makes agents useful — it allows them to act with nuance and relevance on a user's behalf.
+    </p>
+
+    <p>
+      But when these agents need to coordinate with each other — to mediate between two parties, assess compatibility, negotiate terms, or synthesize information across domains — that private context is suddenly at risk. An agent that coordinates with another agent may disclose far more than its user intended, simply because the communication channel permits it.
+    </p>
+
+    <p>
+      Agent-to-agent privacy is, at its core, a disclosure-boundary problem. The question is not whether the connection is secure. The question is whether the structure of the coordination itself limits what can flow between the parties. Without that structural constraint, privacy depends entirely on the discretion of the model — and model discretion is not a privacy guarantee.
+    </p>
+
+    <h2>Why transport security is not enough</h2>
+
+    <p>
+      Most agent interoperability protocols focus on the transport layer. They solve real problems: how do agents discover each other, how do they authenticate, how do they establish a session, how do they exchange messages in a standard format. These are necessary foundations, and protocols like the Model Context Protocol and emerging agent-to-agent standards do important work here.
+    </p>
+
+    <p>
+      Transport security — TLS encryption, mutual authentication, authorization tokens — protects against external threats. It ensures that an eavesdropper on the network cannot read the messages flowing between agents. This is essential, but it addresses only one dimension of the privacy problem.
+    </p>
+
+    <p>
+      Transport security does nothing about what the agents themselves disclose to each other during the session. An agent with access to a user's complete medical history can transmit that history in full over a perfectly encrypted channel. The encryption protects the content from outsiders, but it places no constraint on what the agent chooses to share with its counterpart.
+    </p>
+
+    <p>
+      Consider two agents coordinating to assess whether their users might be compatible roommates. Each agent has access to detailed personal information — work schedule, cleanliness habits, noise sensitivity, financial situation, mental health history. Over a free-text channel, even with strong encryption, either agent could disclose any or all of this context. The threat is not the wire. The threat is the <strong>channel capacity</strong> of the communication itself — the total amount of information the channel's structure permits to flow.
+    </p>
+
+    <p>
+      Privacy in agent-to-agent coordination requires structural constraints on what can flow between agents, not just protection of the pipe. This is fundamentally different from traditional user privacy concerns like GDPR compliance or data-protection regulations. Those frameworks govern how organizations collect, store, and process personal data. Agent-to-agent privacy governs what is disclosed during a live coordination session between autonomous software delegates. It is a coordination-level problem, and it requires a coordination-level solution.
+    </p>
+
+    <h2>How AgentVault addresses agent-to-agent privacy</h2>
+
+    <p>
+      <a href={import.meta.env.BASE_URL}>AgentVault</a> replaces open-ended free-text communication between agents with a structured coordination protocol designed around disclosure boundaries. The core mechanism is simple: instead of letting agents talk freely and hoping they are discreet, the protocol constrains the channel itself so that only a bounded amount of information can pass through it.
+    </p>
+
+    <p>
+      Before any private context is shared, both agents agree to a <strong>coordination contract</strong> — a machine-readable document that defines the session's purpose, the output schema, the prompt template, the guardian policy, and the disclosure terms. The contract is content-addressed, referenced by its SHA-256 hash, and established before the session begins. It is never renegotiated mid-session. Both parties know exactly what they are agreeing to before any private information enters the system.
+    </p>
+
+    <p>
+      During the session, the relay enforces the contract's output schema using JSON Schema validation. The schema defines the exact structure and range of the permitted output — for example, a compatibility score between 1 and 5 with a fixed set of categorical labels. Any output that falls outside the agreed schema is rejected by the relay and never returned to either party. The model may attempt to encode private information in its output, but the schema constrains the expressible range. A field that accepts an integer between 1 and 5 can carry at most ~2.3 bits of information, regardless of how much context the model had access to.
+    </p>
+
+    <p>
+      The result is a <strong>bounded signal</strong> — a compressed, schema-constrained output that carries only what the schema permits. The signal is useful (it answers the coordination question) but structurally limited (it cannot leak arbitrary private context). The privacy guarantee comes not from the model's behavior but from the information-theoretic properties of the output channel.
+    </p>
+
+    <p>
+      After the session completes, both parties receive a <strong>cryptographic receipt</strong> — an Ed25519-signed record that binds the contract hash, output schema, prompt template, guardian policy, model identity, and session metadata to the result. The receipt is independently verifiable. It provides after-the-fact assurance that the session was conducted under the agreed terms, that the output conformed to the declared schema, and that no undisclosed modification occurred between the relay and the parties.
+    </p>
+
+    <p>
+      This is not a privacy-preserving computation in the cryptographic sense. It is not multi-party computation, homomorphic encryption, or differential privacy. Those techniques have their own strengths and trade-offs. AgentVault takes a different approach: <strong>structural enforcement</strong>. The channel is narrowed by design so that disclosure is bounded regardless of model behavior. The model processes private context to produce the output, but the output itself is constrained to a schema that limits how much information it can carry.
+    </p>
+
+    <p>
+      The key insight is that privacy is not achieved by trusting the model to be discreet. Models are opaque, probabilistic systems that may leak information in subtle ways — through word choice, hedging patterns, or statistical correlations in free text. Structural enforcement sidesteps this problem entirely. Even a careless or adversarial model cannot disclose more than the schema permits, because the relay rejects anything outside the schema boundary before it reaches the other party.
+    </p>
+
+    <h2>How agent-to-agent privacy connects to other concepts</h2>
+
+    <p>
+      Agent-to-agent privacy is the problem statement. <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>Bounded disclosure</a> is the principle that addresses it — the idea that coordination between agents should reveal only a bounded amount of information, determined by the structure of the output channel rather than by model behavior.
+    </p>
+
+    <p>
+      The mechanism that enforces bounded disclosure is the <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>. The contract defines what is permitted before the session begins, making the disclosure boundary explicit, auditable, and immutable for the session's duration.
+    </p>
+
+    <p>
+      The output model is the <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signal</a> — the schema-constrained result that carries the coordination outcome within the declared information-theoretic bounds. Bounded signals are what make the privacy guarantee concrete and measurable rather than aspirational.
+    </p>
+
+    <p>
+      The assurance layer is the <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipt</a>. Receipts provide verifiable proof that the session was conducted under the agreed contract, that the output conformed to the declared schema, and that the privacy bounds were enforced. Without receipts, parties must trust the relay's behavior. With receipts, they can verify it.
+    </p>
+
+    <p>
+      Together, these components form a complete disclosure-boundary architecture — from problem definition through principle, mechanism, output model, and assurance.
+    </p>
+
+    <h2>Key takeaway</h2>
+
+    <p>
+      Agent interoperability makes coordination possible. Agent-to-agent privacy makes it safe. As AI agents become more capable and more deeply integrated into personal and professional life, the amount of sensitive context they carry will only grow. Without structural privacy guarantees at the coordination layer, every agent-to-agent interaction is a potential disclosure event.
+    </p>
+
+    <p>
+      The missing layer is not better encryption or smarter models. It is structural constraints on what agents can disclose during coordination — constraints that hold regardless of model behavior, that are agreed before private context enters the system, and that are cryptographically verifiable after the fact. <a href={import.meta.env.BASE_URL}>AgentVault</a> provides that layer.
+    </p>
+  </ConceptPage>
+</Layout>

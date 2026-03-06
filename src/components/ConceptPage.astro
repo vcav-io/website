@@ -1,0 +1,341 @@
+---
+import AVMark from './icons/AVMark.astro';
+
+interface Props {
+  title: string;
+  subtitle: string;
+  currentSlug: string;
+}
+
+const { title, subtitle, currentSlug } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+const concepts = [
+  { slug: 'agent-to-agent-privacy', label: 'Agent-to-Agent Privacy', brief: 'Why privacy is the missing layer in agent interoperability' },
+  { slug: 'bounded-disclosure', label: 'Bounded Disclosure', brief: 'Constraining what agents can reveal during coordination' },
+  { slug: 'coordination-contracts', label: 'Coordination Contracts', brief: 'Machine-readable agreements that govern agent sessions' },
+  { slug: 'bounded-signals', label: 'Bounded Signals', brief: 'Schema-constrained outputs instead of free-text exchange' },
+  { slug: 'cryptographic-receipts', label: 'Cryptographic Receipts', brief: 'Signed proof of what governed the coordination session' },
+];
+
+const relatedConcepts = concepts.filter(c => c.slug !== currentSlug);
+---
+
+<nav class="top-bar">
+  <div class="container top-bar__inner">
+    <a href={base} class="top-bar__home" aria-label="AgentVault home">
+      <AVMark class="top-bar__mark" />
+      <span class="top-bar__name font-mono">AgentVault</span>
+    </a>
+    <a href={base} class="top-bar__back font-mono">&larr; Overview</a>
+  </div>
+</nav>
+
+<header class="concept-header">
+  <div class="container">
+    <div class="concept-header__inner">
+      <h1 class="concept-header__title">{title}</h1>
+      <p class="concept-header__subtitle">{subtitle}</p>
+    </div>
+  </div>
+</header>
+
+<article class="concept-body">
+  <div class="container">
+    <div class="concept-body__prose">
+      <slot />
+    </div>
+  </div>
+</article>
+
+<section class="concept-explore section--alt">
+  <div class="container">
+    <div class="concept-explore__inner">
+      <h2 class="concept-explore__title">Explore the implementation</h2>
+      <ul class="concept-explore__links">
+        <li><a href="https://github.com/vcav-io/agentvault" target="_blank" rel="noopener noreferrer">GitHub repository</a></li>
+        <li><a href="https://github.com/vcav-io/agentvault/blob/main/docs/protocol.md" target="_blank" rel="noopener noreferrer">Protocol specification</a></li>
+        <li><a href="https://github.com/vcav-io/agentvault/blob/main/docs/getting-started.md" target="_blank" rel="noopener noreferrer">Run the demo</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<nav class="related-concepts section" aria-label="Related concepts">
+  <div class="container">
+    <div class="related-concepts__inner">
+      <h2 class="related-concepts__title">Related Concepts</h2>
+      <div class="related-concepts__grid">
+        {relatedConcepts.map(c => (
+          <a href={`${base}${c.slug}/`} class="related-card">
+            <span class="related-card__label font-mono">{c.label}</span>
+            <span class="related-card__brief">{c.brief}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<footer class="site-footer">
+  <div class="container">
+    <p class="text-dim" style="font-size: var(--text-sm);">
+      vcav.io · <a href="mailto:contact@vcav.io" class="footer-link">contact@vcav.io</a>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .top-bar {
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .top-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .top-bar__home {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .top-bar__home:hover {
+    color: var(--color-accent);
+  }
+
+  :global(.top-bar__mark) {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .top-bar__name {
+    font-size: var(--text-sm);
+    font-weight: 500;
+  }
+
+  .top-bar__back {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .top-bar__back:hover {
+    color: var(--color-accent);
+  }
+
+  .concept-header {
+    padding: var(--space-2xl) 0 var(--space-xl);
+  }
+
+  .concept-header__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .concept-header__title {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: var(--leading-tight);
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .concept-header__subtitle {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  .concept-body {
+    padding-bottom: var(--space-2xl);
+  }
+
+  .concept-body__prose {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .concept-body__prose :global(h2) {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+  }
+
+  .concept-body__prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+
+  .concept-body__prose :global(p) {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    max-width: none;
+  }
+
+  .concept-body__prose :global(p + p) {
+    margin-top: var(--space-md);
+  }
+
+  .concept-body__prose :global(p + h2) {
+    margin-top: var(--space-xl);
+  }
+
+  .concept-body__prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--color-accent);
+    background: var(--color-bg-elevated);
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+  }
+
+  .concept-body__prose :global(strong) {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .concept-body__prose :global(a) {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .concept-body__prose :global(a:hover) {
+    color: var(--color-accent-bright);
+  }
+
+  .concept-body__prose :global(ul),
+  .concept-body__prose :global(ol) {
+    margin-top: var(--space-sm);
+    margin-bottom: var(--space-sm);
+    padding-left: 1.5em;
+  }
+
+  .concept-body__prose :global(li) {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    margin-bottom: var(--space-xs);
+  }
+
+  .concept-explore {
+    padding: var(--space-xl) 0;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .concept-explore__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .concept-explore__title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-md);
+  }
+
+  .concept-explore__links {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+    padding: 0;
+  }
+
+  .concept-explore__links a {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .concept-explore__links a:hover {
+    color: var(--color-accent-bright);
+  }
+
+  .related-concepts {
+    padding: var(--space-2xl) 0;
+  }
+
+  .related-concepts__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .related-concepts__title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-lg);
+  }
+
+  .related-concepts__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  .related-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    padding: var(--space-md);
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                transform 300ms var(--ease-out);
+  }
+
+  .related-card:hover {
+    border-color: var(--color-accent-dim);
+    transform: translateY(-1px);
+  }
+
+  .related-card__label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .related-card__brief {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    line-height: var(--leading-relaxed);
+  }
+
+  @media (max-width: 639px) {
+    .related-concepts__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .site-footer {
+    padding: var(--space-2xl) 0;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+
+  .footer-link {
+    color: var(--color-text-dim);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .footer-link:hover {
+    color: var(--color-accent);
+  }
+</style>

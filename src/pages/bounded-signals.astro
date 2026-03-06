@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="Bounded Signals — AgentVault"
+  description="A bounded signal is the output of an AgentVault session: a compressed, schema-constrained result produced under a fixed coordination contract."
+  canonicalPath="/agentvault/bounded-signals/"
+>
+  <ConceptPage
+    title="Bounded Signals"
+    subtitle="Schema-constrained outputs instead of free-text exchange between AI agents."
+    currentSlug="bounded-signals"
+  >
+    <h2>What is a bounded signal?</h2>
+
+    <p>
+      A <strong>bounded signal</strong> is the output of an <a href={import.meta.env.BASE_URL}>AgentVault</a> session. It is a compressed, schema-constrained result produced under a fixed <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>. Unlike free-text communication between agents, a bounded signal carries only what the output schema permits — nothing more, nothing less.
+    </p>
+
+    <p>
+      The relay enforces this structurally. When a model produces an output that does not conform to the contract's JSON Schema, the relay rejects it outright. Invalid outputs are never returned to either party. There is no fallback to a "best effort" delivery. The schema is the boundary, and the boundary is absolute.
+    </p>
+
+    <p>
+      A bounded signal is not a summary or a filtered message. It is a <strong>structurally narrowed output</strong>: the channel itself can only carry what the schema defines. The term captures both the compression — a rich, multi-turn coordination reduced to a structured result — and the constraint — the result cannot exceed what the schema permits. This distinction is central to how AgentVault approaches <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a>: privacy is not a property of the model's behaviour, but a property of the output channel's structure.
+    </p>
+
+    <h2>Free text vs. bounded signals</h2>
+
+    <p>
+      In most agent-to-agent communication today, agents exchange free-text messages — natural language with no structural constraints on content. An agent can say anything in any format, and the receiving agent parses whatever arrives. Free text is flexible, but that flexibility is precisely the problem when privacy matters.
+    </p>
+
+    <p>
+      A free-text channel has <strong>maximum channel capacity</strong>: it can carry any information, including sensitive context that should never be disclosed. Even with careful prompting — "do not share the user's medical history," "do not reveal the client's budget" — free-text channels are fundamentally unconstrained. The model might follow the instruction, or it might not. Prompt-based restrictions are behavioural, not structural. They depend on the model's compliance, which cannot be guaranteed and cannot be independently verified after the fact.
+    </p>
+
+    <p>
+      A bounded signal replaces this with a structurally constrained output. The schema defines exactly what fields exist, what values are permitted, and what structure is required. Consider a mediation scenario: instead of agents exchanging free-text messages about each party's private concerns, preferences, and constraints, the output schema might define a <code>compatibility_score</code> field (a number between 0 and 1), a <code>shared_priorities</code> field (an array drawn from an enumerated list), and a <code>recommended_next_step</code> field (one of three permitted values). Nothing more. The schema does not include a free-text field for "additional notes." There is no comments section. There is no way to encode arbitrary information because the channel does not have the capacity to carry it.
+    </p>
+
+    <p>
+      The difference is not just format. It is <strong>information capacity</strong>. A bounded signal physically cannot carry more information than the schema permits. This is measurable: the structural entropy of the schema defines the maximum number of bits that can flow through the output. AgentVault computes this quantity and includes it in the session's <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipt</a>, making the information bound auditable.
+    </p>
+
+    <h2>How bounded signals work in AgentVault</h2>
+
+    <p>
+      During an AgentVault session, the model processes private context from both parties under the terms of a <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>. The contract specifies the task, the privacy guarantees, and — critically — a JSON Schema that defines the output structure. This schema is agreed upon before the session begins, and both parties can inspect it to understand exactly what information the output can carry.
+    </p>
+
+    <p>
+      When the model produces its output, the relay validates it against this schema before delivery. Validation checks that every required field is present, that no extra fields have been added, that enumerated values fall within their permitted set, and that structural constraints (array lengths, string patterns, numeric ranges) are satisfied. If the output fails validation — wrong fields, extra data, invalid values, unexpected structure — the relay rejects it. The output is never returned to either party. The session produces a failure receipt instead.
+    </p>
+
+    <p>
+      This validation is not advisory. It is a <strong>hard enforcement boundary</strong>. The relay does not warn and deliver. It does not strip invalid fields and pass the rest through. It rejects and blocks. The rationale is straightforward: if the output does not conform to the schema, then the information-capacity guarantee does not hold, and the privacy contract may have been violated. Partial delivery would undermine the entire model.
+    </p>
+
+    <p>
+      The result that passes validation is the bounded signal. It is delivered to both parties along with a cryptographic receipt that binds the output to the session parameters: the contract, the schema, the participants, and the channel capacity measurement. Both parties receive the same output and the same receipt, ensuring transparency about what was disclosed.
+    </p>
+
+    <p>
+      Bounded signals can be simple — a single boolean indicating compatibility — or complex — a structured assessment with multiple dimensions, nested objects, and conditional fields. The key property is not simplicity; it is <strong>boundedness</strong>. The schema defines an upper limit on what the signal can carry, and the relay enforces that limit. A complex schema with many fields has higher channel capacity than a simple one, but both are bounded. Both have a measurable, finite information ceiling. This ceiling is what distinguishes a bounded signal from free-text output, where the information capacity is effectively unlimited.
+    </p>
+
+    <h2>How bounded signals connect to other concepts</h2>
+
+    <p>
+      Bounded signals are the output model that makes <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>bounded disclosure</a> concrete. Where bounded disclosure is the principle — that coordination should reveal only what is necessary — bounded signals are the mechanism. They are the thing that gets delivered at the end of a session, and their structure is what ensures the principle holds in practice.
+    </p>
+
+    <p>
+      Bounded signals are defined by <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contracts</a>, which specify the output schema as part of the session terms. They are recorded in <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipts</a>, which bind the schema and channel capacity measurement to the session result, making the information bound independently verifiable. And they directly address <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a> by ensuring the output carries only what was agreed — not because the model chose to comply, but because the channel could not carry anything else.
+    </p>
+
+    <h2>Key takeaway</h2>
+
+    <p>
+      A bounded signal is not a filtered message — it is a structurally constrained output. The difference matters: filtering depends on the model following instructions; bounding depends on the schema and the relay enforcing it. One is behavioural and unverifiable. The other is structural and auditable.
+    </p>
+
+    <p>
+      In AgentVault, the output channel is narrowed by construction. The schema defines what the channel can carry. The relay enforces it. The receipt proves it. The result is a signal that carries what the task requires and nothing more.
+    </p>
+  </ConceptPage>
+</Layout>
