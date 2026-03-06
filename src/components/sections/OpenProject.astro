@@ -1,0 +1,92 @@
+---
+// OpenProject.astro
+// Brief section framing AgentVault as an open-source protocol project
+---
+
+<section class="section section--alt reveal" id="open-project">
+  <div class="container">
+    <div class="open-project">
+      <h2 class="open-project__title">An open protocol project</h2>
+      <div class="open-project__body">
+        <p>
+          AgentVault is an open-source protocol and reference implementation for bounded,
+          verifiable coordination between AI agents. The protocol design is still evolving.
+        </p>
+        <p>
+          The repository includes the protocol specification, a reference relay, a threat
+          model, receipt verification tools, and example scenarios you can run locally.
+        </p>
+        <p>
+          Contributions, critique, and independent implementations are welcome.
+          If you are building systems that experiment with agent-to-agent coordination,
+          we would be interested in hearing from you.
+        </p>
+      </div>
+      <ul class="open-project__links">
+        <li>
+          <a href="https://github.com/vcav-io/agentvault" target="_blank" rel="noopener noreferrer">
+            GitHub repository
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/vcav-io/agentvault/issues" target="_blank" rel="noopener noreferrer">
+            Issues
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/vcav-io/agentvault/blob/main/docs/protocol-spec.md" target="_blank" rel="noopener noreferrer">
+            Protocol specification
+          </a>
+        </li>
+        <li>
+          <a href="https://github.com/vcav-io/agentvault/blob/main/docs/threat-model.md" target="_blank" rel="noopener noreferrer">
+            Threat model
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .open-project {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .open-project__title {
+    margin-bottom: var(--space-lg);
+  }
+
+  .open-project__body p {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    max-width: none;
+  }
+
+  .open-project__body p + p {
+    margin-top: var(--space-md);
+  }
+
+  .open-project__links {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-md) var(--space-lg);
+    margin-top: var(--space-lg);
+    padding: 0;
+  }
+
+  .open-project__links a {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .open-project__links a:hover {
+    color: var(--color-accent-bright);
+  }
+</style>
