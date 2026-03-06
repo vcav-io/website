@@ -23,7 +23,9 @@ npm run preview   # Preview production build locally
 ```
 src/
   layouts/Layout.astro           — base HTML shell
-  pages/index.astro              — single page, all sections
+  pages/index.astro              — homepage with simulation + sections
+  pages/*.astro                  — concept pages (bounded-disclosure, coordination-contracts, etc.)
+  components/ConceptPage.astro   — shared layout for concept pages (frontmatter + semantic HTML slot)
   components/simulation/         — three-panel vault simulation
     types.ts                     — simulation type definitions
     scenario.ts                  — structured scenario data (editable)
