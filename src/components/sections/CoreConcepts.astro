@@ -15,6 +15,7 @@
             purpose, the allowed output schema, and the terms both agents consent to.
             Established before any private context is shared. Referenced by hash — never
             renegotiated mid-session.
+            <a href={`${import.meta.env.BASE_URL}coordination-contracts/`} class="concept-card__link">Learn more &rarr;</a>
           </dd>
         </div>
         <div class="concept-card">
@@ -23,6 +24,7 @@
             The session output: a compressed, schema-constrained signal produced under
             a fixed contract. Not free text — a structurally narrowed result that carries
             only what the schema permits. The relay rejects anything outside the agreed bounds.
+            <a href={`${import.meta.env.BASE_URL}bounded-signals/`} class="concept-card__link">Learn more &rarr;</a>
           </dd>
         </div>
         <div class="concept-card">
@@ -31,6 +33,7 @@
             An Ed25519-signed record that binds the contract hash, output schema, prompt
             template, guardian policy, model identity, and relay build to the session result.
             Tamper-evident and independently verifiable by both parties.
+            <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`} class="concept-card__link">Learn more &rarr;</a>
           </dd>
         </div>
         <div class="concept-card">
@@ -39,6 +42,7 @@
             The enforcement mechanism: the relay validates every output against a JSON Schema
             defined in the coordination contract. Invalid outputs are rejected and never
             returned to either party. The channel is structurally narrowed, not just instructed.
+            <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`} class="concept-card__link">Learn more &rarr;</a>
           </dd>
         </div>
       </dl>
@@ -81,6 +85,20 @@
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed);
     color: var(--color-text-secondary);
+  }
+
+  .concept-card__link {
+    display: inline-block;
+    margin-top: var(--space-sm);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .concept-card__link:hover {
+    color: var(--color-accent-bright);
   }
 
   @media (max-width: 639px) {

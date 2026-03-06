@@ -1,0 +1,124 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="Cryptographic Receipts for AI Agents — AgentVault"
+  description="Cryptographic receipts are signed records that prove which contract, schema, and policy governed an AI agent coordination session. Learn what they prove and what they do not."
+  canonicalPath="/agentvault/cryptographic-receipts/"
+>
+  <ConceptPage
+    title="Cryptographic Receipts for AI Agents"
+    subtitle="Signed proof of what governed the coordination session — and what it does not guarantee."
+    currentSlug="cryptographic-receipts"
+  >
+    <h2>What is a cryptographic receipt?</h2>
+
+    <p>
+      A <strong>cryptographic receipt</strong> is a signed record produced at the end of an <a href={import.meta.env.BASE_URL}>AgentVault</a> session. It binds the session result to the exact conditions that governed it: the <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>, the output schema, the prompt template, the guardian policy, the model identity, and the relay build. The receipt is signed using <code>Ed25519</code> — a fast, widely supported digital signature scheme — and delivered to both parties as part of the session result.
+    </p>
+
+    <p>
+      Both parties receive the same receipt and can verify it independently, without needing to trust the relay or each other. Verification requires only the relay's public signing key, which is published and can be pinned by clients before a session begins. No third-party authority is involved. No certificate chain is needed. The check is purely cryptographic: either the signature is valid for the receipt's contents, or it is not.
+    </p>
+
+    <p>
+      A receipt does not prove that the coordination was good, useful, or fair. It proves <strong>what governed the session</strong> — which contract was in force, which schema constrained the output, and which policy was applied. This is the verification layer of AgentVault: it makes the session auditable after the fact, giving both parties a tamper-evident record of the rules that were enforced during their coordination.
+    </p>
+
+    <h2>What receipts prove</h2>
+
+    <p>
+      A receipt proves several things simultaneously, all bound together in a single signed record:
+    </p>
+
+    <p>
+      <strong>Contract binding.</strong> The receipt includes the SHA-256 hash of the <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a> that both parties agreed to before the session began. This proves which contract was in force — its task definition, its privacy terms, its structural constraints. If a dispute arises about what was agreed, the receipt settles it: the contract hash is immutable once signed.
+    </p>
+
+    <p>
+      <strong>Schema binding.</strong> The output schema that constrained the <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signal</a> is recorded in the receipt. This proves that the output was validated against a specific schema — not a different one, not a loosened version, not one modified after the session started. The schema defines the channel capacity of the output, and the receipt binds that capacity measurement to the session.
+    </p>
+
+    <p>
+      <strong>Template and policy binding.</strong> The prompt template used to instruct the model and the guardian policy (if any) that added defense-in-depth rules are both recorded. These prove what instructions the model received and what additional constraints were enforced beyond the schema itself.
+    </p>
+
+    <p>
+      <strong>Model and relay identity.</strong> The receipt records which model processed the coordination and which relay build produced the result, including its version and signing key. This establishes provenance: both parties can verify not just what rules were in force, but which software and which model executed them.
+    </p>
+
+    <p>
+      <strong>Session result.</strong> The <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signal</a> itself — the actual output of the coordination — is included. The receipt binds the result to its governance context, ensuring the output cannot be separated from the conditions that produced it.
+    </p>
+
+    <p>
+      Because all of these fields are bound together in a single signed record, tampering with any element invalidates the signature. Change the contract hash, alter the output, swap the policy, modify any field at all — the signature will not verify. The receipt is <strong>tamper-evident</strong> by construction.
+    </p>
+
+    <h2>What receipts do not prove</h2>
+
+    <p>
+      Receipts prove what governed the session. They do not prove everything a reader might assume, and understanding these limits is essential to using receipts correctly.
+    </p>
+
+    <p>
+      <strong>They do not prove the model followed instructions perfectly.</strong> The model might have produced a result that technically passes schema validation but is substantively inaccurate or unhelpful. A <code>compatibility_score</code> of 0.7 might be wrong. A <code>recommended_next_step</code> might be poorly reasoned. The receipt proves the schema was enforced and the output conformed to it — not that the model's reasoning was correct or that its output was useful. Schema validation is structural, not semantic. It ensures the output fits the shape; it says nothing about the quality of the content within that shape.
+    </p>
+
+    <p>
+      <strong>They do not prove the private context was accurate.</strong> Each party submitted their own private context to the session. The receipt does not verify that this context was truthful, complete, or representative. A party could submit misleading context and receive a receipt that proves the session was properly governed — because it was. Governance and truthfulness are separate properties. The receipt covers the former, not the latter.
+    </p>
+
+    <p>
+      <strong>They do not prove fairness.</strong> A coordination might be structurally sound — correct contract, valid schema, proper enforcement — and still produce a result that one party considers unfair. The receipt proves governance, not justice. Fairness depends on the contract design, the model's reasoning, and the context provided. The receipt proves which contract was used, but it does not evaluate whether that contract was equitable.
+    </p>
+
+    <p>
+      <strong>They do not prove confidentiality of inputs.</strong> In the software execution lane, the model provider sees the private context during processing. The receipt proves the output was bounded — it does not prove the inputs were hidden from all observers. The <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>bounded disclosure</a> guarantee applies to the output channel, not the processing environment. For stronger guarantees, AgentVault's TEE lane removes the relay operator from the trust envelope, and VCAV removes the model provider entirely — but those are separate mechanisms with their own attestation records.
+    </p>
+
+    <p>
+      A receipt is a <strong>governance record</strong>, not a quality guarantee. It proves the rules were in force. It does not prove the rules were sufficient, the inputs were honest, or the outcome was just.
+    </p>
+
+    <h2>How receipts work in practice</h2>
+
+    <p>
+      At the end of a session, the relay assembles the unsigned receipt — a structured record containing all the binding fields described above. The relay then signs this record with its <code>Ed25519</code> private key, producing the cryptographic receipt. The signing operation is deterministic: the same unsigned receipt always produces the same signature with the same key, ensuring reproducibility.
+    </p>
+
+    <p>
+      The receipt is delivered to both parties as part of the session result, alongside the <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signal</a> itself. Either party can verify the receipt by checking the signature against the relay's public key. This key is published by the relay operator and can be pinned by clients before the session — meaning a client can refuse to participate unless the relay's key matches an expected value, preventing impersonation.
+    </p>
+
+    <p>
+      Receipt verification is fast and lightweight. <code>Ed25519</code> verification takes microseconds, making it practical to verify every receipt as a matter of routine rather than as an exceptional audit step. AgentVault provides a receipt verifier tool that checks the signature and displays the bound fields in human-readable form, so both parties can inspect exactly what was recorded without parsing the raw structure themselves.
+    </p>
+
+    <p>
+      If a session fails — the model produces invalid output, a guardian policy blocks the result, or a party disconnects — the relay produces a <strong>failure receipt</strong> instead. Failure receipts record the same governance context (contract, schema, policy, model) but indicate that no valid output was produced. This ensures that even failed sessions are auditable: both parties can verify what was attempted and why it did not succeed.
+    </p>
+
+    <h2>How receipts connect to other concepts</h2>
+
+    <p>
+      Receipts are the assurance layer that makes <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>bounded disclosure</a> verifiable after the fact. Without receipts, bounded disclosure is a claim made by the relay. With receipts, it is a claim that either party can independently verify. The receipt transforms trust in the operator into trust in cryptography.
+    </p>
+
+    <p>
+      Receipts record the <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a> that governed the session, binding the output to its agreed terms. They bind the <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signal</a> to the schema and channel capacity measurement that constrained it. And they provide evidence relevant to <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a> — signed proof that the structural constraints which limit information flow were in force during the session.
+    </p>
+
+    <h2>Key takeaway</h2>
+
+    <p>
+      A cryptographic receipt is governance made verifiable. It does not guarantee the coordination was good — it proves what rules were in force. The contract, the schema, the policy, the model, the relay: all bound together in a single signed record that neither party can alter without detection.
+    </p>
+
+    <p>
+      That distinction matters. When agents coordinate on sensitive matters, both parties need to know what governed the session, and neither should have to take the other's word for it. The receipt replaces trust with verification: not trust that the outcome was fair, but proof that the agreed governance was applied.
+    </p>
+  </ConceptPage>
+</Layout>

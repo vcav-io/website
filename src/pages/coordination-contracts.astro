@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="Coordination Contracts for AI Agents — AgentVault"
+  description="A coordination contract is a machine-readable agreement that defines the purpose, output schema, and disclosure terms for an AI agent coordination session."
+  canonicalPath="/agentvault/coordination-contracts/"
+>
+  <ConceptPage
+    title="Coordination Contracts for AI Agents"
+    subtitle="Machine-readable agreements that define the purpose, structure, and disclosure terms for agent coordination."
+    currentSlug="coordination-contracts"
+  >
+    <h2>What is a coordination contract?</h2>
+
+    <p>
+      A coordination contract is a machine-readable agreement that governs an <a href={import.meta.env.BASE_URL}>AgentVault</a> session. It defines three things: the <strong>purpose</strong> of the coordination, the <strong>allowed output structure</strong> expressed as a JSON Schema, and the <strong>disclosure terms</strong> that both agents consent to before any private context is shared.
+    </p>
+
+    <p>
+      Contracts are content-addressed — each contract is referenced by its SHA-256 hash. This means any change to the contract, no matter how small, produces a different hash, making tampering immediately detectable. The hash serves as the contract's unique identifier for the entire session and is embedded in every downstream artifact.
+    </p>
+
+    <p>
+      A coordination contract is established before private context enters the system. Once both parties accept the contract, it is never renegotiated or amended mid-session. This immutability is a deliberate design choice: if terms could change after context was shared, the original disclosure boundary would be meaningless. The contract is the foundation of <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>bounded disclosure</a>. Without a contract, there is no agreed boundary on what may be disclosed, no structural constraint on the output, and no basis for after-the-fact verification.
+    </p>
+
+    <h2>Why pre-agreed terms matter</h2>
+
+    <p>
+      In most agent communication protocols, agents exchange messages freely over open channels. The "agreement" between them is implicit: both agents trust each other to behave reasonably, to share only what is relevant, and to refrain from disclosing sensitive information. There is no formal specification of what may or may not be communicated.
+    </p>
+
+    <p>
+      This implicit trust model works well enough when the content is not sensitive — when agents are querying public APIs, retrieving weather data, or looking up flight schedules. But when agents carry private user context — health records, financial details, relationship dynamics, personal preferences, employment history — implicit trust is not a privacy guarantee. It is an assumption, and one that cannot be verified or enforced.
+    </p>
+
+    <p>
+      Without pre-agreed terms, there is no way to know what disclosure was permitted during a session, no way to verify after the fact whether the agents stayed within acceptable bounds, and no structural constraint on what the model can encode in its output. If a dispute arises — if a user suspects their agent disclosed too much — there is no reference document to compare against. The session happened, information flowed, and neither party has a clear record of what was agreed.
+    </p>
+
+    <p>
+      A coordination contract makes the terms explicit and machine-readable. Both agents — and both users — know before the session begins what the session is for, what structure the output will take, and what the disclosure limits are. The contract is not a suggestion or a guideline. It is the structural specification that the relay enforces throughout the session. This is analogous to the difference between a handshake deal and a written contract: the written version can be inspected, verified, and enforced. In the agent coordination context, "written" means machine-readable, content-addressed, and cryptographically bound to the session's output.
+    </p>
+
+    <h2>How coordination contracts work in AgentVault</h2>
+
+    <p>
+      A coordination contract is a structured document composed of several components, each serving a distinct role in the session. The contract includes a <strong>human-readable purpose statement</strong> that describes the coordination's intent in plain language — for example, "assess roommate compatibility" or "compare insurance plan suitability." This purpose statement has no enforcement role; it exists so that users and operators can understand what the session is designed to accomplish.
+    </p>
+
+    <p>
+      The contract's most critical component is its <strong>output schema</strong>, expressed as a JSON Schema. The schema defines exactly what fields the output may contain, what data types those fields use, and what values are permitted. A schema might specify a compatibility score as an integer between 1 and 5, a set of categorical labels drawn from a fixed enumeration, or a brief summary constrained to a maximum character length. The schema is what makes <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signals</a> possible: it defines the information-theoretic ceiling of the output channel, ensuring that the coordination result can carry only what the schema permits.
+    </p>
+
+    <p>
+      Beyond the output schema, the contract includes a <strong>prompt template</strong> that shapes how the model processes the coordination. The prompt template defines the instructions the model receives, ensuring that both parties agree not just on what the output looks like, but on how the model is directed to produce it. The contract may also include a <strong>guardian policy</strong> — an optional set of defense-in-depth rules that provide additional constraints beyond the schema. Guardian policies can enforce rules like "do not reference specific medical conditions by name" or "do not include identifiable details in summary fields," adding a semantic layer of protection on top of the structural schema constraint.
+    </p>
+
+    <p>
+      When a session is initiated, the initiating agent proposes a contract to the responding agent. The responding agent reviews the contract — its purpose, schema, prompt template, and any guardian policies — and either accepts or rejects it. No private context is shared until both parties have explicitly accepted the contract. This acceptance is a prerequisite, not a formality. If the responding agent rejects the contract, the session does not proceed and no context is exchanged.
+    </p>
+
+    <p>
+      Once accepted, the contract's SHA-256 hash becomes the session's reference identifier. The relay uses the contract's output schema to validate every output produced during the session. Any output that does not conform to the declared schema is rejected by the relay before it reaches either party. At the end of the session, the contract hash is embedded in the <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipt</a> — the Ed25519-signed record that binds the contract, schema, model identity, and session metadata to the result.
+    </p>
+
+    <p>
+      Content-addressing makes the contract tamper-evident throughout its lifecycle. If anyone — the relay, an agent, or a third party — modifies the contract after the session, the hash will no longer match the one recorded in the receipt. This means the receipt serves as proof not only that the session produced a particular output, but that it was conducted under a specific, unmodified contract. The contract and the receipt together form a verifiable chain: agreed terms, enforced constraints, and signed proof.
+    </p>
+
+    <p>
+      It is worth distinguishing a coordination contract from two things it is not. It is not an <strong>API contract</strong>, which defines available endpoints, request formats, and response schemas for a software service. And it is not a <strong>legal contract</strong>, which is human-readable, negotiated between parties, and enforceable by courts. A coordination contract is machine-readable, cryptographically referenced, agreed before context is shared, and enforced by the relay in real time. It occupies a different layer of the stack — the coordination layer — where the concern is not "what endpoints exist" or "what are the legal obligations" but "what may this session disclose."
+    </p>
+
+    <h2>How coordination contracts connect to other concepts</h2>
+
+    <p>
+      Coordination contracts are the mechanism that enables <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>bounded disclosure</a>. Bounded disclosure is the principle — the idea that coordination should reveal only a bounded amount of information. The contract is what makes that principle operational by specifying the exact terms and constraints before any private context enters the system.
+    </p>
+
+    <p>
+      The contract's output schema is what produces <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signals</a>. The schema defines the structure and range of permitted outputs, and the relay enforces that structure during the session. Without the schema specified in the contract, there would be no structural basis for bounding the signal's information content.
+    </p>
+
+    <p>
+      The contract's SHA-256 hash is recorded in the <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipt</a> issued at the end of every session. This binding is what makes the receipt meaningful — it proves not just that an output was produced, but that it was produced under a specific, agreed-upon contract with known disclosure constraints.
+    </p>
+
+    <p>
+      Coordination contracts address the core challenge of <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a> by making disclosure terms explicit, auditable, and immutable before context is shared. They transform agent privacy from a hope — "I trust my agent to be discreet" — into a structural property of the session itself.
+    </p>
+
+    <h2>Key takeaway</h2>
+
+    <p>
+      A coordination contract is the foundation of every AgentVault session. It makes disclosure terms explicit, machine-readable, and cryptographically referenced before any sensitive context is shared. The contract defines what the session is for, what the output may contain, and how the model is directed — and these terms are enforced by the relay and recorded in the receipt.
+    </p>
+
+    <p>
+      Without a contract, there is no boundary — agents communicate freely, and privacy depends on model discretion. With one, both agents and both users know exactly what was agreed, the relay enforces what was specified, and the receipt proves what was done.
+    </p>
+  </ConceptPage>
+</Layout>
