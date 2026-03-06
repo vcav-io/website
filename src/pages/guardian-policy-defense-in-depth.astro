@@ -1,0 +1,124 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="Guardian Policy: Defense in Depth — AgentVault"
+  description="How the guardian enforcement policy layers mechanical constraints on schema validation. The guardian enforces constraints and rejects invalid outputs — it never evaluates correctness."
+  canonicalPath="/agentvault/guardian-policy-defense-in-depth/"
+>
+  <ConceptPage
+    title="Guardian Policy: Defense in Depth"
+    subtitle="What does the guardian enforce, and what does it never decide?"
+    currentSlug="guardian-policy-defense-in-depth"
+  >
+    <h2>What the guardian does</h2>
+
+    <p>
+      The guardian enforces constraints. It rejects invalid outputs. The guardian never evaluates whether a signal is correct. It only verifies that the signal is allowed. This distinction is fundamental: the guardian is a mechanical enforcement point, not an intelligent filter or a judge.
+    </p>
+
+    <p>
+      Schema validation is the primary enforcement layer — a strict enum field with four values permits only those four values. The guardian provides defense in depth: a second layer of checks applied to schema-valid output. If the schema is the structural constraint, the guardian is the additional mechanical constraint that catches what the schema alone cannot express.
+    </p>
+
+    <h2>How enforcement policies layer on schema constraints</h2>
+
+    <p>
+      Enforcement is layered in a strict sequence:
+    </p>
+
+    <ol>
+      <li><strong>Schema validation runs first.</strong> If the model output fails the JSON Schema, the relay aborts the session with <code>SCHEMA_VALIDATION</code> without running the guardian. The guardian never sees schema-invalid output.</li>
+      <li><strong>Guardian rules run second</strong>, only on schema-valid output. Each rule inspects the validated output and either passes or fires.</li>
+    </ol>
+
+    <p>
+      This layering means the schema provides primary enforcement (strict enum fields prevent most forbidden content), while the guardian provides defense-in-depth for edge cases that schema constraints alone cannot catch. For example, a schema might permit string-typed fields for human-readable category labels. The guardian can enforce that those string fields never contain decimal digits or currency symbols — content that a model might embed in an attempt to encode numeric information in string values.
+    </p>
+
+    <h2>Policy scope and rule types</h2>
+
+    <p>
+      A guardian enforcement policy has a scope of <code>RELAY_GLOBAL</code> — it applies to every session on the relay. The policy is loaded at relay startup, content-addressed by SHA-256 over its JCS canonical form, and bound into every receipt via the <code>guardian_policy_hash</code> commitment.
+    </p>
+
+    <p>
+      The current protocol version supports one rule type: <code>unicode_category_reject</code>. A rule of this type scans every string value in the output JSON and rejects the output if any string contains a character in the specified Unicode general category.
+    </p>
+
+    <p>
+      Supported categories:
+    </p>
+
+    <ul>
+      <li><code>Nd</code> — Decimal digit numbers. As a defense-in-depth measure, a rule value of <code>"Nd"</code> activates scanning for decimal digits (Nd), letter numbers (Nl), and other numbers (No) — a conservative superset.</li>
+      <li><code>Sc</code> — Currency symbols, as defined by Unicode 15.1.</li>
+    </ul>
+
+    <p>
+      Each rule also has a scope descriptor. Currently only <code>"all_string_values"</code> is supported: scan every string value in the output recursively. A <code>skip_keys</code> array allows excluding specific top-level object keys from scanning.
+    </p>
+
+    <h2>Classification: GATE vs ADVISORY</h2>
+
+    <p>
+      Each rule carries a classification that determines what happens when it fires:
+    </p>
+
+    <p>
+      <strong><code>GATE</code></strong> — the relay aborts the session with <code>POLICY_GATE</code> and returns a constant-shape HTTP 422 error: <code>{'{"error": "OUTPUT_POLICY_VIOLATION"}'}</code>. No detail about which rule fired or what content triggered it is exposed. The output is never delivered to either participant. This prevents participants from reverse-engineering the guardian policy through error responses.
+    </p>
+
+    <p>
+      <strong><code>ADVISORY</code></strong> — the relay logs a warning but does not block the output. Advisory violations are not reported to participants. They exist for monitoring and gradual enforcement rollout.
+    </p>
+
+    <h2>Content-addressed policy hashing and lockfile validation</h2>
+
+    <p>
+      The enforcement policy is content-addressed: the relay computes <code>SHA-256(JCS(policy))</code> at startup and binds this hash into every receipt. A verifier who obtains the policy file can independently compute the hash and confirm which rules were active during a session.
+    </p>
+
+    <p>
+      The relay validates the policy against a lockfile at startup. The lockfile records the expected hash for each policy file. If the computed hash does not match the lockfile, the relay refuses to start (fail-closed). This prevents accidental policy drift — a modified policy file is detected before any sessions are processed.
+    </p>
+
+    <p>
+      Lockfile validation can be skipped in development mode (<code>AV_ENV=dev</code> with <code>AV_ENFORCEMENT_LOCKFILE_SKIP=1</code>), but production deployments must always use lockfiles.
+    </p>
+
+    <h2>Multi-policy selection</h2>
+
+    <p>
+      A single relay can serve multiple governance modes through multi-policy selection. The contract's <code>enforcement_policy_hash</code> field specifies which policy should govern the session. The relay loads all available policies at startup, indexes them by hash, and selects the matching policy when a session is created.
+    </p>
+
+    <p>
+      This means the same relay infrastructure can enforce different policies for different use cases — a stricter policy for financial coordination (blocking all numeric content) and a more permissive policy for scheduling (allowing time-related values). The contract determines the governance mode, not the relay configuration. Both participants agree to a specific policy hash as part of the contract, and the receipt proves which policy was active.
+    </p>
+
+    <h2>Relationship to the contract</h2>
+
+    <p>
+      The guardian policy is referenced by hash from the contract, not embedded in it. This separation has three benefits:
+    </p>
+
+    <ul>
+      <li><strong>Reuse.</strong> The same policy can govern multiple contracts without duplication.</li>
+      <li><strong>Independent versioning.</strong> Policies can be updated independently of contracts. A new policy version gets a new hash — existing contracts that reference the old hash continue to use the old policy.</li>
+      <li><strong>Verifiable binding.</strong> The contract's <code>enforcement_policy_hash</code> is a commitment. The receipt's <code>guardian_policy_hash</code> must match. A relay that loaded a different policy than the one committed in the contract would produce a detectable mismatch.</li>
+    </ul>
+
+    <h2>What the guardian never decides</h2>
+
+    <p>
+      The guardian does not evaluate quality, truthfulness, relevance, or appropriateness of the signal. It does not decide whether <code>"STRONG_MATCH"</code> is the correct compatibility signal given the inputs. It does not assess whether the model's reasoning was sound. It does not filter content based on semantic meaning.
+    </p>
+
+    <p>
+      The guardian is deterministic: given an identical policy and identical output, any conforming relay must produce the same accept/reject decision. There is no judgement, no interpretation, and no model-in-the-loop. If the output passes schema validation and contains no characters in the forbidden Unicode categories, the guardian passes it. If it contains a forbidden character, the guardian rejects it. That is the entire scope.
+    </p>
+  </ConceptPage>
+</Layout>
