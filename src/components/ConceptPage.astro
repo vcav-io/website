@@ -18,7 +18,16 @@ const concepts = [
   { slug: 'cryptographic-receipts', label: 'Cryptographic Receipts', brief: 'Signed proof of what governed the coordination session' },
 ];
 
+const articles = [
+  { slug: 'why-agent-interoperability-needs-a-privacy-layer', label: 'Why Interop Needs a Privacy Layer' },
+  { slug: 'a2a-and-agentvault', label: 'A2A and AgentVault' },
+  { slug: 'structured-outputs-not-enough', label: 'Structured Outputs Are Not Enough' },
+  { slug: 'how-to-stop-ai-agents-leaking-private-context', label: 'Stop Agents Leaking Context' },
+  { slug: 'agents-reason-together', label: 'When Agents Reason Together' },
+];
+
 const relatedConcepts = concepts.filter(c => c.slug !== currentSlug);
+const relatedArticles = articles.filter(a => a.slug !== currentSlug);
 ---
 
 <nav class="top-bar">
@@ -76,6 +85,23 @@ const relatedConcepts = concepts.filter(c => c.slug !== currentSlug);
     </div>
   </div>
 </nav>
+
+{relatedArticles.length > 0 && (
+<nav class="related-articles section" aria-label="Related articles">
+  <div class="container">
+    <div class="related-articles__inner">
+      <h2 class="related-articles__title">Related Articles</h2>
+      <div class="related-articles__grid">
+        {relatedArticles.map(a => (
+          <a href={`${base}${a.slug}/`} class="related-article-card">
+            <span class="related-article-card__label font-mono">{a.label}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</nav>
+)}
 
 <footer class="site-footer">
   <div class="container">
@@ -320,6 +346,57 @@ const relatedConcepts = concepts.filter(c => c.slug !== currentSlug);
 
   @media (max-width: 639px) {
     .related-concepts__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .related-articles {
+    padding: var(--space-xl) 0 var(--space-2xl);
+  }
+
+  .related-articles__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .related-articles__title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-lg);
+  }
+
+  .related-articles__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+  }
+
+  .related-article-card {
+    display: flex;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                transform 300ms var(--ease-out);
+  }
+
+  .related-article-card:hover {
+    border-color: var(--color-accent-dim);
+    transform: translateY(-1px);
+  }
+
+  .related-article-card__label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 639px) {
+    .related-articles__grid {
       grid-template-columns: 1fr;
     }
   }

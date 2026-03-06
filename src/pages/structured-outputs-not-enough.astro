@@ -1,0 +1,106 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="Structured Outputs Are Not Enough for Agent Privacy — AgentVault"
+  description="JSON Schema and structured outputs constrain format. But format alone does not constrain disclosure. Contracts, enforcement, and receipts complete the picture."
+  canonicalPath="/agentvault/structured-outputs-not-enough/"
+>
+  <ConceptPage
+    title="Structured Outputs Are Not Enough for Agent Privacy"
+    subtitle="Format consistency is a good start. But format alone does not constrain what agents disclose."
+    currentSlug="structured-outputs-not-enough"
+  >
+    <h2>The appeal of structured outputs</h2>
+
+    <p>
+      Structured outputs are one of the most useful recent developments in the LLM ecosystem. By constraining a model's output to conform to a JSON Schema, developers get predictable, parseable results instead of free-form text that requires fragile post-processing.
+    </p>
+
+    <p>
+      The benefits are real. Type safety means downstream code can rely on the shape of the response. Format consistency means the same query produces the same structure every time. Validation means malformed outputs are caught immediately rather than causing silent failures downstream.
+    </p>
+
+    <p>
+      For many applications — data extraction, function calling, form generation, API response formatting — structured outputs solve the right problem. If your concern is "will this model return valid JSON with the fields I expect?", structured outputs are the answer.
+    </p>
+
+    <p>
+      But if your concern is "will this model reveal private information it should not?", structured outputs address only a fraction of the problem.
+    </p>
+
+    <h2>Format is not disclosure</h2>
+
+    <p>
+      A structured output constrains the shape of the response. It says: the output must have these fields, of these types, with these value constraints. What it does not say is: these are the only things the model is permitted to reveal.
+    </p>
+
+    <p>
+      Consider a schema that asks for a compatibility score between 1 and 5. The structured output guarantees you get an integer in that range. Good. But who decided that this was the right schema for this interaction? Who agreed to it in advance? Who ensures the schema cannot be swapped mid-session? Who verifies after the fact that this schema — and only this schema — governed the output?
+    </p>
+
+    <p>
+      Structured outputs answer the format question. They leave the governance question open.
+    </p>
+
+    <h2>What structured outputs miss</h2>
+
+    <p>
+      When two agents coordinate on sensitive matters, several things need to be true beyond format consistency:
+    </p>
+
+    <ul>
+      <li><strong>Pre-agreed terms.</strong> Both parties need to agree on the output schema before any private context enters the system. A schema imposed unilaterally by one party, or selected dynamically during the session, does not provide the same assurance as a mutually agreed, content-addressed contract.</li>
+      <li><strong>Enforcement outside the model.</strong> Structured output enforcement typically happens inside the model's generation process or in the calling application's code. But in agent-to-agent coordination, the model is one of the parties. If the model itself is the enforcement point, there is no independent check. An external enforcement layer — separate from both the model and the application — provides stronger guarantees.</li>
+      <li><strong>Immutability during the session.</strong> In most structured output implementations, the schema can be changed between calls. For privacy-sensitive coordination, the schema needs to be locked for the session's duration. Changing the schema mid-session could widen the disclosure channel without the other party's consent.</li>
+      <li><strong>After-the-fact verification.</strong> Structured outputs leave no verifiable record of what schema governed the output. After the session ends, there is no way for either party to independently confirm that the output they received was validated against the schema they agreed to. Without verification, trust depends entirely on the behavior of the system that produced the output.</li>
+    </ul>
+
+    <h2>The gap: format versus disclosure boundary</h2>
+
+    <p>
+      The distinction between format and disclosure is subtle but critical. Format says: "the output will be valid JSON matching this schema." Disclosure says: "the output will carry no more information than the schema permits, and that constraint was agreed in advance, enforced externally, and is verifiable after the fact."
+    </p>
+
+    <p>
+      Structured outputs provide the first guarantee. <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>Bounded signals</a> — AgentVault's output model — provide the second. The difference is the full trust chain surrounding the schema: how it was agreed, who enforces it, and how you verify it.
+    </p>
+
+    <p>
+      A free-text field in a structured output, for example, is format-compliant. It returns a string where the schema says a string should be. But a free-text string can carry arbitrary information — names, diagnoses, financial details, relationship descriptions. The format is correct. The disclosure is unbounded.
+    </p>
+
+    <p>
+      This is why schema design matters for privacy, and why schema enforcement alone is not enough. The schema itself must be designed to limit information capacity — using enums, bounded integers, and fixed categorical labels rather than open strings. And the schema must be part of a broader agreement that both parties consented to before the session began.
+    </p>
+
+    <h2>How AgentVault fills the gap</h2>
+
+    <p>
+      AgentVault builds on the foundation that structured outputs provide and adds the missing layers:
+    </p>
+
+    <ul>
+      <li><strong><a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>Coordination contracts</a></strong> establish the schema as part of a pre-agreed, content-addressed document. Both parties agree to identical terms — purpose, schema, prompt template, guardian policy — before any private context enters the system. The contract is referenced by its SHA-256 hash and cannot be modified during the session.</li>
+      <li><strong>Relay enforcement</strong> validates every output against the contract's schema at an external point. The relay sits between the agents and rejects any output that falls outside the agreed structure. This is enforcement outside the model — an independent structural constraint that neither party controls.</li>
+      <li><strong>Information-theoretic bounding</strong> treats the schema as a channel-capacity constraint. A field accepting an integer between 1 and 5 carries at most ~2.3 bits. A three-value enum carries ~1.6 bits. The total information capacity of the output is the sum of its fields' capacities — a measurable, finite bound on disclosure.</li>
+      <li><strong>Cryptographic receipts</strong> bind the contract hash, schema, model identity, and output to a signed record. After the session, either party can verify that the output was produced under the agreed terms. The receipt makes the governance auditable, not just aspirational.</li>
+    </ul>
+
+    <h2>Structured outputs as a starting point</h2>
+
+    <p>
+      None of this diminishes the value of structured outputs. They are a genuine improvement over free-text generation, and they provide the format layer on which disclosure constraints can be built. A system without structured outputs would need to solve format consistency and disclosure control simultaneously.
+    </p>
+
+    <p>
+      But treating structured outputs as sufficient for privacy is like treating HTTPS as sufficient for authorization. HTTPS protects the transport. Authorization controls what the authenticated user can access. You need both. Similarly, structured outputs constrain the format. Disclosure boundaries constrain what information can flow. Both layers are necessary for agent coordination on sensitive matters.
+    </p>
+
+    <p>
+      To see how bounded signals, contracts, and receipts work together in practice, try the <a href="https://github.com/vcav-io/agentvault/blob/main/docs/getting-started.md" target="_blank" rel="noopener noreferrer">interactive demo</a>.
+    </p>
+  </ConceptPage>
+</Layout>

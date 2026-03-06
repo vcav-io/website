@@ -1,0 +1,126 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="A2A and AgentVault Solve Different Problems — AgentVault"
+  description="Google's A2A protocol handles agent discovery and communication. AgentVault constrains what agents can disclose during that communication. They operate at different layers."
+  canonicalPath="/agentvault/a2a-and-agentvault/"
+>
+  <ConceptPage
+    title="A2A and AgentVault Solve Different Problems"
+    subtitle="A2A handles discovery and communication. AgentVault constrains disclosure. They operate at different layers of the stack."
+    currentSlug="a2a-and-agentvault"
+  >
+    <h2>Two protocols, two layers</h2>
+
+    <p>
+      Google's Agent-to-Agent (A2A) protocol and AgentVault address different parts of the agent coordination problem. Understanding where each sits in the stack clarifies why they are complementary rather than competitive.
+    </p>
+
+    <p>
+      A2A focuses on the communication layer: how agents discover each other, establish sessions, exchange messages, and manage task lifecycles. AgentVault focuses on the disclosure layer: what agents are permitted to reveal during that communication, and how that constraint is enforced and verified.
+    </p>
+
+    <p>
+      These are distinct concerns. A communication protocol that lacks disclosure control and a disclosure protocol that lacks communication infrastructure are both incomplete. The full picture requires both layers.
+    </p>
+
+    <h2>What A2A provides</h2>
+
+    <p>
+      As of early 2026, A2A defines several core capabilities for agent interoperability:
+    </p>
+
+    <ul>
+      <li><strong>Agent cards:</strong> JSON metadata documents that declare an agent's capabilities, supported input/output types, authentication requirements, and endpoint URLs. Agent cards make agents discoverable and allow clients to understand what an agent can do before initiating contact.</li>
+      <li><strong>Task lifecycle:</strong> A structured model for creating, updating, and completing tasks between agents. Tasks have states (submitted, working, completed, failed) and can carry artifacts — structured outputs produced during execution.</li>
+      <li><strong>Streaming:</strong> Server-sent events for real-time progress updates during long-running tasks. This allows agents to provide incremental status without polling.</li>
+      <li><strong>Message exchange:</strong> A standard format for sending messages between agents within a task context, including support for multiple content parts and MIME types.</li>
+    </ul>
+
+    <p>
+      These are genuinely useful primitives. They solve the interoperability problem — making it possible for agents built by different vendors to communicate without bespoke integrations. A2A is evolving, and its capabilities will likely expand over time.
+    </p>
+
+    <h2>What AgentVault provides</h2>
+
+    <p>
+      AgentVault operates at a different level of abstraction. It does not handle discovery or task routing. Instead, it provides:
+    </p>
+
+    <ul>
+      <li><strong><a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>Coordination contracts</a>:</strong> Machine-readable agreements established before a session begins. A contract defines the session's purpose, the output schema, the prompt template, the guardian policy, and the disclosure terms. Contracts are content-addressed by their SHA-256 hash and are immutable for the session's duration.</li>
+      <li><strong>Schema enforcement:</strong> The relay validates every output against the contract's JSON Schema. Outputs that fall outside the agreed structure are rejected before they reach either party. This bounds the information that can flow through the coordination channel.</li>
+      <li><strong>Relay enforcement:</strong> An external enforcement point that sits between the agents. The relay is not a participant in reasoning — it is a structural constraint that ensures neither party can bypass the agreed terms.</li>
+      <li><strong>Cryptographic receipts:</strong> Ed25519-signed records that bind the contract hash, schema, model identity, and session metadata to the output. Receipts provide after-the-fact verification that the session was conducted under the declared terms.</li>
+    </ul>
+
+    <p>
+      These capabilities are about disclosure control, not communication. They assume that a communication channel already exists and add constraints on top of it.
+    </p>
+
+    <h2>The layer model</h2>
+
+    <p>
+      Agent coordination can be understood as a stack of layers, each addressing a different concern:
+    </p>
+
+    <ul>
+      <li><strong>Transport:</strong> How do bytes move between endpoints? (HTTPS, WebSockets, gRPC)</li>
+      <li><strong>Discovery:</strong> How do agents find each other? (Agent cards, registries, capability declarations)</li>
+      <li><strong>Communication:</strong> How do agents exchange structured messages? (A2A tasks, MCP tool calls, custom APIs)</li>
+      <li><strong>Disclosure boundary:</strong> What are agents permitted to reveal, and how is that enforced? (Contracts, schema enforcement, receipts)</li>
+    </ul>
+
+    <p>
+      A2A primarily operates at the discovery and communication layers. AgentVault operates at the disclosure-boundary layer. They occupy different positions in the stack.
+    </p>
+
+    <p>
+      This is similar to how TLS and application-level authorization serve different purposes. TLS encrypts the transport. Authorization controls what authenticated users can access. You need both, and they do not compete — they compose.
+    </p>
+
+    <h2>Why you might want both</h2>
+
+    <p>
+      For many agent coordination scenarios, interoperability alone is sufficient. If two agents are exchanging public information, routing tasks, or performing actions that carry no privacy sensitivity, a communication protocol provides everything needed.
+    </p>
+
+    <p>
+      But when agents act as delegates carrying private context — health information, financial data, personal preferences, relationship dynamics — the communication channel becomes a disclosure surface. Every message an agent sends can potentially reveal private context that its user did not intend to share.
+    </p>
+
+    <p>
+      In these scenarios, you want both layers:
+    </p>
+
+    <ul>
+      <li>A2A (or a similar communication protocol) provides the infrastructure: discovery, session management, message exchange, and task lifecycle.</li>
+      <li>AgentVault provides the disclosure constraint: pre-agreed terms, schema-bounded outputs, relay enforcement, and verifiable receipts.</li>
+    </ul>
+
+    <p>
+      The communication protocol creates the channel. The disclosure protocol constrains it. Together, they enable agent coordination that is both interoperable and privacy-respecting.
+    </p>
+
+    <h2>What this comparison does not claim</h2>
+
+    <p>
+      A2A is an evolving protocol. Its current specification focuses on communication primitives, but future versions may introduce additional capabilities. This comparison reflects the structural relationship between communication-layer and disclosure-layer concerns as of early 2026, not a permanent assessment of either protocol's feature set.
+    </p>
+
+    <p>
+      The point is not that A2A is missing features it should have. The point is that communication and disclosure control are different problems that benefit from different architectural approaches. A communication protocol optimized for flexibility and broad adoption serves different goals than a disclosure protocol optimized for constraint enforcement and verifiability.
+    </p>
+
+    <p>
+      As the agent ecosystem matures, the layered approach — where different protocols handle different concerns — will likely prove more robust than any single protocol trying to solve everything. The question is not which protocol wins, but how the layers compose. AgentVault is designed to sit on top of whatever communication layer the ecosystem converges on, adding <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signals</a> and verifiable disclosure constraints to any agent interaction that needs them.
+    </p>
+
+    <p>
+      To explore how AgentVault's disclosure-boundary layer works in detail, see the <a href="https://github.com/vcav-io/agentvault/blob/main/docs/protocol.md" target="_blank" rel="noopener noreferrer">protocol specification</a>.
+    </p>
+  </ConceptPage>
+</Layout>

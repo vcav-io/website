@@ -1,0 +1,157 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="How to Stop AI Agents Leaking Private Context — AgentVault"
+  description="When AI agents coordinate as delegates, private user context can leak through free-text communication. Learn four structural approaches to preventing agent-to-agent disclosure."
+  canonicalPath="/agentvault/how-to-stop-ai-agents-leaking-private-context/"
+>
+  <ConceptPage
+    title="How to Stop AI Agents Leaking Private Context"
+    subtitle="Four structural approaches to preventing disclosure when AI agents coordinate on sensitive matters."
+    currentSlug="how-to-stop-ai-agents-leaking-private-context"
+  >
+    <h2>The delegation problem</h2>
+
+    <p>
+      AI agents are becoming delegates. They no longer just answer questions or complete isolated tasks — they act on behalf of users, carrying rich private context into interactions with other agents and services.
+    </p>
+
+    <p>
+      A health agent knows about diagnoses, medications, family medical history, and mental health status. A financial agent knows about income, debt, spending patterns, and investment strategy. A personal assistant knows about relationship dynamics, daily routines, emotional state, and private preferences. This context is what makes agents genuinely useful. It is also what makes agent-to-agent coordination genuinely dangerous.
+    </p>
+
+    <p>
+      When two agents need to coordinate — to assess compatibility between their users, negotiate terms, synthesize information across domains, or mediate a sensitive decision — the private context each agent carries becomes part of the interaction surface. If the communication channel between them is unconstrained, either agent can disclose any information it has access to.
+    </p>
+
+    <p>
+      This is not a hypothetical risk. It is a structural property of any system where context-rich agents communicate over free-text channels.
+    </p>
+
+    <h2>Why "be careful" does not work</h2>
+
+    <p>
+      The most common approach to preventing agent disclosure is prompting. Tell the agent to be discreet. Instruct it not to share sensitive information. Add guardrails to the system prompt.
+    </p>
+
+    <p>
+      This approach has a fundamental problem: it treats disclosure as a behavioral issue when it is actually a <strong>channel capacity</strong> issue.
+    </p>
+
+    <p>
+      A free-text channel between two agents has effectively unlimited information capacity. Any piece of context the agent has access to can be encoded in the response — directly, through implication, through word choice, through hedging patterns, or through statistical correlations in the text. A model instructed to "not share medical information" might still reveal a user's health status through the specificity of its dietary preferences, the timing of its scheduling constraints, or the way it frames risk tolerance.
+    </p>
+
+    <p>
+      Prompting is advisory. It asks the model to be careful. But models are opaque, probabilistic systems. They do not have reliable mechanisms for tracking what information they have revealed across a conversation. They cannot guarantee that subtle correlations in their output do not leak private facts. Even a well-intentioned model cannot promise that a free-text response carries zero bits of unintended information.
+    </p>
+
+    <p>
+      The only way to guarantee bounded disclosure is to bound the channel itself — to structurally constrain the output so that the total amount of information it can carry is finite and measurable, regardless of what the model attempts to express.
+    </p>
+
+    <h2>Four structural approaches</h2>
+
+    <p>
+      Preventing agent-to-agent context leakage requires structural mechanisms, not just behavioral instructions. Four approaches, used together, provide a complete <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a> architecture:
+    </p>
+
+    <h2>1. Constrain channel capacity via schemas</h2>
+
+    <p>
+      The most direct way to limit disclosure is to narrow the output channel. Instead of allowing agents to communicate via free text, constrain the output to a fixed schema with bounded fields.
+    </p>
+
+    <p>
+      A field that accepts an integer between 1 and 5 can carry at most ~2.3 bits of information. A three-value enum carries ~1.6 bits. A boolean carries 1 bit. The total information capacity of the output is the sum of its fields' individual capacities — a finite, measurable bound on how much the agent can disclose.
+    </p>
+
+    <p>
+      This is not about choosing the right format. It is about choosing a format whose information-theoretic properties match the privacy requirements. A schema with three bounded integers and two enums carries far less information than a schema with a single free-text string — even though both are "structured outputs."
+    </p>
+
+    <p>
+      Schema design is disclosure design. The schema determines the ceiling on what can leak.
+    </p>
+
+    <h2>2. Pre-agree terms via contracts</h2>
+
+    <p>
+      A schema is only meaningful as a privacy constraint if both parties agreed to it before the session began. A schema imposed unilaterally, selected dynamically, or changed mid-session does not provide the same guarantee.
+    </p>
+
+    <p>
+      <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>Coordination contracts</a> solve this. A contract is a machine-readable document that defines the session's purpose, the output schema, the prompt template, the guardian policy, and the disclosure terms. It is content-addressed by its SHA-256 hash and established before any private context enters the system. Both parties agree to identical terms. The contract cannot be renegotiated during the session.
+    </p>
+
+    <p>
+      Pre-agreement means consent is explicit and auditable. Each party knows exactly what they are consenting to disclose. If the schema permits a compatibility score from 1 to 5, both sides know that roughly 2.3 bits of information will flow — before they share any private context.
+    </p>
+
+    <h2>3. Enforce at an external point</h2>
+
+    <p>
+      Agreement is necessary but not sufficient. The contract specifies what should happen. Enforcement ensures it does happen.
+    </p>
+
+    <p>
+      In many agent systems, the model itself is the only enforcement point. The model generates an output, and the calling code validates it. But in agent-to-agent coordination, the model is one of the interested parties. Asking the model to enforce its own disclosure constraints is like asking a negotiator to also serve as the arbiter.
+    </p>
+
+    <p>
+      An external enforcement point — a relay that sits between the agents — provides structural independence. The relay validates every output against the contract's schema. Outputs that fall outside the agreed structure are rejected before they reach either party. The relay does not participate in the reasoning. It is a structural constraint, not a participant.
+    </p>
+
+    <p>
+      External enforcement means that even a compromised, careless, or adversarial model cannot disclose more than the schema permits. The constraint holds regardless of model behavior.
+    </p>
+
+    <h2>4. Verify after the fact</h2>
+
+    <p>
+      Trust but verify. Even with pre-agreed contracts and external enforcement, parties need a way to confirm that the session was conducted under the declared terms. Without verification, assurance depends on trusting the enforcement layer — and trust without evidence is fragile.
+    </p>
+
+    <p>
+      Cryptographic receipts provide this verification. After the session completes, both parties receive an Ed25519-signed record that binds the contract hash, output schema, prompt template hash, guardian policy hash, model identity, and session metadata to the result. The receipt is independently verifiable. Either party can confirm that the output they received was produced under the contract they agreed to.
+    </p>
+
+    <p>
+      Receipts make the privacy guarantee auditable. They transform "we agreed to these terms" from a claim into verifiable evidence.
+    </p>
+
+    <h2>How the four approaches compose</h2>
+
+    <p>
+      Each approach addresses a different failure mode:
+    </p>
+
+    <ul>
+      <li><strong>Schema constraints</strong> bound the channel capacity — limiting how much information can flow regardless of intent.</li>
+      <li><strong>Contracts</strong> ensure mutual consent — both parties agree to the same terms before the session begins.</li>
+      <li><strong>External enforcement</strong> removes the model from the trust chain for output validation — constraints hold even if the model tries to circumvent them.</li>
+      <li><strong>Receipts</strong> provide verifiable evidence — after the fact, both parties can confirm the session was governed correctly.</li>
+    </ul>
+
+    <p>
+      Used in isolation, each approach has gaps. Schemas without contracts lack consent. Contracts without enforcement are aspirational. Enforcement without receipts is unverifiable. Used together, they form a complete <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>bounded disclosure</a> architecture.
+    </p>
+
+    <h2>The structural principle</h2>
+
+    <p>
+      The common thread across all four approaches is structural enforcement rather than behavioral control. Instead of asking agents to be careful, the system constrains what agents can express. Instead of trusting model behavior, the architecture bounds the channel. Instead of hoping for compliance, it makes compliance verifiable.
+    </p>
+
+    <p>
+      This is the core insight behind AgentVault: privacy in agent-to-agent coordination is not a prompting problem, a fine-tuning problem, or a model-alignment problem. It is an architecture problem. The right architecture makes disclosure structurally bounded — regardless of what the model knows, intends, or attempts.
+    </p>
+
+    <p>
+      To explore how these four mechanisms work together in a running system, see the <a href="https://github.com/vcav-io/agentvault" target="_blank" rel="noopener noreferrer">AgentVault repository</a>.
+    </p>
+  </ConceptPage>
+</Layout>
