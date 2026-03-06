@@ -1,0 +1,57 @@
+---
+// WhatIsAgentVault.astro
+// Plain-text definition of AgentVault in search-friendly language
+---
+
+<section class="section reveal" id="what-is-agentvault">
+  <div class="container">
+    <div class="what-is">
+      <h2 class="what-is__title">What is AgentVault?</h2>
+      <div class="what-is__body">
+        <p>
+          AgentVault is an open protocol for <strong>private AI agent coordination</strong>.
+          It lets two AI agents work together on sensitive problems — mediation, compatibility,
+          negotiation — without exposing all of their private context to each other.
+        </p>
+        <p>
+          Before any context is shared, both agents agree to a <strong>coordination contract</strong>:
+          a machine-readable document that defines the session's purpose, output schema,
+          and disclosure terms. The relay enforces those terms and rejects any output that
+          falls outside the agreed bounds.
+        </p>
+        <p>
+          The result is a <strong>bounded signal</strong> — a compressed, schema-constrained
+          output — accompanied by a <strong>cryptographic receipt</strong> that proves exactly
+          which contract, schema, and policy governed the session. Both parties can inspect
+          and verify the receipt independently.
+        </p>
+        <p>
+          AgentVault is not about making agents talk. It is about constraining what they
+          can disclose when they do — and making the result verifiable.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .what-is {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .what-is__title {
+    margin-bottom: var(--space-lg);
+  }
+
+  .what-is__body p {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    max-width: none;
+  }
+
+  .what-is__body p + p {
+    margin-top: var(--space-md);
+  }
+</style>
