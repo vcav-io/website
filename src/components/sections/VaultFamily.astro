@@ -7,18 +7,16 @@ import VCAVMark from '../icons/VCAVMark.astro';
 
 <section class="section section--alt reveal" id="family">
   <div class="container">
-    <h2>The Vault Family</h2>
+    <h2>Assurance Levels</h2>
     <p class="intro">
-      AgentVault, VCAV, and VFC share a single principle:
-    </p>
-    <p class="intro principles">
-      Bound internal reasoning.<br>
-      Bound external disclosure.<br>
-      Verifiable enforcement.
+      AgentVault assumes you already trust your AI model provider — most
+      consumers do. That assumption makes the protocol lightweight and
+      general. VCAV removes even the provider from the trust envelope,
+      using local models and hardware attestation.
     </p>
     <p class="intro intro--paired">
-      They differ in assurance level.<br>
-      The protocol remains the same.
+      Same bounded-disclosure principle.<br>
+      The trust envelope shrinks as the stakes rise.
     </p>
 
     <div class="cards">
@@ -36,11 +34,12 @@ import VCAVMark from '../icons/VCAVMark.astro';
           >vcav-io/agentvault</a>
         </div>
         <p class="card__description">
-          The open protocol for bounded agent-to-agent coordination.
-          Runs in a software execution lane. Designed to be embedded inside agent
-          frameworks — not replace them.
+          The open protocol for private, verifiable agent-to-agent coordination.
+          Two execution lanes: a software lane (operator-attested) and a TEE lane
+          (hardware-assured, operator excluded from plaintext). Relay-enforced
+          contracts, schema-bound outputs, and cryptographic receipts.
         </p>
-        <div class="card__tag card__tag--primary">Open coordination layer</div>
+        <div class="card__tag card__tag--primary">Software + TEE execution lanes</div>
       </div>
 
       <div class="card card--muted">
@@ -52,10 +51,13 @@ import VCAVMark from '../icons/VCAVMark.astro';
           <span class="card__badge">Private — in development</span>
         </div>
         <p class="card__description">
-          Hardware-backed boundary with stronger isolation guarantees.
-          Same protocol. Higher assurance context.
+          The highest assurance tier — local models, hardware attestation
+          (AMD SEV-SNP), and side-channel hardening shrink the trust envelope
+          to the sealed VM itself. A dedicated orchestrator enforces information
+          flow control and privacy budgets. Same bounded-disclosure principle,
+          strongest guarantees.
         </p>
-        <div class="card__tag">Sealed execution lane</div>
+        <div class="card__tag">Confidential coordination infrastructure</div>
       </div>
 
       <div class="card">

@@ -1,0 +1,98 @@
+---
+// FAQ.astro
+// Search-friendly FAQ with JSON-LD structured data
+
+const faqs = [
+  {
+    question: 'What is agent-to-agent privacy?',
+    answer: 'When AI agents act as delegates, they carry sensitive personal context from their users — health concerns, financial details, private preferences. Agent-to-agent privacy is the problem of preventing that context from leaking when agents coordinate with each other. It is a disclosure-boundary problem: not whether agents can communicate, but how much they reveal when they do.',
+  },
+  {
+    question: 'How can AI agents coordinate without leaking private context?',
+    answer: 'AgentVault replaces open-ended free-text communication with a structured coordination protocol. Both agents agree to a coordination contract that defines the session\'s purpose and output schema. The relay enforces those constraints — validating every output against the schema and rejecting anything outside the agreed bounds. The result is a bounded signal, not a free-text exchange.',
+  },
+  {
+    question: 'What is a coordination contract?',
+    answer: 'A coordination contract is the machine-readable agreement that governs an AgentVault session. It defines the purpose of the coordination, the allowed output structure (as a JSON Schema), and the terms both agents consent to. Contracts are content-addressed — referenced by their SHA-256 hash — and established before any private context is shared. They are never renegotiated mid-session.',
+  },
+  {
+    question: 'What is a bounded signal?',
+    answer: 'A bounded signal is the output of an AgentVault session: a compressed, schema-constrained result produced under a fixed contract. Unlike free-text communication between agents, a bounded signal carries only what the output schema permits. The relay enforces this structurally — invalid outputs are rejected and never returned to either party.',
+  },
+  {
+    question: 'How is AgentVault different from ordinary agent interoperability?',
+    answer: 'Agent interoperability protocols make communication between agents possible. AgentVault constrains what may be disclosed during that communication and produces a verifiable record of what governed the session. It is not a transport layer or a discovery mechanism — it is a disclosure-boundary layer that sits on top of existing agent infrastructure.',
+  },
+];
+
+const faqJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'mainEntity': faqs.map((faq) => ({
+    '@type': 'Question',
+    'name': faq.question,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': faq.answer,
+    },
+  })),
+});
+---
+
+<section class="section reveal" id="faq">
+  <div class="container">
+    <div class="faq">
+      <h2 class="faq__title">Frequently Asked Questions</h2>
+      <dl class="faq__list">
+        {faqs.map((faq) => (
+          <div class="faq__item">
+            <dt class="faq__question">{faq.question}</dt>
+            <dd class="faq__answer">{faq.answer}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={faqJsonLd} />
+
+<style>
+  .faq {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .faq__title {
+    margin-bottom: var(--space-xl);
+  }
+
+  .faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .faq__item {
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+
+  .faq__item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .faq__question {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-sm);
+  }
+
+  .faq__answer {
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+</style>
