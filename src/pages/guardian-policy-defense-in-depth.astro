@@ -20,7 +20,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      Schema validation is the primary enforcement layer — a strict enum field with four values permits only those four values. The guardian provides defense in depth: a second layer of checks applied to schema-valid output. If the schema is the structural constraint, the guardian is the additional mechanical constraint that catches what the schema alone cannot express.
+      Schema validation is the primary enforcement layer — a strict enum field with four values permits only those four values. The guardian provides a narrow second layer of mechanical checks applied to schema-valid output. If the schema is the structural constraint, the guardian is the additional mechanical constraint that catches what the schema alone cannot express. The guardian is intentionally modest: it is a secondary constraint layer, not the primary disclosure boundary.
     </p>
 
     <h2>How enforcement policies layer on schema constraints</h2>
@@ -41,11 +41,11 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Policy scope and rule types</h2>
 
     <p>
-      A guardian enforcement policy has a scope of <code>RELAY_GLOBAL</code> — it applies to every session on the relay. The policy is loaded at relay startup, content-addressed by SHA-256 over its JCS canonical form, and bound into every receipt via the <code>guardian_policy_hash</code> commitment.
+      In the current implementation, a guardian enforcement policy has a scope of <code>RELAY_GLOBAL</code> — it applies to every session on the relay. The policy is loaded at relay startup, content-addressed by SHA-256 over its JCS canonical form, and bound into every receipt via the <code>guardian_policy_hash</code> commitment.
     </p>
 
     <p>
-      The current protocol version supports one rule type: <code>unicode_category_reject</code>. A rule of this type scans every string value in the output JSON and rejects the output if any string contains a character in the specified Unicode general category.
+      The current protocol version supports one rule type: <code>unicode_category_reject</code>. A rule of this type scans every string value in the output JSON and rejects the output if any string contains a character in the specified Unicode general category. This is intentionally narrow: the current rule surface is a modest starting point, not a rich policy engine.
     </p>
 
     <p>
@@ -68,11 +68,11 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      <strong><code>GATE</code></strong> — the relay aborts the session with <code>POLICY_GATE</code> and returns a constant-shape HTTP 422 error: <code>{'{"error": "OUTPUT_POLICY_VIOLATION"}'}</code>. No detail about which rule fired or what content triggered it is exposed. The output is never delivered to either participant. This prevents participants from reverse-engineering the guardian policy through error responses.
+      <strong><code>GATE</code></strong> — the relay aborts the session with <code>POLICY_GATE</code> and returns a constant-shape HTTP 422 error: <code>{'{"error": "OUTPUT_POLICY_VIOLATION"}'}</code>. No detail about which rule fired or what content triggered it is exposed. The output is never delivered to either participant. This reduces the risk of participants probing the guardian policy through error responses.
     </p>
 
     <p>
-      <strong><code>ADVISORY</code></strong> — the relay logs a warning but does not block the output. Advisory violations are not reported to participants. They exist for monitoring and gradual enforcement rollout.
+      <strong><code>ADVISORY</code></strong> — the relay logs a warning but does not block the output. Advisory violations are not reported to participants. This preserves the bounded response surface, but also means advisory mode is an operator-observability feature rather than a participant-facing guarantee. Advisory rules exist for monitoring and gradual enforcement rollout.
     </p>
 
     <h2>Content-addressed policy hashing and lockfile validation</h2>
@@ -92,7 +92,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Multi-policy selection</h2>
 
     <p>
-      A single relay can serve multiple governance modes through multi-policy selection. The contract's <code>enforcement_policy_hash</code> field specifies which policy should govern the session. The relay loads all available policies at startup, indexes them by hash, and selects the matching policy when a session is created.
+      A single relay can serve multiple operator governance modes through multi-policy selection. The contract's <code>enforcement_policy_hash</code> field specifies which policy should govern the session. The relay loads all available policies at startup, indexes them by hash, and selects the matching policy when a session is created.
     </p>
 
     <p>

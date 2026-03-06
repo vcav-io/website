@@ -13,7 +13,7 @@ import {
   computeRelayContractHash,
 } from 'agentvault-client/relay-contracts';
 
-// 1. Build a contract from a bundled template
+// 1. Build a contract from a bundled session template
 const contract = buildRelayContract('COMPATIBILITY', [
   'agent-alice',
   'agent-bob',
@@ -33,7 +33,8 @@ const result = await createAndSubmit(
 //   responderSubmitToken, responderReadToken,
 //   initiatorReadToken
 
-// 3. Send responder tokens to Bob (out-of-band)
+// 3. Transmit responder credentials to Bob
+//    through an authenticated application channel
 // Bob needs: sessionId, contractHash,
 //   responderSubmitToken, responderReadToken
 
@@ -49,7 +50,7 @@ const output = await pollUntilDone(
 
 const responderCode = `import { joinAndWait } from 'agentvault-client';
 
-// Tokens received from initiator (out-of-band)
+// Credentials received from initiator
 const output = await joinAndWait(
   { relayUrl: 'http://localhost:3100' },
   sessionId,
@@ -128,7 +129,7 @@ curl http://localhost:3100/health
     <h2>Two integration paths</h2>
 
     <p>
-      AgentVault provides two integration paths: a TypeScript client library for direct relay interaction, and an MCP server that exposes AgentVault operations as tools. The client library is lower-level and gives full control over session lifecycle. The MCP server is higher-level and designed for agents that already speak the MCP protocol.
+      AgentVault provides two integration paths: a direct client integration path and an MCP-based tool integration path. The TypeScript client library is lower-level and gives full control over session lifecycle. The MCP server is higher-level and designed for agents that already speak the MCP protocol. The examples below show the current minimal implementation path. Production integrations may wrap token handoff and session coordination inside higher-level agent or application channels.
     </p>
 
     <p>
@@ -154,7 +155,7 @@ curl http://localhost:3100/health
     <h3>Initiator side</h3>
 
     <p>
-      The initiator creates the session, submits their input, and distributes the responder's tokens:
+      The initiator creates the session, submits their input, and obtains the responder's join credentials for handoff:
     </p>
 
     <pre style={codeStyle} set:text={initiatorCode} />
@@ -168,7 +169,7 @@ curl http://localhost:3100/health
     <pre style={codeStyle} set:text={responderCode} />
 
     <p>
-      The <code>expectedContractHash</code> parameter is critical: the relay verifies it matches the session's actual contract hash and rejects with <code>CONTRACT_MISMATCH</code> if not. This prevents contract substitution attacks — the responder confirms they are joining the session they agreed to.
+      The <code>expectedContractHash</code> parameter is critical: the relay verifies it matches the session's actual contract hash and rejects with <code>CONTRACT_MISMATCH</code> if not. This prevents silent contract substitution at join time — the responder confirms they are joining the session they agreed to.
     </p>
 
     <h3>Contract builders</h3>
@@ -178,7 +179,7 @@ curl http://localhost:3100/health
     </p>
 
     <p>
-      <strong><code>buildRelayContract(purpose, participants)</code></strong> — builds a full contract from a bundled template with the output schema embedded inline. Available purpose codes: <code>COMPATIBILITY</code>, <code>MEDIATION</code>.
+      <strong><code>buildRelayContract(purpose, participants)</code></strong> — builds a full contract from a bundled session template with the output schema embedded inline. Available purpose codes: <code>COMPATIBILITY</code>, <code>MEDIATION</code>.
     </p>
 
     <p>

@@ -16,7 +16,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Verification independence</h2>
 
     <p>
-      Verification requires the receipt, the contract, the enforcement policy, and the relay's public key. It does not require the runtime, the operator, or the model. This is the central result of the protocol's design: a third party who was not present during the session can verify everything about how it was governed.
+      Verification requires the receipt, the contract, the enforcement policy, and the relay's public key. It does not require the runtime, the operator, or the model. This is the central result of the protocol's design: a third party who was not present during the session can verify the receipt signature, the commitment chain, and the declared governance artefacts for the session.
     </p>
 
     <p>
@@ -56,7 +56,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      <strong>Step 4: Build the signing message.</strong> Prepend the domain separator: <code>"VCAV-RECEIPT-V2:" + canonical_json_string</code>. The colon is part of the separator. No null byte, no length prefix, no newline.
+      <strong>Step 4: Build the signing message.</strong> Prepend the domain separator: <code>"VCAV-RECEIPT-V2:" + canonical_json_string</code>. The shared receipt namespace remains VCAV-prefixed for family compatibility across AgentVault and VCAV. The colon is part of the separator. No null byte, no length prefix, no newline.
     </p>
 
     <p>
@@ -64,7 +64,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      <strong>Step 6: Verify.</strong> Base64url-decode the signature value. Hex-decode the verifying key (32 bytes). Verify the Ed25519 signature over the digest. If verification passes, the receipt was signed by the entity holding the corresponding private key and has not been modified since signing.
+      <strong>Step 6: Verify.</strong> Base64url-decode the signature value. Hex-decode the verifying key (32 bytes). Verify the Ed25519 signature over the digest. If verification passes, the receipt was signed by the entity holding the corresponding private key and has not been modified since signing. That proves provenance and integrity of the receipt document, not honesty of the underlying execution unless a stronger assurance tier is present.
     </p>
 
     <h2>What each commitment field proves</h2>
@@ -134,6 +134,10 @@ import ConceptPage from '../components/ConceptPage.astro';
 
     <p>
       These non-guarantees are not weaknesses to be papered over — they are architectural properties of the <code>SELF_ASSERTED</code> tier. Each higher assurance level progressively closes these gaps: <code>OPERATOR_AUDITED</code> adds external audit trails, <code>PROVIDER_ATTESTED</code> adds model identity verification, and <code>TEE_ATTESTED</code> removes the relay operator from the trust envelope entirely.
+    </p>
+
+    <p>
+      A verified receipt tells you what artefacts governed the session and that the signed record is intact. It does not, by itself, tell you whether the runtime was honest.
     </p>
   </ConceptPage>
 </Layout>
