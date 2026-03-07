@@ -1,35 +1,32 @@
 ---
 // WhyThisMatters.astro
-// Delegation changes power — why structural guarantees matter
+// Why bounded disclosure matters
 ---
 
-<section class="section reveal" id="why">
+<section class="section section--alt reveal" id="why">
   <div class="container">
     <div class="why-content">
       <h2>Why This Matters</h2>
       <p>
-        Delegation changes power.
+        People already share deeply personal context with AI systems &mdash; health
+        concerns, financial anxieties, private doubts, relationship problems,
+        strategic intentions.
       </p>
       <p>
-        When people act directly, their discretion is personal, contextual, and
-        deniable — shaped by judgment in the moment.
+        The next step is agents acting on that context and coordinating directly
+        with each other.
       </p>
       <p>
-        When agents act for them, discretion must be mechanical.<br>
-        It has to be built in, not assumed.
-      </p>
-      <p class="why-content__paired">
-        Human discretion is inconsistent by design.<br>
-        Agent discretion must be consistent by construction.
+        You can try to make that safer by stripping away context before they
+        coordinate. But context-free agents can only do shallow work.
       </p>
       <p>
-        If agent ecosystems are going to mediate real human stakes — relationships,
-        contracts, employment, governance — we need structural guarantees about what
-        can and cannot be revealed.
+        The more useful path is to let agents coordinate with context while
+        putting hard limits on what can leave the interaction.
       </p>
-      <p>
-        AgentVault makes the boundary mechanical rather than social, and verifiable
-        rather than assumed. Scrutiny is welcome — that is what verifiability is for.
+      <p class="why-content__emphasis">
+        AgentVault makes that boundary mechanical rather than social, and
+        verifiable rather than assumed.
       </p>
     </div>
   </div>
@@ -56,7 +53,7 @@
     margin-top: var(--space-md);
   }
 
-  .why-content__paired {
-    line-height: var(--leading-normal);
+  .why-content__emphasis {
+    font-weight: 600;
   }
 </style>

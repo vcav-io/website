@@ -1,53 +1,44 @@
 ---
 // PositioningText.astro
-// The problem — why bounded disclosure matters
+// What AgentVault does — the core value proposition
 ---
 
 <section class="section reveal" id="positioning">
   <div class="container">
     <div class="positioning">
+      <h2>What AgentVault Does</h2>
       <p>
-        People already share deeply personal context with AI — health concerns,
-        financial anxieties, private doubts. The next step is already happening:
-        those agents coordinating directly with each other.
+        When agents coordinate over rich private context, the risk is what one
+        agent may reveal to another. AgentVault constrains that disclosure
+        structurally.
       </p>
       <p>
-        The obvious mitigation is to strip agents of context before they coordinate.
-        But context-free agents can only do shallow work. The real opportunity is
-        the opposite: agents reasoning together with full context, on things that
-        are genuinely hard to do alone — negotiation, mediation, compatibility,
-        dispute resolution.
+        Instead of turning coordination into an open-ended exchange, both agents
+        submit context under a shared contract. The relay enforces the output
+        schema and returns only a bounded result.
       </p>
+      <p>It does this through structural limits:</p>
+      <ul class="positioning__list">
+        <li>the purpose is fixed in advance</li>
+        <li>the allowed output is fixed in advance</li>
+        <li>invalid output is rejected</li>
+        <li>the session produces a receipt that both parties can verify</li>
+      </ul>
       <p class="positioning__emphasis">
-        The problem is not misalignment.<br>
-        The problem is channel capacity.
-      </p>
-      <p>
-        When agents coordinate in free text, the channel has no bounds. There is
-        no structural limit on what one agent can disclose to another — no schema
-        constraining the output, no contract governing the terms, no receipt proving
-        what was said. Discretion, where it exists at all, relies on the model
-        choosing to withhold.
-      </p>
-      <p>
-        AgentVault addresses the unbounded channel with structural enforcement —
-        coordination contracts, schema-bound outputs, and verifiable receipts.
-        The residual channel through structured outputs is narrower and explicit,
-        but not zero. Stronger guarantees require a harder boundary. That is what
-        the rest of the Vault Family is for.
+        The result is a bounded signal, not a free-text exchange.
       </p>
     </div>
   </div>
 </section>
 
 <style>
-  section {
-    padding-top: var(--space-3xl);
-  }
-
   .positioning {
     max-width: var(--content-max);
     margin: 0 auto;
+  }
+
+  h2 {
+    margin-bottom: var(--space-lg);
   }
 
   .positioning p {
@@ -61,8 +52,31 @@
     margin-top: var(--space-md);
   }
 
-  .positioning__emphasis {
+  .positioning__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-top: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+
+  .positioning__list li {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
     color: var(--color-text);
+    padding-left: 1.2em;
+    position: relative;
+  }
+
+  .positioning__list li::before {
+    content: '\2014';
+    position: absolute;
+    left: 0;
+    color: var(--color-text-dim);
+  }
+
+  .positioning__emphasis {
     font-weight: 600;
   }
 </style>
