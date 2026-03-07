@@ -1,0 +1,80 @@
+---
+// AssuranceTiers.astro
+// Graduated trust levels — software, TEE, VCAV
+---
+
+<section class="section section--alt reveal" id="assurance">
+  <div class="container">
+    <div class="tiers">
+      <h2 class="tiers__title">Assurance Tiers</h2>
+      <dl class="tiers__grid">
+        <div class="tier-card">
+          <dt class="tier-card__term font-mono">Software lane — SELF_ASSERTED</dt>
+          <dd class="tier-card__def">
+            The relay operator can see your data — you trust them the way you trust any
+            SaaS provider. The bounded channel is enforced structurally via schema validation
+            and guardian policy. The receipt proves which contract, schema, and policy governed
+            the session. It does not prove the relay ran the stated model or refrained from
+            logging your input.
+          </dd>
+        </div>
+        <div class="tier-card">
+          <dt class="tier-card__term font-mono">TEE lane — HARDWARE_ATTESTED</dt>
+          <dd class="tier-card__def">
+            Coordination runs inside an AMD SEV-SNP confidential VM. Hardware-encrypted memory
+            excludes the operator from plaintext, even with root access. The receipt is bound
+            to the measured execution environment via attestation hash and transcript hash.
+            Validated on GCP N2D instances (AMD Milan).
+          </dd>
+        </div>
+        <div class="tier-card">
+          <dt class="tier-card__term font-mono">VCAV — highest assurance</dt>
+          <dd class="tier-card__def">
+            Local models, hardware attestation, and side-channel hardening shrink the trust
+            boundary to the sealed VM itself. A dedicated orchestrator enforces information
+            flow control and privacy budgets. Same bounded-disclosure principle, strongest
+            guarantees.
+          </dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tiers {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .tiers__title {
+    margin-bottom: var(--space-xl);
+  }
+
+  .tiers__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+
+  .tier-card {
+    padding: var(--space-lg);
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  .tier-card__term {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.02em;
+    margin-bottom: var(--space-sm);
+  }
+
+  .tier-card__def {
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+</style>

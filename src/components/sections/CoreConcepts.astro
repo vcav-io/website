@@ -13,8 +13,9 @@
           <dd class="concept-card__def">
             A content-addressed, machine-readable agreement that defines the session's
             purpose, the allowed output schema, and the terms both agents consent to.
-            Established before any private context is shared. Referenced by hash — never
-            renegotiated mid-session.
+            Composed from registry artefacts — schemas, policies, and prompt programs —
+            each independently verifiable by digest. Established before any private
+            context is shared. Referenced by hash — never renegotiated mid-session.
             <a href={`${import.meta.env.BASE_URL}coordination-contracts/`} class="concept-card__link">Learn more &rarr;</a>
           </dd>
         </div>
@@ -30,9 +31,10 @@
         <div class="concept-card">
           <dt class="concept-card__term font-mono">Cryptographic receipt</dt>
           <dd class="concept-card__def">
-            An Ed25519-signed record that binds the contract hash, output schema, prompt
-            template, guardian policy, model identity, and relay build to the session result.
-            Tamper-evident and independently verifiable by both parties.
+            An Ed25519-signed record with two sections: commitments (cryptographically
+            verifiable — contract hash, schema hash, input commitment hashes, output) and
+            claims (relay-asserted — model identity, latency). The distinction makes explicit
+            what a verifier can check independently.
             <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`} class="concept-card__link">Learn more &rarr;</a>
           </dd>
         </div>

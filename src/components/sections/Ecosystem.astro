@@ -1,0 +1,52 @@
+---
+// Ecosystem.astro
+// Content-addressed artefact ecosystem — registry and contract builder
+---
+
+<section class="section reveal" id="ecosystem">
+  <div class="container">
+    <div class="ecosystem">
+      <h2 class="ecosystem__title">Artefact Ecosystem</h2>
+      <div class="ecosystem__body">
+        <p>
+          Every enforcement-relevant artefact — schemas, guardian policies, prompt programs,
+          model profiles — is content-addressed (SHA-256 over JCS-canonicalized JSON) and stored
+          in a versioned registry. The relay admits only artefacts whose digests it can verify.
+          Unknown artefacts are rejected at startup — fail-closed by default.
+        </p>
+        <p>
+          Contracts compose from registry artefacts. The <code>av-contract build</code> CLI
+          resolves artefacts by digest, alias, or channel reference, validates SAFE/RICH
+          compatibility between schemas and policies, and computes the contract hash. What was
+          once a hardcoded template is now an open-ended assembly process.
+        </p>
+        <p>
+          Operators curate registries. Agents compose contracts. Relays admit only what they
+          have verified.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ecosystem {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .ecosystem__title {
+    margin-bottom: var(--space-lg);
+  }
+
+  .ecosystem__body p {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    max-width: none;
+  }
+
+  .ecosystem__body p + p {
+    margin-top: var(--space-md);
+  }
+</style>

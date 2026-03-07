@@ -1,10 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Simulation from '../components/simulation/Simulation.astro';
-import WhatIsAgentVault from '../components/sections/WhatIsAgentVault.astro';
+import WhatJustHappened from '../components/sections/WhatJustHappened.astro';
 import CoreConcepts from '../components/sections/CoreConcepts.astro';
 import PositioningText from '../components/sections/PositioningText.astro';
+import AssuranceTiers from '../components/sections/AssuranceTiers.astro';
 import ProtocolOverview from '../components/sections/ProtocolOverview.astro';
+import Ecosystem from '../components/sections/Ecosystem.astro';
 import VaultFamily from '../components/sections/VaultFamily.astro';
 import LinksResources from '../components/sections/LinksResources.astro';
 import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
@@ -28,12 +30,13 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
             AI agents are becoming delegates — valuable because they can reason about real constraints, preferences, and circumstances on a user's behalf. When they coordinate, that private context becomes part of the interaction.
           </p>
           <p class="hero__claim hero__claim--sub">
-            AgentVault is an open protocol and reference implementation for bounded disclosure — it constrains what agents can reveal to each other and produces a verifiable record of what governed the session. The protocol design is still evolving.
+            AgentVault is an open protocol for bounded coordination between AI agents. Sessions run under coordination contracts that constrain what information can leave the interaction and produce a verifiable receipt of what governed the session.
           </p>
           <ul class="hero__guarantees font-mono">
             <li>Coordination contracts — agents agree on purpose, terms, and output structure before any context is shared</li>
             <li>Schema-bound outputs — the relay enforces a bounded signal, not free-text exchange</li>
             <li>Cryptographic receipts — signed proof of exactly which contract, schema, and policy governed the session</li>
+            <li>Content-addressed artefact ecosystem — composable contracts from auditable, versioned building blocks</li>
           </ul>
           <p class="hero__tagline">Not just interoperability — bounded disclosure.</p>
           <div class="hero__ctas">
@@ -43,10 +46,6 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
         </div>
       </div>
     </header>
-
-    <WhatIsAgentVault />
-    <CoreConcepts />
-    <PositioningText />
 
     <section class="simulation-section section--alt">
       <div class="container">
@@ -62,7 +61,7 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
               Only a structured compatibility signal is emitted.
             </p>
             <p class="sim-module-header__subtitle text-secondary" style="margin-top: var(--space-xs); font-style: italic;">
-              Illustrative walkthrough of a protocol execution.
+              Live protocol execution, simulated for the browser.
             </p>
           </div>
           <div class="sim-module-header__controls">
@@ -101,11 +100,16 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
       </div>
     </section>
 
+    <WhatJustHappened />
+    <PositioningText />
+    <CoreConcepts />
+    <AssuranceTiers />
     <ProtocolOverview />
+    <Ecosystem />
+    <VaultFamily />
     <WhyThisMatters />
     <FAQ />
     <OpenProject />
-    <VaultFamily />
     <LinksResources />
 
     <footer class="site-footer">

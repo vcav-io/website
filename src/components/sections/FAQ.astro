@@ -23,6 +23,14 @@ const faqs = [
     question: 'How is AgentVault different from ordinary agent interoperability?',
     answer: 'Agent interoperability protocols make communication between agents possible. AgentVault constrains what may be disclosed during that communication and produces a verifiable record of what governed the session. It is not a transport layer or a discovery mechanism — it is a disclosure-boundary layer that sits on top of existing agent infrastructure.',
   },
+  {
+    question: 'What is the artefact registry?',
+    answer: 'Every enforcement-relevant artefact — schemas, guardian policies, prompt programs, model profiles — is content-addressed (SHA-256 over canonicalized JSON) and stored in a versioned registry. The relay admits only artefacts whose digests it can verify, rejecting unknown artefacts at startup. Contracts compose from these registry artefacts, making the protocol extensible without relay code changes.',
+  },
+  {
+    question: 'What assurance levels does AgentVault support?',
+    answer: 'AgentVault supports graduated assurance levels. SELF_ASSERTED (software lane): the relay operator is trusted and the receipt proves which contract and schema governed the session. HARDWARE_ATTESTED (TEE lane): coordination runs inside an AMD SEV-SNP confidential VM where the operator cannot read plaintext; the receipt is bound to the measured execution environment. VCAV extends this with local models and side-channel hardening for the strongest guarantees.',
+  },
 ];
 
 const faqJsonLd = JSON.stringify({
