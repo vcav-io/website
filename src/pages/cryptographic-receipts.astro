@@ -54,6 +54,10 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
+      Receipt v2 separates these fields into two explicit sections: <strong>commitments</strong> (cryptographically verifiable — contract hash, schema hash, input commitment hashes, bounded output hash) and <strong>claims</strong> (relay-asserted — model identity, token usage, latency, channel capacity measurement). This distinction makes explicit what a verifier can check independently versus what requires trusting the relay. Both sections are bound by the same Ed25519 signature.
+    </p>
+
+    <p>
       Because all of these fields are bound together in a single signed record, tampering with any element invalidates the signature. Change the contract hash, alter the output, swap the policy, modify any field at all — the signature will not verify. The receipt is <strong>tamper-evident</strong> by construction.
     </p>
 
@@ -76,7 +80,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      <strong>They do not prove confidentiality of inputs.</strong> In the software execution lane, the model provider sees the private context during processing. The receipt proves the output was bounded — it does not prove the inputs were hidden from all observers. The <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>bounded disclosure</a> guarantee applies to the output channel, not the processing environment. For stronger guarantees, AgentVault's TEE lane removes the relay operator from the trust envelope, and VCAV removes the model provider entirely — but those are separate mechanisms with their own attestation records.
+      <strong>They do not prove confidentiality of inputs.</strong> In the software execution lane, the model provider sees the private context during processing. The receipt proves the output was bounded — it does not prove the inputs were hidden from all observers. The <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>bounded disclosure</a> guarantee applies to the output channel, not the processing environment. The TEE lane (operational on AMD SEV-SNP confidential VMs) removes the relay operator from the trust envelope, and the receipt includes TEE attestation data — attestation hash, transcript hash, and receipt signing public key — verifiable against the hardware vendor's root of trust. VCAV removes the model provider entirely. These are separate mechanisms with their own attestation records.
     </p>
 
     <p>

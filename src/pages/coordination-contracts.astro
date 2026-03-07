@@ -20,7 +20,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      Contracts are content-addressed — each contract is referenced by its SHA-256 hash. This means any change to the contract, no matter how small, produces a different hash, making tampering immediately detectable. The hash serves as the contract's unique identifier for the entire session and is embedded in every downstream artifact.
+      Contracts are content-addressed — each contract is referenced by its SHA-256 hash. This means any change to the contract, no matter how small, produces a different hash, making tampering immediately detectable. The hash serves as the contract's unique identifier for the entire session and is embedded in every downstream artifact. Contracts are composed from content-addressed registry artefacts — schemas, policies, model profiles, and prompt programs — each independently verifiable by its SHA-256 digest. The <code>av-contract</code> CLI resolves artefacts by digest, alias, or channel reference and validates compatibility before producing the final contract.
     </p>
 
     <p>
