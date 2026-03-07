@@ -22,6 +22,9 @@ const H = {
   bobIdentKeyFull:   '7d2ba9f3c5e1b8d4a2f7c3e9b5d1a8f4c2e7b3d9a5f1c8e4b2d6a3f9c5e2b17d9f3',
   receiptSig:        '8f9e0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c73c4d',
   alicePropSig:      'a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9',
+  enforcementPolicyHash: 'f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d1c2b3a4f5e6d7c8b9a0f1e2',
+  schemaHash:            'a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3',
+  relayVerifyingKey:     'b9a8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8',
 };
 
 // ─── Timing (ms) ────────────────────────────────────────────────────────────
@@ -42,22 +45,24 @@ const T = {
   step1: 12400,
   step2: 14000,
   step3: 15600,
-  step4: 17000,
-  step5a: 18400,
-  step5b: 19400,
-  step5c: 20200,
-  step5d: 21000,
-  step5e: 24200,
-  step6: 26000,
-  step7: 28800,
+  step4: 17000,     // Contract Parameters
+  step5: 18200,     // Relay Identity & Policy
+  step6: 19400,     // Commitment
+  step7a: 20800,    // Relay Execution — model profile
+  step7b: 21800,    // Relay Execution — prompt assembly
+  step7c: 22600,    // Relay Execution — LLM call
+  step7d: 23400,    // Relay Execution — output rejected
+  step7e: 26600,    // Relay Execution — re-run
+  step8: 28400,     // Receipt
+  step9: 31200,     // Signal
 
   // Phase 3
-  p3Start: 30800,
-  alicePostStart: 31200,
-  bobPostStart: 33000,
+  p3Start: 33200,
+  alicePostStart: 33600,
+  bobPostStart: 35400,
 };
 
-const TOTAL_DURATION_MS = 35000;
+const TOTAL_DURATION_MS = 37400;
 
 // ─── Helper ─────────────────────────────────────────────────────────────────
 function kv(text: string, value: string, comment?: string) {
@@ -224,12 +229,61 @@ const events: ScenarioEvent[] = [
     },
   },
 
-  // Step 4 — Commitment
+  // Step 4 — Contract Parameters
   {
     type: 'protocol-card',
     event: {
       id: 'step-4',
       stepLabel: 'Step 4',
+      title: 'Contract Parameters',
+      cardClass: 'vault-card--contract',
+      lines: [
+        heading('CONTRACT'),
+        blank(),
+        kv('purpose_code:', 'MEDIATION'),
+        kv('output_schema:', 'mediation_compat_signal_v1'),
+        kv('enforcement_policy_hash:', `${H.enforcementPolicyHash.slice(0, 8)}...${H.enforcementPolicyHash.slice(-4)}`),
+        kv('schema_hash:', `${H.schemaHash.slice(0, 8)}...${H.schemaHash.slice(-4)}`),
+        kv('relay_verifying_key:', `${H.relayVerifyingKey.slice(0, 8)}...${H.relayVerifyingKey.slice(-4)}`),
+      ],
+      statusLine: {
+        ok: true,
+        text: 'Contract bound',
+      },
+      delayMs: T.step4,
+    },
+  },
+
+  // Step 5 — Relay Identity & Policy
+  {
+    type: 'protocol-card',
+    event: {
+      id: 'step-5',
+      stepLabel: 'Step 5',
+      title: 'Relay Identity & Policy',
+      cardClass: 'vault-card--policy',
+      lines: [
+        heading('RELAY'),
+        blank(),
+        kv('verifying_key:', `${H.relayVerifyingKey.slice(0, 8)}...${H.relayVerifyingKey.slice(-4)}`),
+        kv('model:', 'anthropic / claude-sonnet-4-6'),
+        kv('admitted_policy:', 'mediation-triage-v1'),
+        kv('enforcement_policy_hash:', `${H.enforcementPolicyHash.slice(0, 8)}...${H.enforcementPolicyHash.slice(-4)}`),
+      ],
+      statusLine: {
+        ok: true,
+        text: 'Policy admitted — relay ready',
+      },
+      delayMs: T.step5,
+    },
+  },
+
+  // Step 6 — Commitment
+  {
+    type: 'protocol-card',
+    event: {
+      id: 'step-6',
+      stepLabel: 'Step 6',
       title: 'Commitment',
       lines: [
         heading('COMMIT (AliceBot)'),
@@ -246,16 +300,16 @@ const events: ScenarioEvent[] = [
         ok: true,
         text: 'Both inputs committed',
       },
-      delayMs: T.step4,
+      delayMs: T.step6,
     },
   },
 
-  // Step 5a — Model profile verification
+  // Step 7a — Model profile verification
   {
     type: 'protocol-card',
     event: {
-      id: 'step-5a',
-      stepLabel: 'Step 5',
+      id: 'step-7a',
+      stepLabel: 'Step 7',
       title: 'Relay Execution',
       lines: [
         bullet('Verifying model profile...'),
@@ -263,48 +317,48 @@ const events: ScenarioEvent[] = [
         kv('  hash:', `${H.modelProfileHash.slice(0, 8)}...${H.modelProfileHash.slice(-4)}`, '✓ both parties consented to this cognitive role'),
         kv('  runtime:', `${H.runtimeHash.slice(0, 8)}...${H.runtimeHash.slice(-4)}`, '(relay build SHA)'),
       ],
-      delayMs: T.step5a,
+      delayMs: T.step7a,
     },
   },
 
-  // Step 5b — Prompt assembly
+  // Step 7b — Prompt assembly
   {
     type: 'protocol-card',
     event: {
-      id: 'step-5b',
-      stepLabel: 'Step 5',
+      id: 'step-7b',
+      stepLabel: 'Step 7',
       title: 'Relay Execution',
       lines: [
         bullet('Assembling prompt...'),
         kv('  PromptProgram:', `${H.promptProgramHash.slice(0, 8)}...${H.promptProgramHash.slice(-4)}`),
         statusOk('  template hash verified'),
       ],
-      delayMs: T.step5b,
+      delayMs: T.step7b,
     },
   },
 
-  // Step 5c — LLM call
+  // Step 7c — LLM call
   {
     type: 'protocol-card',
     event: {
-      id: 'step-5c',
-      stepLabel: 'Step 5',
+      id: 'step-7c',
+      stepLabel: 'Step 7',
       title: 'Relay Execution',
       lines: [
         bullet('Calling LLM...'),
         kv('  provider:', 'anthropic'),
         kv('  model:', 'claude-sonnet-4-6'),
       ],
-      delayMs: T.step5c,
+      delayMs: T.step7c,
     },
   },
 
-  // Step 5d — OUTPUT REJECTED
+  // Step 7d — OUTPUT REJECTED
   {
     type: 'protocol-card',
     event: {
-      id: 'step-5d',
-      stepLabel: 'Step 5',
+      id: 'step-7d',
+      stepLabel: 'Step 7',
       title: 'OUTPUT REJECTED — schema violation',
       isError: true,
       lines: [
@@ -318,22 +372,22 @@ const events: ScenarioEvent[] = [
         blank(),
         comment('Schema enforcement: free-text rejected. Retrying under contract constraints.'),
       ],
-      delayMs: T.step5d,
+      delayMs: T.step7d,
     },
   },
 
-  // Step 5e — Re-run and guardian rules
+  // Step 7e — Re-run and enforcement rules
   {
     type: 'protocol-card',
     event: {
-      id: 'step-5e',
-      stepLabel: 'Step 5',
+      id: 'step-7e',
+      stepLabel: 'Step 7',
       title: 'Relay Execution',
       lines: [
         bullet('Re-running...'),
         statusOk('Schema validation: ✓ PASS'),
         blank(),
-        bullet('Guardian rules:'),
+        bullet('Enforcement rules:'),
         kv('  GATE    digit_currency', '→ checking string values...'),
         statusOk('  GATE    digit_currency  → ✓ no digits or currency symbols'),
         kv('  ADVISORY entropy_log', '→ 18 bits (within budget)'),
@@ -342,47 +396,52 @@ const events: ScenarioEvent[] = [
         ok: true,
         text: 'Relay execution complete',
       },
-      delayMs: T.step5e,
+      delayMs: T.step7e,
     },
   },
 
-  // Step 6 — Receipt
+  // Step 8 — Receipt
   {
     type: 'protocol-card',
     event: {
-      id: 'step-6',
-      stepLabel: 'Step 6',
+      id: 'step-8',
+      stepLabel: 'Step 8',
       title: 'Receipt',
       lines: [
-        heading('RECEIPT'),
+        heading('RECEIPT v2'),
         blank(),
         kv('session_id:', `${H.sessionId.slice(0, 8)}...${H.sessionId.slice(-4)}`),
-        kv('contract_hash:', `${H.contractHash.slice(0, 8)}...${H.contractHash.slice(-4)}`),
-        kv('guardian_policy:', `${H.guardianPolicy.slice(0, 8)}...${H.guardianPolicy.slice(-4)}`),
-        kv('prompt_template:', `${H.promptProgramHash.slice(0, 8)}...${H.promptProgramHash.slice(-4)}`),
-        kv('model_identity:', 'anthropic / claude-sonnet-4-6'),
-        kv('model_profile_hash:', `${H.modelProfileHash.slice(0, 8)}...${H.modelProfileHash.slice(-4)}`),
-        kv('runtime_hash:', `${H.runtimeHash.slice(0, 8)}...${H.runtimeHash.slice(-4)}`),
-        kv('participants:', '[alicebot-prod-7, bobbot-prod-3]'),
         kv('execution_lane:', 'API_MEDIATED'),
-        kv('output_entropy:', '18 bits'),
+        kv('participants:', '[alicebot-prod-7, bobbot-prod-3]'),
+        blank(),
+        heading('COMMITMENTS'),
+        kv('contract_hash:', `${H.contractHash.slice(0, 8)}...${H.contractHash.slice(-4)}`),
+        kv('schema_hash:', `${H.schemaHash.slice(0, 8)}...${H.schemaHash.slice(-4)}`),
+        kv('prompt_template_hash:', `${H.promptProgramHash.slice(0, 8)}...${H.promptProgramHash.slice(-4)}`),
+        kv('output_hash:', `${H.runtimeHash.slice(0, 8)}...${H.runtimeHash.slice(-4)}`),
+        blank(),
+        heading('CLAIMS'),
+        kv('model_identity:', 'anthropic / claude-sonnet-4-6'),
+        kv('execution_lane:', 'API_MEDIATED'),
+        kv('channel_capacity:', '18 bits'),
+        kv('entropy_budget:', '24 bits'),
         kv('status:', 'COMPLETED'),
         blank(),
-        kv('Ed25519 signature:', `${H.receiptSig.slice(0, 8)}...${H.receiptSig.slice(-4)}`, '(VCAV-RECEIPT-V1)'),
+        kv('Ed25519 signature:', `${H.receiptSig.slice(0, 8)}...${H.receiptSig.slice(-4)}`, '(VCAV-RECEIPT-V2)'),
       ],
       statusLine: {
         ok: true,
         text: 'Receipt signed — provenance chain verified',
       },
-      delayMs: T.step6,
+      delayMs: T.step8,
     },
   },
 
-  // Step 7 — Signal flow
+  // Step 9 — Signal flow
   {
     type: 'signal-flow',
     event: {
-      delayMs: T.step7,
+      delayMs: T.step9,
       json: JSON.stringify({
         compatibility_signal: 'PARTIAL_ALIGNMENT',
         friction_band: 'HIGH',
