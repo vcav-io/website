@@ -298,6 +298,9 @@ export class SimulationRenderer {
     // Error cards auto-expand
     if (card.isError) el.classList.add('vault-card--expanded');
 
+    // Optional card class (e.g. vault-card--contract, vault-card--policy)
+    if (card.cardClass) el.classList.add(card.cardClass);
+
     // Step label + title + chevron
     const header = document.createElement('div');
     header.className = 'vault-card__header';
@@ -393,7 +396,7 @@ export class SimulationRenderer {
 
       const label = document.createElement('div');
       label.className = 'tl-signal__label';
-      label.textContent = 'Step 7 \u2014 Output Signal';
+      label.textContent = 'Step 9 \u2014 Output Signal';
       el.appendChild(label);
 
       const pre = document.createElement('pre');
@@ -408,7 +411,7 @@ export class SimulationRenderer {
     // Add signal as a vault card in the step sequence (visible when overlay is dismissed)
     const card = document.createElement('div');
     card.className = 'vault-card vault-card--signal vault-card--expanded';
-    card.setAttribute('data-step', 'step-7');
+    card.setAttribute('data-step', 'step-9');
 
     const cardHeader = document.createElement('div');
     cardHeader.className = 'vault-card__header';
@@ -416,7 +419,7 @@ export class SimulationRenderer {
 
     const stepTag = document.createElement('span');
     stepTag.className = 'vault-card__step-tag';
-    stepTag.textContent = 'Step 7';
+    stepTag.textContent = 'Step 9';
 
     const cardTitle = document.createElement('span');
     cardTitle.className = 'vault-card__title';
@@ -460,7 +463,7 @@ export class SimulationRenderer {
 
     const label = document.createElement('div');
     label.className = 'signal-block__label';
-    label.textContent = 'Step 7 — Output Signal';
+    label.textContent = 'Step 9 — Output Signal';
     centre.appendChild(label);
 
     const pre = document.createElement('pre');

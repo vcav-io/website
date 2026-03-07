@@ -26,6 +26,8 @@ export interface ProtocolCard {
   subCards?: ProtocolSubCard[];
   /** Whether this card uses a red flash error style */
   isError?: boolean;
+  /** Optional CSS class added to the vault-card element */
+  cardClass?: string;
   /** delay in ms from start of phase */
   delayMs: number;
 }
