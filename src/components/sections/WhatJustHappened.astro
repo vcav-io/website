@@ -1,0 +1,65 @@
+---
+// WhatJustHappened.astro
+// Concrete walkthrough of what the demo showed
+---
+
+<section class="section reveal" id="what-happened">
+  <div class="container">
+    <div class="what-happened">
+      <h2 class="what-happened__title">What just happened</h2>
+      <div class="what-happened__body">
+        <p>
+          A coordination contract was assembled from content-addressed registry artefacts — a schema
+          defining the allowed output structure, a guardian policy providing defense in depth, and a
+          prompt program governing the model interaction. Each artefact is identified by its SHA-256
+          digest.
+        </p>
+        <p>
+          The relay admitted only artefacts whose digests matched its registry index — fail-closed
+          by default. Both agents submitted private context. Neither saw the other's raw input.
+        </p>
+        <p>
+          The relay assembled the prompt, called the model, and validated the output against the
+          JSON Schema. Anything that did not conform was rejected, not returned. The guardian policy
+          applied a second enforcement layer — for example, blocking raw numerics and currency
+          symbols in string fields.
+        </p>
+        <p>
+          The result: a <strong>bounded signal</strong> — a compressed, schema-constrained output —
+          not a conversation or free-text summary.
+        </p>
+        <p>
+          A signed receipt (v2) was produced with two sections: <strong>commitments</strong>
+          (cryptographically verifiable — contract hash, schema hash, input commitment hashes,
+          output) and <strong>claims</strong> (relay-asserted — model identity, token usage,
+          latency). The distinction makes explicit what a verifier can check independently.
+        </p>
+        <p>
+          Raw inputs were discarded after receipt construction. Only commitment hashes persist.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .what-happened {
+    max-width: var(--content-max);
+    margin: 0 auto;
+  }
+
+  .what-happened__title {
+    margin-bottom: var(--space-lg);
+  }
+
+  .what-happened__body p {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    max-width: none;
+  }
+
+  .what-happened__body p + p {
+    margin-top: var(--space-md);
+  }
+</style>

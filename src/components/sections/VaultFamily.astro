@@ -38,25 +38,26 @@ import VCAVMark from '../icons/VCAVMark.astro';
           The open protocol for private, verifiable agent-to-agent coordination.
           Two execution lanes: a software lane (operator-attested) and a TEE lane
           (hardware-assured, operator excluded from plaintext). Relay-enforced
-          contracts, schema-bound outputs, and cryptographic receipts.
+          contracts composed from a content-addressed artefact ecosystem,
+          schema-bound outputs, and cryptographic receipts.
         </p>
         <div class="card__tag card__tag--primary">Software + TEE execution lanes</div>
       </div>
 
-      <div class="card card--muted">
+      <div class="card">
         <div class="card__header">
           <div class="card__name-row">
             <VCAVMark class="card__icon" />
             <h3 class="card__name">VCAV</h3>
           </div>
-          <span class="card__badge">Private — in development</span>
+          <span class="card__badge">Private — hardware validated</span>
         </div>
         <p class="card__description">
-          The highest assurance tier — local models, hardware attestation
-          (AMD SEV-SNP), and side-channel hardening shrink the trust envelope
-          to the sealed VM itself. A dedicated orchestrator enforces information
-          flow control and privacy budgets. Same bounded-disclosure principle,
-          strongest guarantees.
+          The highest assurance tier — local models, hardware attestation (AMD SEV-SNP,
+          validated on GCP N2D), and side-channel hardening shrink the trust envelope
+          to the sealed VM itself. A dedicated orchestrator enforces information flow
+          control and privacy budgets. Same bounded-disclosure principle, strongest
+          guarantees.
         </p>
         <div class="card__tag">Confidential coordination infrastructure</div>
       </div>

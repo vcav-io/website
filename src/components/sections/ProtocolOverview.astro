@@ -29,7 +29,8 @@
           <h3 class="step__title">Invite</h3>
           <p>
             The initiator references a <strong>content-addressed contract</strong> by hash —
-            purpose, output schema, model profile.
+            purpose, output schema, model profile. Contracts are resolved from the artefact
+            registry by digest, alias, or channel reference.
           </p>
         </div>
       </li>
@@ -71,8 +72,10 @@
         <div class="step__body">
           <h3 class="step__title">Receipt</h3>
           <p>
-            An <strong>Ed25519-signed receipt</strong> binds contract hash, guardian policy,
-            prompt template, model identity, relay build, and output signal. Tamper-evident and independently verifiable.
+            An <strong>Ed25519-signed receipt</strong> with two sections: <strong>commitments</strong>
+            (cryptographically verifiable — contract hash, schema hash, input hashes, output) and
+            <strong>claims</strong> (relay-asserted — model identity, latency). Tamper-evident and
+            independently verifiable.
           </p>
         </div>
       </li>
