@@ -1,35 +1,19 @@
 ---
 // FAQ.astro
-// Search-friendly FAQ with JSON-LD structured data
+// Simplified FAQ with JSON-LD structured data
 
 const faqs = [
   {
-    question: 'What is agent-to-agent privacy?',
-    answer: 'When AI agents act as delegates, they carry sensitive personal context from their users — health concerns, financial details, private preferences. Agent-to-agent privacy is the problem of preventing that context from leaking when agents coordinate with each other. It is a disclosure-boundary problem: not whether agents can communicate, but how much they reveal when they do.',
+    question: 'How is this different from ordinary agent interoperability?',
+    answer: 'Most interoperability systems help agents communicate. AgentVault constrains what they are allowed to disclose during that communication and produces a verifiable record of what governed the session.',
   },
   {
-    question: 'How can AI agents coordinate without leaking private context?',
-    answer: 'AgentVault replaces open-ended free-text communication with a structured coordination protocol. Both agents agree to a coordination contract that defines the session\'s purpose and output schema. The relay enforces those constraints — validating every output against the schema and rejecting anything outside the agreed bounds. The result is a bounded signal, not a free-text exchange.',
+    question: 'Why not just rely on prompt instructions?',
+    answer: 'Because instructions alone do not create a hard disclosure boundary. AgentVault adds structural enforcement through contracts, schema validation, and signed receipts.',
   },
   {
-    question: 'What is a coordination contract?',
-    answer: 'A coordination contract is the machine-readable agreement that governs an AgentVault session. It defines the purpose of the coordination, the allowed output structure (as a JSON Schema), and the terms both agents consent to. Contracts are content-addressed — referenced by their SHA-256 hash — and established before any private context is shared. They are never renegotiated mid-session.',
-  },
-  {
-    question: 'What is a bounded signal?',
-    answer: 'A bounded signal is the output of an AgentVault session: a compressed, schema-constrained result produced under a fixed contract. Unlike free-text communication between agents, a bounded signal carries only what the output schema permits. The relay enforces this structurally — invalid outputs are rejected and never returned to either party.',
-  },
-  {
-    question: 'How is AgentVault different from ordinary agent interoperability?',
-    answer: 'Agent interoperability protocols make communication between agents possible. AgentVault constrains what may be disclosed during that communication and produces a verifiable record of what governed the session. It is not a transport layer or a discovery mechanism — it is a disclosure-boundary layer that sits on top of existing agent infrastructure.',
-  },
-  {
-    question: 'What is the artefact registry?',
-    answer: 'Every enforcement-relevant artefact — schemas, guardian policies, prompt programs, model profiles — is content-addressed (SHA-256 over canonicalized JSON) and stored in a versioned registry. The relay admits only artefacts whose digests it can verify, rejecting unknown artefacts at startup. Contracts compose from these registry artefacts, making the protocol extensible without relay code changes.',
-  },
-  {
-    question: 'What assurance levels does AgentVault support?',
-    answer: 'AgentVault supports graduated assurance levels. SELF_ASSERTED (software lane): the relay operator is trusted and the receipt proves which contract and schema governed the session. HARDWARE_ATTESTED (TEE lane): coordination runs inside an AMD SEV-SNP confidential VM where the operator cannot read plaintext; the receipt is bound to the measured execution environment. VCAV extends this with local models and side-channel hardening for the strongest guarantees.',
+    question: 'Does AgentVault eliminate trust entirely?',
+    answer: 'No. It reduces and clarifies the trust surface. The software lane still trusts the relay operator and model provider. TEE reduces operator trust. VCAV is designed to go further.',
   },
 ];
 
@@ -50,7 +34,7 @@ const faqJsonLd = JSON.stringify({
 <section class="section reveal" id="faq">
   <div class="container">
     <div class="faq">
-      <h2 class="faq__title">Frequently Asked Questions</h2>
+      <h2 class="faq__title">FAQ</h2>
       <dl class="faq__list">
         {faqs.map((faq) => (
           <div class="faq__item">

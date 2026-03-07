@@ -2,14 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import Simulation from '../components/simulation/Simulation.astro';
 import WhatJustHappened from '../components/sections/WhatJustHappened.astro';
-import CoreConcepts from '../components/sections/CoreConcepts.astro';
-import PositioningText from '../components/sections/PositioningText.astro';
-import AssuranceTiers from '../components/sections/AssuranceTiers.astro';
 import ProtocolOverview from '../components/sections/ProtocolOverview.astro';
+import AssuranceTiers from '../components/sections/AssuranceTiers.astro';
 import Ecosystem from '../components/sections/Ecosystem.astro';
-import VaultFamily from '../components/sections/VaultFamily.astro';
-import LinksResources from '../components/sections/LinksResources.astro';
-import WhyThisMatters from '../components/sections/WhyThisMatters.astro';
+import StatusMap from '../components/sections/StatusMap.astro';
 import FAQ from '../components/sections/FAQ.astro';
 import OpenProject from '../components/sections/OpenProject.astro';
 import AVLockup from '../components/icons/AVLockup.astro';
@@ -27,18 +23,22 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
           <AVLockup class="hero__lockup" />
           <h1 class="hero__title">Private, verifiable coordination for AI agents</h1>
           <p class="hero__claim">
-            AI agents are becoming delegates — valuable because they can reason about real constraints, preferences, and circumstances on a user's behalf. When they coordinate, that private context becomes part of the interaction.
+            People already share deeply personal context with AI &mdash; health concerns, financial anxieties, private doubts. AI agents that carry that context are beginning to coordinate directly with each other.
+          </p>
+          <p class="hero__claim">
+            That creates huge potential utility, but also serious disclosure risk.
           </p>
           <p class="hero__claim hero__claim--sub">
-            AgentVault is an open protocol for bounded coordination between AI agents. Sessions run under coordination contracts that constrain what information can leave the interaction and produce a verifiable receipt of what governed the session.
+            Stripping agents of context makes them safer, but much less useful. AgentVault is built for the opposite case: agents coordinating over rich context on things that are genuinely hard to do alone &mdash; negotiation, mediation, compatibility, dispute resolution.
+          </p>
+          <p class="hero__claim hero__claim--sub">
+            It constrains what can be revealed through fixed contracts, schema-bound outputs, and verifiable receipts.
           </p>
           <ul class="hero__guarantees font-mono">
-            <li>Coordination contracts — agents agree on purpose, terms, and output structure before any context is shared</li>
-            <li>Schema-bound outputs — the relay enforces a bounded signal, not free-text exchange</li>
-            <li>Cryptographic receipts — signed proof of exactly which contract, schema, and policy governed the session</li>
-            <li>Content-addressed artefact ecosystem — composable contracts from auditable, versioned building blocks</li>
+            <li>Coordination contracts fix the purpose and output structure before context is shared</li>
+            <li>Schema-bound outputs limit what can leave the session</li>
+            <li>Cryptographic receipts prove what governed the exchange</li>
           </ul>
-          <p class="hero__tagline">Not just interoperability — bounded disclosure.</p>
           <div class="hero__ctas">
             <a href="https://github.com/vcav-io/agentvault" class="hero__cta" target="_blank" rel="noopener noreferrer">View on GitHub</a>
             <a href="#protocol" class="hero__cta">Read the Protocol</a>
@@ -57,8 +57,7 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
               Each has private concerns. Their agents coordinate using AgentVault.
             </p>
             <p class="sim-module-header__subtitle text-secondary">
-              Private reasoning stays inside the boundary.<br>
-              Only a structured compatibility signal is emitted.
+              The result is a bounded compatibility signal, not a free-text exchange.
             </p>
             <p class="sim-module-header__subtitle text-secondary" style="margin-top: var(--space-xs); font-style: italic;">
               Live protocol execution, simulated for the browser.
@@ -101,16 +100,12 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
     </section>
 
     <WhatJustHappened />
-    <PositioningText />
-    <CoreConcepts />
-    <AssuranceTiers />
     <ProtocolOverview />
+    <AssuranceTiers />
     <Ecosystem />
-    <VaultFamily />
-    <WhyThisMatters />
+    <StatusMap />
     <FAQ />
     <OpenProject />
-    <LinksResources />
 
     <footer class="site-footer">
       <div class="container">

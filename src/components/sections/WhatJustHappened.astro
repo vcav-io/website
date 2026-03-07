@@ -1,43 +1,32 @@
 ---
 // WhatJustHappened.astro
-// Concrete walkthrough of what the demo showed
+// What the demo shows — bullet summary + signal example
 ---
 
 <section class="section reveal" id="what-happened">
   <div class="container">
     <div class="what-happened">
-      <h2 class="what-happened__title">What just happened</h2>
-      <div class="what-happened__body">
-        <p>
-          A coordination contract was assembled from content-addressed registry artefacts — a schema
-          defining the allowed output structure, a guardian policy providing defense in depth, and a
-          prompt program governing the model interaction. Each artefact is identified by its SHA-256
-          digest.
-        </p>
-        <p>
-          The relay admitted only artefacts whose digests matched its registry index — fail-closed
-          by default. Both agents submitted private context. Neither saw the other's raw input.
-        </p>
-        <p>
-          The relay assembled the prompt, called the model, and validated the output against the
-          JSON Schema. Anything that did not conform was rejected, not returned. The guardian policy
-          applied a second enforcement layer — for example, blocking raw numerics and currency
-          symbols in string fields.
-        </p>
-        <p>
-          The result: a <strong>bounded signal</strong> — a compressed, schema-constrained output —
-          not a conversation or free-text summary.
-        </p>
-        <p>
-          A signed receipt (v2) was produced with two sections: <strong>commitments</strong>
-          (cryptographically verifiable — contract hash, schema hash, input commitment hashes,
-          output) and <strong>claims</strong> (relay-asserted — model identity, token usage,
-          latency). The distinction makes explicit what a verifier can check independently.
-        </p>
-        <p>
-          Raw inputs were discarded after receipt construction. Only commitment hashes persist.
-        </p>
-      </div>
+      <h2 class="what-happened__title">What the demo shows</h2>
+      <ul class="what-happened__list">
+        <li>the agents agree a contract before sharing context</li>
+        <li>the relay enforces a fixed output schema</li>
+        <li>invalid free-text output is rejected</li>
+        <li>both sides receive the same bounded signal</li>
+        <li>a signed receipt records what governed the session</li>
+      </ul>
+
+      <pre class="what-happened__signal font-mono"><code>{JSON.stringify({
+  compatibility_signal: "PARTIAL_ALIGNMENT",
+  friction_band: "HIGH",
+  aligned_dimensions: ["company_commitment", "growth_ambition"],
+  divergent_dimensions: ["revenue_strategy", "product_direction"],
+  escalation_required: true,
+}, null, 2)}</code></pre>
+
+      <p class="what-happened__coda">
+        The point is not to trust the model to be discreet.<br>
+        The point is to constrain what can leave the session.
+      </p>
     </div>
   </div>
 </section>
@@ -52,14 +41,45 @@
     margin-bottom: var(--space-lg);
   }
 
-  .what-happened__body p {
+  .what-happened__list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-xl);
+  }
+
+  .what-happened__list li {
     font-size: var(--text-base);
     line-height: var(--leading-relaxed);
     color: var(--color-text);
-    max-width: none;
+    padding-left: 1.2em;
+    position: relative;
   }
 
-  .what-happened__body p + p {
-    margin-top: var(--space-md);
+  .what-happened__list li::before {
+    content: '\2014';
+    position: absolute;
+    left: 0;
+    color: var(--color-text-dim);
+  }
+
+  .what-happened__signal {
+    padding: var(--space-lg);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-accent);
+    margin-bottom: var(--space-xl);
+  }
+
+  .what-happened__coda {
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text);
+    font-weight: 600;
   }
 </style>

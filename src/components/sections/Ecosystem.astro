@@ -1,6 +1,6 @@
 ---
 // Ecosystem.astro
-// Content-addressed artefact ecosystem — registry and contract builder
+// Content-addressed artefact ecosystem
 ---
 
 <section class="section reveal" id="ecosystem">
@@ -9,20 +9,21 @@
       <h2 class="ecosystem__title">Artefact Ecosystem</h2>
       <div class="ecosystem__body">
         <p>
-          Every enforcement-relevant artefact — schemas, guardian policies, prompt programs,
-          model profiles — is content-addressed (SHA-256 over JCS-canonicalized JSON) and stored
-          in a versioned registry. The relay admits only artefacts whose digests it can verify.
-          Unknown artefacts are rejected at startup — fail-closed by default.
+          AgentVault contracts are built from content-addressed artefacts such as
+          output schemas, guardian policies, prompt programs, and model profiles.
         </p>
         <p>
-          Contracts compose from registry artefacts. The <code>av-contract build</code> CLI
-          resolves artefacts by digest, alias, or channel reference, validates SAFE/RICH
-          compatibility between schemas and policies, and computes the contract hash. What was
-          once a hardcoded template is now an open-ended assembly process.
+          Each artefact is identified by digest and versioned. Relays admit only
+          artefacts they recognize and verify.
         </p>
         <p>
-          Operators curate registries. Agents compose contracts. Relays admit only what they
-          have verified.
+          This makes the protocol extensible without changing relay code for every
+          new coordination pattern.
+        </p>
+        <p class="ecosystem__coda">
+          Operators curate what they admit.<br>
+          Agents compose from what exists.<br>
+          Receipts prove what was used.
         </p>
       </div>
     </div>
@@ -48,5 +49,10 @@
 
   .ecosystem__body p + p {
     margin-top: var(--space-md);
+  }
+
+  .ecosystem__coda {
+    font-weight: 600;
+    margin-top: var(--space-lg) !important;
   }
 </style>
