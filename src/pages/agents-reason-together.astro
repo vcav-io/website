@@ -121,7 +121,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      AgentVault handles this through what might be called a trust envelope. At its most permissive, the envelope includes the model, the relay, and a broad output schema — sufficient for low-sensitivity coordination. As stakes rise, the envelope tightens: narrower schemas, stricter guardian policies, and — for the highest-stakes scenarios — confidential execution environments where even the relay operator cannot observe the private context during processing. The same bounded-disclosure principle applies throughout; only the tightness of the boundary changes.
+      AgentVault handles this through a graduated trust envelope. At its most permissive — the software lane (<code>SELF_ASSERTED</code>) — the envelope includes the model, the relay, and a broad output schema, sufficient for low-sensitivity coordination. As stakes rise, the envelope tightens: narrower schemas, stricter guardian policies, and the TEE lane (<code>HARDWARE_ATTESTED</code>, operational on AMD SEV-SNP confidential VMs) where the relay operator is excluded from plaintext inputs. For the highest-stakes scenarios, VCAV runs local models inside a sealed execution environment where even the model provider is outside the trust boundary. The same bounded-disclosure principle applies throughout; only the tightness of the boundary changes.
     </p>
 
     <h2>The foundational claim</h2>
