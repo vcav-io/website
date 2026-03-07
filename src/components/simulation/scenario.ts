@@ -42,11 +42,11 @@ const T = {
 
   // Phase 2 — centre panel activates
   p2Start: 12000,
-  step1: 12400,
-  step2: 14000,
-  step3: 15600,
-  step4: 17000,     // Contract Parameters
-  step5: 18200,     // Relay Identity & Policy
+  step1: 12400,     // Contract Parameters
+  step2: 13600,     // Relay Identity & Policy
+  step3: 14800,     // Discovery — Agent Descriptors
+  step4: 16400,     // Invite Created
+  step5: 18000,     // Invite Accepted
   step6: 19400,     // Commitment
   step7a: 20800,    // Relay Execution — model profile
   step7b: 21800,    // Relay Execution — prompt assembly
@@ -150,12 +150,61 @@ const events: ScenarioEvent[] = [
     event: { phase: 'protocol', delayMs: T.p2Start },
   },
 
-  // Step 1 — Discovery
+  // Step 1 — Contract Parameters (contract drives the session)
   {
     type: 'protocol-card',
     event: {
       id: 'step-1',
       stepLabel: 'Step 1',
+      title: 'Contract Parameters',
+      cardClass: 'vault-card--contract',
+      lines: [
+        heading('CONTRACT'),
+        blank(),
+        kv('purpose_code:', 'MEDIATION'),
+        kv('output_schema:', 'mediation_compat_signal_v1'),
+        kv('enforcement_policy_hash:', `${H.enforcementPolicyHash.slice(0, 8)}...${H.enforcementPolicyHash.slice(-4)}`),
+        kv('schema_hash:', `${H.schemaHash.slice(0, 8)}...${H.schemaHash.slice(-4)}`),
+        kv('relay_verifying_key:', `${H.relayVerifyingKey.slice(0, 8)}...${H.relayVerifyingKey.slice(-4)}`),
+      ],
+      statusLine: {
+        ok: true,
+        text: 'Contract bound',
+      },
+      delayMs: T.step1,
+    },
+  },
+
+  // Step 2 — Relay Identity & Policy
+  {
+    type: 'protocol-card',
+    event: {
+      id: 'step-2',
+      stepLabel: 'Step 2',
+      title: 'Relay Identity & Policy',
+      cardClass: 'vault-card--policy',
+      lines: [
+        heading('RELAY'),
+        blank(),
+        kv('verifying_key:', `${H.relayVerifyingKey.slice(0, 8)}...${H.relayVerifyingKey.slice(-4)}`),
+        kv('model:', 'anthropic / claude-sonnet-4-6'),
+        kv('admitted_policy:', 'mediation-triage-v1'),
+        kv('enforcement_policy_hash:', `${H.enforcementPolicyHash.slice(0, 8)}...${H.enforcementPolicyHash.slice(-4)}`),
+      ],
+      statusLine: {
+        ok: true,
+        text: 'Policy admitted — relay ready',
+      },
+      delayMs: T.step2,
+    },
+  },
+
+  // Step 3 — Discovery
+  {
+    type: 'protocol-card',
+    event: {
+      id: 'step-3',
+      stepLabel: 'Step 3',
       title: 'Discovery — Agent Descriptors',
       lines: [
         { kind: 'key-value', text: 'AliceBot', value: '', comment: 'BobBot' },
@@ -169,16 +218,16 @@ const events: ScenarioEvent[] = [
         ok: true,
         text: 'Signatures verified (VCAV-DESCRIPTOR-V1)',
       },
-      delayMs: T.step1,
+      delayMs: T.step3,
     },
   },
 
-  // Step 2 — Invite Created
+  // Step 4 — Invite Created
   {
     type: 'protocol-card',
     event: {
-      id: 'step-2',
-      stepLabel: 'Step 2',
+      id: 'step-4',
+      stepLabel: 'Step 4',
       title: 'Invite Created',
       lines: [
         heading('CREATE_INVITE'),
@@ -197,16 +246,16 @@ const events: ScenarioEvent[] = [
         ok: true,
         text: `→ Deposited in relay inbox   sig: ${H.alicePropSig.slice(0, 8)}...${H.alicePropSig.slice(-4)}`,
       },
-      delayMs: T.step2,
+      delayMs: T.step4,
     },
   },
 
-  // Step 3 — Invite Accepted
+  // Step 5 — Invite Accepted
   {
     type: 'protocol-card',
     event: {
-      id: 'step-3',
-      stepLabel: 'Step 3',
+      id: 'step-5',
+      stepLabel: 'Step 5',
       title: 'Invite Accepted',
       lines: [
         heading('ACCEPT_INVITE'),
@@ -224,55 +273,6 @@ const events: ScenarioEvent[] = [
         ok: true,
         text: 'Invite accepted — session established',
         note: 'DECLINE would be constant-shape — no reason field',
-      },
-      delayMs: T.step3,
-    },
-  },
-
-  // Step 4 — Contract Parameters
-  {
-    type: 'protocol-card',
-    event: {
-      id: 'step-4',
-      stepLabel: 'Step 4',
-      title: 'Contract Parameters',
-      cardClass: 'vault-card--contract',
-      lines: [
-        heading('CONTRACT'),
-        blank(),
-        kv('purpose_code:', 'MEDIATION'),
-        kv('output_schema:', 'mediation_compat_signal_v1'),
-        kv('enforcement_policy_hash:', `${H.enforcementPolicyHash.slice(0, 8)}...${H.enforcementPolicyHash.slice(-4)}`),
-        kv('schema_hash:', `${H.schemaHash.slice(0, 8)}...${H.schemaHash.slice(-4)}`),
-        kv('relay_verifying_key:', `${H.relayVerifyingKey.slice(0, 8)}...${H.relayVerifyingKey.slice(-4)}`),
-      ],
-      statusLine: {
-        ok: true,
-        text: 'Contract bound',
-      },
-      delayMs: T.step4,
-    },
-  },
-
-  // Step 5 — Relay Identity & Policy
-  {
-    type: 'protocol-card',
-    event: {
-      id: 'step-5',
-      stepLabel: 'Step 5',
-      title: 'Relay Identity & Policy',
-      cardClass: 'vault-card--policy',
-      lines: [
-        heading('RELAY'),
-        blank(),
-        kv('verifying_key:', `${H.relayVerifyingKey.slice(0, 8)}...${H.relayVerifyingKey.slice(-4)}`),
-        kv('model:', 'anthropic / claude-sonnet-4-6'),
-        kv('admitted_policy:', 'mediation-triage-v1'),
-        kv('enforcement_policy_hash:', `${H.enforcementPolicyHash.slice(0, 8)}...${H.enforcementPolicyHash.slice(-4)}`),
-      ],
-      statusLine: {
-        ok: true,
-        text: 'Policy admitted — relay ready',
       },
       delayMs: T.step5,
     },
