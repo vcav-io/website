@@ -132,14 +132,14 @@ const events: ScenarioEvent[] = [
     },
   },
 
-  // BobBot finds the invite
+  // BobBot acknowledges and prepares to participate
   {
     type: 'chat',
     event: {
       panel: 'right',
       sender: 'bot',
       name: 'BobBot',
-      text: "Invite received. Contract verified. Bounded signal only.",
+      text: "Understood. I\u2019ll look for a mediation invite from Alice\u2019s agent. Only a bounded signal will cross.",
       delayMs: T.bobBotStart,
     },
   },
