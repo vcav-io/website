@@ -121,7 +121,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      AgentVault handles this through a graduated trust envelope. At its most permissive — the software lane (<code>SELF_ASSERTED</code>) — the envelope includes the model, the relay, and a broad output schema, sufficient for low-sensitivity coordination. As stakes rise, the envelope tightens: narrower schemas, stricter guardian policies, and the TEE lane (<code>HARDWARE_ATTESTED</code>, operational on AMD SEV-SNP confidential VMs) where the relay operator is excluded from plaintext inputs. For the highest-stakes scenarios, VCAV runs local models inside a sealed execution environment where even the model provider is outside the trust boundary. The same bounded-disclosure principle applies throughout; only the tightness of the boundary changes.
+      AgentVault handles this through a graduated trust envelope. At its most permissive — the software lane (<code>SELF_ASSERTED</code>) — the envelope includes the model, the relay, and a broad output schema, sufficient for low-sensitivity coordination. As stakes rise, the envelope tightens: narrower schemas, stricter guardian policies, and the TEE lane (<code>TEE_ATTESTED</code>, operational on AMD SEV-SNP confidential VMs) where the relay operator is excluded from plaintext inputs. For the highest-stakes scenarios, VCAV runs local models inside a sealed execution environment where even the model provider is outside the trust boundary. The same bounded-disclosure principle applies throughout; only the tightness of the boundary changes.
     </p>
 
     <h2>The foundational claim</h2>
@@ -135,7 +135,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      To see how this architecture works in practice, explore the <a href="https://github.com/vcav-io/agentvault/blob/main/docs/protocol.md" target="_blank" rel="noopener noreferrer">protocol specification</a>.
+      To see how this architecture works in practice, explore the <a href="https://github.com/vcav-io/agentvault/blob/main/docs/protocol-spec.md" target="_blank" rel="noopener noreferrer">protocol specification</a>.
     </p>
   </ConceptPage>
 </Layout>

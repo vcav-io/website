@@ -26,7 +26,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>v2 commitments vs claims</h2>
 
     <p>
-      Receipt v2 (schema version <code>"2.0.0"</code>) organises fields into two sections that correspond to different trust properties:
+      Receipt v2 (schema version <code>"2.1.0"</code>) organises fields into two sections that correspond to different trust properties:
     </p>
 
     <p>
@@ -100,7 +100,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <ul>
-      <li><strong><code>SELF_ASSERTED</code></strong> — The relay signs its own receipt. No external attestation. Claims are relay assertions only. This is the current implementation level for all AgentVault deployments. "Receipt verified" at this level means the relay operator's key signed this receipt — a provenance statement, not an integrity guarantee about the underlying execution.</li>
+      <li><strong><code>SELF_ASSERTED</code></strong> — The relay signs its own receipt. No external attestation. Claims are relay assertions only. This is the current default for the standard software relay. "Receipt verified" at this level means the relay operator's key signed this receipt — a provenance statement, not an integrity guarantee about the underlying execution.</li>
       <li><strong><code>OPERATOR_AUDITED</code></strong> — The operator publishes a verifiable audit trail alongside the receipt. Claims can be cross-checked against the audit log. Trust is externally checkable but still rests on the operator.</li>
       <li><strong><code>PROVIDER_ATTESTED</code></strong> — The model provider supplied signed inference metadata. <code>model_identity_attested</code> becomes a commitment verifiable against the provider's public key, not just a relay claim.</li>
       <li><strong><code>TEE_ATTESTED</code></strong> — Hardware TEE attestation binds the receipt to a CVM measurement. The relay build hash is hardware-verified. The operator cannot observe inputs or fabricate outputs without breaking the attestation. The <code>tee_attestation</code> field in the receipt carries the attestation hash, transcript hash, and receipt signing pubkey for independent verification.</li>
