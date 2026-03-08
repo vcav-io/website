@@ -107,7 +107,8 @@ const result = await mcpClient.callTool(
 //   2. Creating the relay session
 //   3. Sending the invite to the peer
 //   4. Polling until completion
-//   5. Returning the bounded signal + receipt`;
+//   5. Returning structured tool output with state,
+//      and the bounded signal + receipt when completed`;
 
 const relayCode = `# Start the relay
 ANTHROPIC_API_KEY=sk-... cargo run -p agentvault-relay
@@ -236,7 +237,7 @@ curl http://localhost:3100/health
     <h2>Relay requirements</h2>
 
     <p>
-      Both integration paths require a running AgentVault relay. The relay is a Rust binary (<code>agentvault-relay</code>) that needs a configured provider API key such as <code>ANTHROPIC_API_KEY</code>, <code>OPENAI_API_KEY</code>, or <code>GEMINI_API_KEY</code>. For development:
+      Both integration paths require a running AgentVault relay. The relay is a Rust binary (<code>agentvault-relay</code>) that needs a configured provider API key. See the environment docs for the supported provider variables. For development:
     </p>
 
     <pre style={codeStyle} set:text={relayCode} />
