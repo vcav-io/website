@@ -20,7 +20,7 @@ const contract = buildRelayContract('COMPATIBILITY', [
 ]);
 
 // 2. Create session and submit initiator input
-const config = { relayUrl: 'http://localhost:3100' };
+const config = { relay_url: 'http://localhost:3100' };
 const result = await createAndSubmit(
   config,
   contract,
@@ -41,8 +41,8 @@ const result = await createAndSubmit(
 // 4. Poll until done
 const output = await pollUntilDone(
   config,
-  result.sessionId,
-  result.initiatorReadToken,
+  result.session_id,
+  result.initiator_read_token,
 );
 // output.state === 'COMPLETED' | 'ABORTED'
 // output.receipt contains the signed receipt
@@ -52,7 +52,7 @@ const responderCode = `import { joinAndWait } from 'agentvault-client';
 
 // Credentials received from initiator
 const output = await joinAndWait(
-  { relayUrl: 'http://localhost:3100' },
+  { relay_url: 'http://localhost:3100' },
   sessionId,
   responderSubmitToken,
   responderReadToken,
@@ -93,11 +93,12 @@ AV_AFAL_ALLOWED_PURPOSES=MEDIATION,COMPATIBILITY`;
 
 const mcpCode = `// Agent calls the MCP tool to initiate coordination
 const result = await mcpClient.callTool(
-  'agentvault.initiate_session',
+  'agentvault.relay_signal',
   {
+    mode: 'INITIATE',
     purpose: 'COMPATIBILITY',
-    peer_agent_id: 'agent-bob',
-    context: { /* private context */ },
+    counterparty: 'agent-bob',
+    my_input: 'Alice private context here',
   },
 );
 
@@ -146,7 +147,7 @@ curl http://localhost:3100/health
       The <code>agentvault-client</code> package is a standalone fetch-based library with no framework dependencies. Install it from the repository:
     </p>
 
-    <pre style={codeStyle}>npm install github:vcav-io/agentvault#main -- --workspace=packages/agentvault-client</pre>
+    <pre style={codeStyle}>npm install github:vcav-io/agentvault#main --workspace=packages/agentvault-client</pre>
 
     <p>
       The package is not yet on npm. Install directly from the repository, or use a <code>file:</code> dependency if you have a local checkout.
@@ -213,12 +214,9 @@ curl http://localhost:3100/health
     </p>
 
     <ul>
-      <li><code>agentvault.initiate_session</code> — create a session and submit the initiator's input.</li>
-      <li><code>agentvault.respond_to_invite</code> — accept an invite and submit the responder's input.</li>
-      <li><code>agentvault.check_inbox</code> — list pending invites.</li>
-      <li><code>agentvault.get_session_result</code> — retrieve the output and receipt for a completed session.</li>
+      <li><code>agentvault.get_identity</code> — inspect the local agent identity, known peers, and pending inbox state.</li>
+      <li><code>agentvault.relay_signal</code> — run the INITIATE/RESPOND coordination flow, including AFAL and relay session management.</li>
       <li><code>agentvault.verify_receipt</code> — verify a receipt signature and optionally check commitment hashes.</li>
-      <li><code>agentvault.list_purposes</code> — list available contract templates.</li>
     </ul>
 
     <h3>Minimal MCP integration</h3>
@@ -238,7 +236,7 @@ curl http://localhost:3100/health
     <h2>Relay requirements</h2>
 
     <p>
-      Both integration paths require a running AgentVault relay. The relay is a Rust binary (<code>agentvault-relay</code>) that needs at minimum an <code>ANTHROPIC_API_KEY</code>. For development:
+      Both integration paths require a running AgentVault relay. The relay is a Rust binary (<code>agentvault-relay</code>) that needs a configured provider API key such as <code>ANTHROPIC_API_KEY</code>, <code>OPENAI_API_KEY</code>, or <code>GEMINI_API_KEY</code>. For development:
     </p>
 
     <pre style={codeStyle} set:text={relayCode} />
