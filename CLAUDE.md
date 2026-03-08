@@ -44,4 +44,4 @@ Hosted on Vercel. Pushes to `main` auto-deploy.
 
 - Only AgentVault + VFC are public. VCAV is private / in development.
 - Protocol details must match shipped code in `vcav-io/agentvault` and `vcav-io/vfc`.
-- No analytics, tracking, or cookies.
+- Google Analytics 4 (G-G9DCQT9P9D) via gtag.js in Layout.astro.
