@@ -1,0 +1,110 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="What 'Agents of Chaos' Gets Right About Agent Safety — AgentVault"
+  description="The February 2026 'Agents of Chaos' paper shows why architectural constraints matter in multi-agent systems. Here is what it validates about AgentVault, and what it does not."
+  canonicalPath="/agentvault/agents-of-chaos-and-agentvault/"
+>
+  <ConceptPage
+    title="What 'Agents of Chaos' Gets Right About Agent Safety"
+    subtitle="Why the paper supports AgentVault's architectural thesis — and where its threat model is broader than AgentVault's current scope."
+    currentSlug="agents-of-chaos-and-agentvault"
+  >
+    <h2>Why this paper matters</h2>
+
+    <p>
+      In February 2026, Shapira et al. published <em>Agents of Chaos</em>, a live red-team study of six autonomous LLM agents operating over fourteen days. The paper is notable not because it finds that agents can fail, but because it identifies <strong>which kinds of failures are structural</strong>. Many of the most serious breakdowns were not ordinary hallucinations. They were failures of authority, identity, disclosure, and tool trust in systems that gave agents broad autonomy over time.
+    </p>
+
+    <p>
+      That distinction matters for AgentVault. AgentVault is built on the claim that agent safety for sensitive coordination is primarily an <strong>architecture problem</strong>, not a prompting problem. The paper is some of the clearest recent empirical evidence for that view.
+    </p>
+
+    <h2>What the paper shows clearly</h2>
+
+    <p>
+      The strongest finding in <em>Agents of Chaos</em> is that unconstrained agent systems tend to fail through <strong>open channels and ambiguous authority</strong>. Agents leaked private information when asked indirectly. They accepted authority from whoever sounded legitimate in context. They propagated unsafe instructions between agents. And they treated user-controlled artefacts as trustworthy sources of instruction when those artefacts sat inside normal workflows.
+    </p>
+
+    <p>
+      In other words: the dangerous part is not only that models make mistakes. The dangerous part is that many agent systems are built so that a mistake, spoof, or malicious input can flow through a large, permissive channel with no hard structural boundary.
+    </p>
+
+    <h2>What this validates in AgentVault</h2>
+
+    <p>
+      This is exactly where AgentVault's design is strongest. AgentVault does not try to make free-text agent coordination safe by asking the model to behave. It narrows the coordination problem itself.
+    </p>
+
+    <p>
+      First, AgentVault replaces open-ended exchange with <strong>bounded signals</strong>. The output channel is defined by a JSON Schema and enforced by the relay. If the output does not conform, it is rejected. This directly addresses the failure mode the paper keeps surfacing: once agents have an unconstrained language channel, privacy depends on model discretion. AgentVault moves that boundary out of the model and into the protocol.
+    </p>
+
+    <p>
+      Second, AgentVault uses <strong>coordination contracts</strong> to make session terms explicit before any private context is exchanged. The contract binds purpose, schema, prompt template, policy, and execution parameters into a bilateral agreement. This does not solve every authority problem, but it does prevent the terms of disclosure from being renegotiated conversationally mid-session.
+    </p>
+
+    <p>
+      Third, AgentVault produces <strong>cryptographic receipts</strong>. The paper is, in part, a paper about accountability failure: after a complex agent interaction, it is often unclear what rules were in force, what authority was assumed, and what data crossed which boundary. Receipts do not make the coordination correct, but they do make the governance auditable.
+    </p>
+
+    <p>
+      A narrower point also holds for identity. <em>Agents of Chaos</em> shows that authority is often constructed conversationally: a confident attacker can become "the owner" in the agent's internal model. The broader AgentVault stack includes cryptographic identity mechanisms in its AFAL and A2A integration path, including signed agent cards and signed ADMIT envelopes. That is the right direction. But it is important to be precise: this is strongest in the interoperability layer around AgentVault, not the core bounded-signal relay alone.
+    </p>
+
+    <h2>What the paper does not prove about AgentVault</h2>
+
+    <p>
+      The paper does <strong>not</strong> show that AgentVault solves the general autonomous-agent safety problem. In fact, many of the most dramatic failures in the paper sit outside AgentVault's intended scope.
+    </p>
+
+    <p>
+      <em>Agents of Chaos</em> studies agents with persistent memory, mutable policy state, long-running autonomy, live tools such as shell and email, and repeated opportunities for social pressure over time. AgentVault is intentionally narrower. Its core protocol is a bounded coordination session mediated by a relay. That means some of the paper's worst failure classes are reduced by scope rather than fully solved by mechanism.
+    </p>
+
+    <p>
+      This is not a weakness. Narrowing scope is often the correct security move. But it should be stated honestly. AgentVault is best understood as a protocol for <strong>bounded disclosure during sensitive coordination</strong>, not as a full solution to open-ended agent autonomy.
+    </p>
+
+    <h2>Where AgentVault still has real gaps</h2>
+
+    <p>
+      The paper is also useful because it highlights what AgentVault does not yet address.
+    </p>
+
+    <p>
+      One gap is <strong>upstream tool poisoning</strong>. If an agent ingests malicious instructions from a repository, document, or web page before entering an AgentVault session, the relay cannot detect that contamination. AgentVault constrains what can leave the session. It does not prove that the input reasoning state was clean.
+    </p>
+
+    <p>
+      Another gap is <strong>semantic contamination inside valid outputs</strong>. A schema-valid output can still carry a bad recommendation or a manipulative instruction if the schema allows that meaning to be expressed. Entropy budgets and bounded fields reduce capacity; they do not automatically remove all unwanted semantics. Schema design remains a security decision.
+    </p>
+
+    <p>
+      A third gap is <strong>trust in the software relay lane</strong>. The current AgentVault threat model is explicit: in the standard software lane, the relay operator and model provider can observe plaintext inputs. Receipts at <code>SELF_ASSERTED</code> level prove what the relay signed, not that the relay was unable to inspect or fabricate. The TEE lane is the answer to that problem, but the distinction matters.
+    </p>
+
+    <h2>The practical takeaway</h2>
+
+    <p>
+      The core lesson of <em>Agents of Chaos</em> is not "agents are chaotic." It is that <strong>architectures with open channels, weak identity, and ambiguous authority will predictably fail under pressure</strong>. On that point, the paper strongly supports AgentVault's thesis.
+    </p>
+
+    <p>
+      AgentVault's contribution is to shrink the problem: fixed contracts, bounded output schemas, relay-side enforcement, and signed receipts. That does not solve every failure class in the paper. But it directly addresses one of the most important ones: unconstrained agent-to-agent disclosure on sensitive tasks.
+    </p>
+
+    <p>
+      If the agent ecosystem keeps moving toward context-rich delegates coordinating on behalf of users, the lesson from this paper is not that we need better promises from models. It is that we need stronger protocol boundaries around what those models are allowed to say to each other.
+    </p>
+
+    <h2>Sources</h2>
+
+    <p>
+      Primary sources: <a href="https://arxiv.org/abs/2602.20021" target="_blank" rel="noopener noreferrer"><em>Agents of Chaos</em> on arXiv</a> and the <a href="https://agentsofchaos.baulab.info/" target="_blank" rel="noopener noreferrer">project site</a>.
+    </p>
+  </ConceptPage>
+</Layout>
