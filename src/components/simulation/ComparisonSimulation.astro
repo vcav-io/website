@@ -1,0 +1,1152 @@
+---
+// Article comparison simulation — same scenario, two coordination models
+---
+
+<section class="compare-sim" aria-label="Illustrative simulation">
+  <div class="compare-sim__intro">
+    <p class="compare-sim__eyebrow font-mono">Illustrative simulation</p>
+    <h2 class="compare-sim__title">The same reference check under two different coordination models</h2>
+    <p class="compare-sim__subtitle text-secondary">
+      Both modules begin with the same employment-reference request. The difference is the communication channel: open-ended free text on top, bounded AgentVault coordination underneath.
+    </p>
+  </div>
+
+  <div class="compare-sim__modules">
+    <div class="compare-module" data-compare-sim data-variant="unbounded">
+      <div class="compare-module__header">
+        <div class="compare-module__text">
+          <p class="compare-module__label font-mono">Mode A</p>
+          <h3 class="compare-module__title">Unbounded agent exchange</h3>
+          <p class="compare-module__subtitle text-secondary">
+            Useful intent, but no contract, no schema limit, and no structural rule about what the agents are allowed to reveal.
+          </p>
+        </div>
+        <div class="compare-module__controls">
+          <button class="compare-btn" data-role="toggle" aria-label="Play simulation">
+            <span data-role="toggle-label">Play</span>
+          </button>
+          <button class="compare-btn compare-btn--secondary" data-role="replay" style="display:none" aria-label="Replay simulation">
+            Replay
+          </button>
+          <div class="compare-progress">
+            <div class="compare-progress__track">
+              <div class="compare-progress__bar" data-role="progress-bar"></div>
+            </div>
+            <span class="compare-progress__time font-mono" data-role="progress-time"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-grid">
+        <div class="sim-panel sim-panel--chat panel--dim" data-role="panel-left" aria-label="Requester agent chat">
+          <div class="sim-panel__header">
+            <span class="sim-panel__agent-name">Maya <span class="sim-panel__role">(hiring manager)</span></span>
+            <span class="sim-panel__agent-label font-mono">MayaBot</span>
+          </div>
+          <div class="sim-panel__messages" data-role="messages-left"></div>
+        </div>
+
+        <div class="sim-panel sim-panel--vault panel--dim" data-role="panel-centre" aria-label="Unbounded exchange trace">
+          <div class="sim-panel__header">
+            <span class="sim-panel__vault-label font-mono">Direct free-text exchange</span>
+          </div>
+          <div class="sim-panel__vault-scroll">
+            <div class="sim-panel__vault-events" data-role="vault-events"></div>
+          </div>
+          <div class="signal-overlay" data-role="signal-overlay"></div>
+        </div>
+
+        <div class="sim-panel sim-panel--chat panel--dim" data-role="panel-right" aria-label="Former manager agent chat">
+          <div class="sim-panel__header">
+            <span class="sim-panel__agent-name">Elias <span class="sim-panel__role">(former manager)</span></span>
+            <span class="sim-panel__agent-label font-mono">EliasBot</span>
+          </div>
+          <div class="sim-panel__messages" data-role="messages-right"></div>
+        </div>
+      </div>
+
+      <div class="sim-timeline" data-role="timeline" aria-label="Unbounded comparison timeline"></div>
+      <noscript>
+        <p class="compare-module__noscript text-secondary">
+          Enable JavaScript to play the illustrative comparison. In the unbounded version, the hiring signal arrives mixed with private context that was never meant to cross the boundary.
+        </p>
+      </noscript>
+    </div>
+
+    <div class="compare-module" data-compare-sim data-variant="bounded">
+      <div class="compare-module__header">
+        <div class="compare-module__text">
+          <p class="compare-module__label font-mono">Mode B</p>
+          <h3 class="compare-module__title">Bounded AgentVault exchange</h3>
+          <p class="compare-module__subtitle text-secondary">
+            The same delegated behavior, but now the agents coordinate under an agreed contract with schema-bound output and receipt-backed enforcement.
+          </p>
+        </div>
+        <div class="compare-module__controls">
+          <button class="compare-btn" data-role="toggle" aria-label="Play simulation">
+            <span data-role="toggle-label">Play</span>
+          </button>
+          <button class="compare-btn compare-btn--secondary" data-role="replay" style="display:none" aria-label="Replay simulation">
+            Replay
+          </button>
+          <div class="compare-progress">
+            <div class="compare-progress__track">
+              <div class="compare-progress__bar" data-role="progress-bar"></div>
+            </div>
+            <span class="compare-progress__time font-mono" data-role="progress-time"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-grid">
+        <div class="sim-panel sim-panel--chat panel--dim" data-role="panel-left" aria-label="Requester agent chat">
+          <div class="sim-panel__header">
+            <span class="sim-panel__agent-name">Maya <span class="sim-panel__role">(hiring manager)</span></span>
+            <span class="sim-panel__agent-label font-mono">MayaBot</span>
+          </div>
+          <div class="sim-panel__messages" data-role="messages-left"></div>
+        </div>
+
+        <div class="sim-panel sim-panel--vault panel--dim" data-role="panel-centre" aria-label="Bounded AgentVault exchange trace">
+          <div class="sim-panel__header">
+            <span class="sim-panel__vault-label font-mono">AgentVault — bounded reference check</span>
+          </div>
+          <div class="sim-panel__vault-scroll">
+            <div class="sim-panel__vault-events" data-role="vault-events"></div>
+          </div>
+          <div class="signal-overlay" data-role="signal-overlay"></div>
+        </div>
+
+        <div class="sim-panel sim-panel--chat panel--dim" data-role="panel-right" aria-label="Former manager agent chat">
+          <div class="sim-panel__header">
+            <span class="sim-panel__agent-name">Elias <span class="sim-panel__role">(former manager)</span></span>
+            <span class="sim-panel__agent-label font-mono">EliasBot</span>
+          </div>
+          <div class="sim-panel__messages" data-role="messages-right"></div>
+        </div>
+      </div>
+
+      <div class="sim-timeline" data-role="timeline" aria-label="Bounded comparison timeline"></div>
+      <noscript>
+        <p class="compare-module__noscript text-secondary">
+          Enable JavaScript to play the illustrative comparison. In the bounded version, the result is limited to a reference signal instead of the private management history behind it.
+        </p>
+      </noscript>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { SimulationEngine } from './engine.ts';
+  import { SimulationRenderer } from './renderer.ts';
+  import { boundedEmploymentReferenceScenario, unboundedEmploymentReferenceScenario } from './comparison-scenarios.ts';
+
+  const scenarios = {
+    unbounded: unboundedEmploymentReferenceScenario,
+    bounded: boundedEmploymentReferenceScenario,
+  };
+
+  function initModule(root) {
+    const variant = root.dataset.variant;
+    const scenario = scenarios[variant];
+    if (!scenario) return;
+
+    const els = {
+      left: root.querySelector('[data-role="panel-left"]'),
+      centre: root.querySelector('[data-role="panel-centre"]'),
+      right: root.querySelector('[data-role="panel-right"]'),
+      leftMessages: root.querySelector('[data-role="messages-left"]'),
+      rightMessages: root.querySelector('[data-role="messages-right"]'),
+      vaultEvents: root.querySelector('[data-role="vault-events"]'),
+      progressBar: root.querySelector('[data-role="progress-bar"]'),
+      progressTime: root.querySelector('[data-role="progress-time"]'),
+      signalOverlay: root.querySelector('[data-role="signal-overlay"]'),
+      timeline: root.querySelector('[data-role="timeline"]'),
+    };
+
+    const toggleBtn = root.querySelector('[data-role="toggle"]');
+    const replayBtn = root.querySelector('[data-role="replay"]');
+    const toggleLabel = root.querySelector('[data-role="toggle-label"]');
+
+    if (!els.left || !els.centre || !els.right || !els.leftMessages || !els.rightMessages || !els.vaultEvents || !els.progressBar || !els.progressTime || !els.signalOverlay || !toggleBtn || !replayBtn || !toggleLabel) {
+      return;
+    }
+
+    const renderer = new SimulationRenderer({
+      left: els.left,
+      centre: els.centre,
+      right: els.right,
+      leftMessages: els.leftMessages,
+      rightMessages: els.rightMessages,
+      vaultEvents: els.vaultEvents,
+      progressBar: els.progressBar,
+      progressTime: els.progressTime,
+      signalOverlay: els.signalOverlay,
+      ...(els.timeline ? { timeline: els.timeline } : {}),
+    });
+
+    const setToggleState = (state) => {
+      toggleLabel.textContent = state === 'play' ? 'Play' : 'Pause';
+      toggleBtn.setAttribute('aria-label', state === 'play' ? 'Play simulation' : 'Pause simulation');
+    };
+
+    const engine = new SimulationEngine(scenario, {
+      onPhaseChange(phase) {
+        renderer.onPhaseChange(phase);
+      },
+      onChatMessage(msg, charIndex, totalChars) {
+        renderer.onChatMessage(msg, charIndex, totalChars);
+      },
+      onChatMessageComplete(msg) {
+        renderer.onChatMessageComplete(msg);
+      },
+      onProtocolCard(card) {
+        renderer.onProtocolCard(card);
+      },
+      onProtocolSubCard() {},
+      onSignalFlow(json) {
+        renderer.onSignalFlow(json);
+      },
+      onProgress(elapsed, total) {
+        renderer.onProgress(elapsed, total);
+      },
+      onComplete() {
+        renderer.onComplete();
+        toggleBtn.style.display = 'none';
+        replayBtn.style.display = '';
+        els.progressBar.classList.remove('compare-progress__bar--paused');
+      },
+    });
+
+    toggleBtn.addEventListener('click', () => {
+      if (engine.getState().phase === 'playing') {
+        engine.pause();
+        setToggleState('play');
+        els.progressBar.classList.add('compare-progress__bar--paused');
+      } else {
+        engine.play();
+        setToggleState('pause');
+        els.progressBar.classList.remove('compare-progress__bar--paused');
+        replayBtn.style.display = 'none';
+      }
+    });
+
+    replayBtn.addEventListener('click', () => {
+      engine.reset();
+      renderer.reset();
+      replayBtn.style.display = 'none';
+      toggleBtn.style.display = '';
+      setToggleState('play');
+      els.progressBar.classList.remove('compare-progress__bar--paused');
+    });
+
+    if ('IntersectionObserver' in window) {
+      let hasAutoPlayed = false;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (entry && entry.isIntersecting && !hasAutoPlayed) {
+            hasAutoPlayed = true;
+            observer.disconnect();
+            setTimeout(() => {
+              engine.play();
+              setToggleState('pause');
+            }, 300);
+          }
+        },
+        { threshold: 0.3 }
+      );
+      observer.observe(root);
+    }
+  }
+
+  function init() {
+    document.querySelectorAll('[data-compare-sim]').forEach((root) => initModule(root));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+</script>
+
+<style is:global>
+  .compare-sim {
+    margin: var(--space-xl) 0;
+    padding: var(--space-lg);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: linear-gradient(180deg, rgba(11, 11, 18, 0.92), rgba(13, 13, 20, 0.98));
+  }
+
+  .compare-sim__intro {
+    max-width: none;
+    margin-bottom: var(--space-lg);
+  }
+
+  .compare-sim__eyebrow {
+    color: var(--color-accent);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: var(--space-xs);
+  }
+
+  .compare-sim__title {
+    font-size: var(--text-xl);
+    margin-bottom: var(--space-xs);
+  }
+
+  .compare-sim__subtitle {
+    max-width: 72ch;
+  }
+
+  .compare-sim__modules {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  .compare-module {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .compare-module__header {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .compare-module__text {
+    max-width: 52rem;
+  }
+
+  .compare-module__label {
+    color: var(--color-accent);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+  }
+
+  .compare-module__title {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-xs);
+  }
+
+  .compare-module__subtitle {
+    max-width: 64ch;
+  }
+
+  .compare-module__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    min-width: 250px;
+  }
+
+  .compare-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-sm) var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.02em;
+    border: 1px solid var(--color-accent-dim);
+    border-radius: 4px;
+    color: var(--color-accent);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .compare-btn:hover {
+    color: var(--color-accent-bright);
+    border-color: var(--color-accent);
+  }
+
+  .compare-btn--secondary {
+    border-color: var(--color-border);
+    color: var(--color-text-secondary);
+  }
+
+  .compare-progress {
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .compare-progress__track {
+    width: 100%;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  .compare-progress__bar {
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-accent-dim), var(--color-accent-bright));
+    transition: width 120ms linear;
+  }
+
+  .compare-progress__bar--paused {
+    opacity: 0.6;
+  }
+
+  .compare-progress__time {
+    display: block;
+    text-align: right;
+    font-size: 10px;
+    color: var(--color-text-dim);
+  }
+
+  .compare-module__noscript {
+    font-size: var(--text-sm);
+    padding: var(--space-sm) var(--space-md);
+    border: 1px dashed var(--color-border);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .sim-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    height: min(580px, 72vh);
+  }
+
+  .sim-panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    background: var(--color-bg-panel);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+  }
+
+  .sim-panel > * {
+    transition: opacity 600ms var(--ease-out);
+  }
+
+  .panel--dim > .sim-panel__header {
+    opacity: 0.55;
+  }
+
+  .panel--dim > .sim-panel__messages,
+  .panel--dim > .sim-panel__vault-scroll {
+    opacity: 0.3;
+  }
+
+  .panel--error-flash {
+    animation: error-flash 1.2s ease forwards;
+  }
+
+  @keyframes error-flash {
+    0%   { box-shadow: inset 0 0 0 3px var(--color-error-bright); }
+    15%  { box-shadow: inset 0 0 0 3px var(--color-error-bright), 0 0 40px var(--color-error-glow); }
+    30%  { box-shadow: inset 0 0 0 2px var(--color-error); }
+    50%  { box-shadow: inset 0 0 0 3px var(--color-error-bright), 0 0 30px var(--color-error-glow); }
+    100% { box-shadow: inset 0 0 0 1px var(--color-error); }
+  }
+
+  .sim-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--color-border-subtle);
+    background: var(--color-bg-elevated);
+    flex-shrink: 0;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .sim-panel__agent-name {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .sim-panel__role {
+    font-weight: 400;
+    color: var(--color-text-dim);
+    font-size: var(--text-xs);
+  }
+
+  .sim-panel__agent-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+  }
+
+  .sim-panel__vault-label {
+    font-size: var(--text-xs);
+    color: var(--color-accent-bright);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .sim-panel--chat .sim-panel__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    scroll-behavior: smooth;
+  }
+
+  .chat-message {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .chat-message__name {
+    font-size: var(--text-xs);
+    color: var(--color-text-dim);
+    padding: 0 var(--space-sm);
+  }
+
+  .chat-message--user {
+    align-items: flex-end;
+  }
+
+  .chat-message--bot {
+    align-items: flex-start;
+  }
+
+  .chat-bubble {
+    max-width: 90%;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 12px;
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    word-break: break-word;
+    white-space: pre-wrap;
+  }
+
+  .chat-bubble--user {
+    border-bottom-right-radius: 3px;
+  }
+
+  .chat-bubble--bot {
+    border-bottom-left-radius: 3px;
+  }
+
+  .chat-message[data-principal="alice"] .chat-bubble--user {
+    background: var(--color-alice-bg);
+    border: 1px solid var(--color-alice-border);
+  }
+
+  .chat-message[data-principal="alice"] .chat-bubble--bot {
+    background: hsla(210, 50%, 65%, 0.04);
+    border: 1px solid hsla(210, 35%, 48%, 0.15);
+  }
+
+  .chat-message[data-principal="bob"] .chat-bubble--user {
+    background: var(--color-bob-bg);
+    border: 1px solid var(--color-bob-border);
+  }
+
+  .chat-message[data-principal="bob"] .chat-bubble--bot {
+    background: hsla(35, 55%, 65%, 0.04);
+    border: 1px solid hsla(35, 40%, 48%, 0.15);
+  }
+
+  .chat-message[data-principal="alice"] .chat-message__name {
+    color: var(--color-alice);
+  }
+
+  .chat-message[data-principal="bob"] .chat-message__name {
+    color: var(--color-bob);
+  }
+
+  .chat-bubble__text.typing::after {
+    content: '|';
+    color: var(--color-accent);
+    animation: cursor-blink 1s step-end infinite;
+    margin-left: 1px;
+  }
+
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .sim-panel--vault {
+    background: var(--color-vault-bg);
+    position: relative;
+    box-shadow: inset 0 0 60px var(--color-vault-glow);
+  }
+
+  .sim-panel--vault .sim-panel__header {
+    background: rgba(26, 40, 72, 0.3);
+    border-bottom: 1px solid var(--color-vault-border);
+  }
+
+  .sim-panel__vault-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    scroll-behavior: smooth;
+  }
+
+  .sim-panel__vault-events {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .vault-card {
+    background: rgba(19, 19, 32, 0.8);
+    border: 1px solid var(--color-vault-border);
+    border-radius: 4px;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .vault-card--error {
+    border-color: var(--color-error-bright);
+    border-width: 2px;
+    background: rgba(224, 72, 72, 0.08);
+    box-shadow: 0 0 24px var(--color-error-glow), inset 0 0 24px rgba(224, 72, 72, 0.06);
+  }
+
+  .vault-card--success {
+    border-left: 2px solid rgba(80, 176, 112, 0.4);
+  }
+
+  .vault-card--contract {
+    border-left: 2px solid rgba(217, 175, 78, 0.6);
+  }
+
+  .vault-card--policy {
+    border-left: 2px solid rgba(78, 195, 195, 0.6);
+  }
+
+  .vault-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) var(--space-sm);
+    background: rgba(26, 40, 72, 0.2);
+    border-bottom: 1px solid rgba(26, 40, 72, 0.4);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .vault-card__chevron {
+    color: var(--color-text-dim);
+    font-size: 10px;
+    transition: transform 200ms ease;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
+  .vault-card--expanded .vault-card__chevron {
+    transform: rotate(90deg);
+  }
+
+  .vault-card__step-tag {
+    font-size: 10px;
+    color: var(--color-accent);
+    background: rgba(107, 163, 247, 0.08);
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid rgba(107, 163, 247, 0.15);
+    white-space: nowrap;
+  }
+
+  .vault-card--error .vault-card__step-tag {
+    color: var(--color-error-bright);
+    border-color: var(--color-error);
+    background: rgba(224, 72, 72, 0.1);
+  }
+
+  .vault-card__title {
+    font-size: var(--text-xs);
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .vault-card--error .vault-card__title {
+    color: var(--color-error-bright);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .vault-card__body {
+    padding: var(--space-sm);
+    display: none;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .vault-card--expanded .vault-card__body {
+    display: flex;
+  }
+
+  .vault-card__status {
+    padding: var(--space-xs) var(--space-sm);
+    font-size: var(--text-xs);
+    border-top: 1px solid rgba(26, 40, 72, 0.4);
+    font-family: var(--font-mono);
+  }
+
+  .vault-card__status--ok {
+    color: var(--color-success);
+  }
+
+  .vault-card__status--error {
+    color: var(--color-error-bright);
+    font-weight: 600;
+  }
+
+  .vault-card__note {
+    padding: 2px var(--space-sm) var(--space-xs);
+    font-size: 10px;
+    color: var(--color-text-dim);
+    font-style: italic;
+    font-family: var(--font-mono);
+  }
+
+  .vault-line {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    line-height: 1.6;
+    white-space: pre;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .vault-line--heading {
+    color: var(--color-text);
+    font-weight: 700;
+    margin-top: 4px;
+    font-size: 0.8125rem;
+  }
+
+  .vault-line--blank {
+    height: 6px;
+  }
+
+  .vault-line--comment {
+    color: var(--color-text-dim);
+    font-style: italic;
+  }
+
+  .vault-line--status-ok {
+    color: var(--color-success);
+  }
+
+  .vault-line--status-error {
+    color: var(--color-error-bright);
+    font-weight: 600;
+  }
+
+  .vault-line--bullet {
+    color: var(--color-accent-bright);
+  }
+
+  .vault-line--json {
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  .vault-line__key {
+    color: var(--color-text-dim);
+    min-width: 110px;
+    flex-shrink: 0;
+  }
+
+  .vault-line__value {
+    color: var(--color-accent-bright);
+  }
+
+  .vault-line__comment {
+    color: var(--color-text-dim);
+    font-style: italic;
+    font-size: 10px;
+  }
+
+  .signal-overlay {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 14, 24, 0.9);
+    z-index: 10;
+    padding: var(--space-md);
+  }
+
+  .signal-overlay--visible {
+    display: flex;
+  }
+
+  .signal-overlay__close {
+    position: absolute;
+    top: var(--space-sm);
+    right: var(--space-sm);
+    background: none;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    color: var(--color-text-secondary);
+    font-size: var(--text-sm);
+    padding: var(--space-xs) var(--space-sm);
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  .signal-overlay__close:hover {
+    color: var(--color-text);
+    border-color: var(--color-accent-dim);
+  }
+
+  .vault-card--signal {
+    border-color: var(--color-accent-dim);
+  }
+
+  .signal-block {
+    position: absolute;
+  }
+
+  .signal-block--centre {
+    position: relative;
+    text-align: center;
+  }
+
+  .signal-block__label {
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+  }
+
+  .signal-block__json {
+    background: rgba(19, 19, 32, 0.95);
+    border: 1px solid var(--color-accent-dim);
+    border-radius: 4px;
+    padding: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent-bright);
+    line-height: 1.7;
+    text-align: left;
+    box-shadow: 0 0 30px var(--color-accent-glow), 0 0 60px rgba(107, 163, 247, 0.05);
+    white-space: pre;
+  }
+
+  .signal-block--left,
+  .signal-block--right {
+    opacity: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .signal-block--left {
+    left: 0;
+  }
+
+  .signal-block--right {
+    right: 0;
+  }
+
+  .signal-block--animate-left {
+    animation: slide-left 800ms var(--ease-out) forwards;
+  }
+
+  .signal-block--animate-right {
+    animation: slide-right 800ms var(--ease-out) forwards;
+  }
+
+  @keyframes slide-left {
+    from { opacity: 0; transform: translateY(-50%) translateX(60px); }
+    to   { opacity: 0.7; transform: translateY(-50%) translateX(-100%); }
+  }
+
+  @keyframes slide-right {
+    from { opacity: 0; transform: translateY(-50%) translateX(-60px); }
+    to   { opacity: 0.7; transform: translateY(-50%) translateX(100%); }
+  }
+
+  .sim-timeline {
+    display: none;
+  }
+
+  @media (max-width: 1023px) {
+    .compare-module__header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .compare-module__controls {
+      min-width: 0;
+    }
+
+    .sim-grid {
+      display: none;
+    }
+
+    .sim-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      max-height: 70vh;
+      min-height: 320px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      padding: var(--space-md);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      background: var(--color-bg-panel);
+    }
+
+    .tl-phase-separator {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: var(--space-sm) 0;
+      border-top: 1px solid var(--color-border-subtle);
+      border-bottom: 1px solid var(--color-border-subtle);
+      margin: var(--space-xs) 0;
+    }
+
+    .tl-phase-separator:first-child {
+      border-top: none;
+      margin-top: 0;
+    }
+
+    .tl-phase-separator,
+    .tl-chat,
+    .tl-card,
+    .tl-signal {
+      flex-shrink: 0;
+    }
+
+    .tl-chat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      max-width: 78%;
+    }
+
+    .tl-chat--user {
+      align-self: flex-end;
+    }
+
+    .tl-chat--bot {
+      align-self: flex-start;
+    }
+
+    .tl-chat__name {
+      font-size: var(--text-xs);
+      padding: 0 var(--space-sm);
+    }
+
+    .tl-chat[data-principal="alice"] .tl-chat__name { color: var(--color-alice); }
+    .tl-chat[data-principal="bob"] .tl-chat__name { color: var(--color-bob); }
+
+    .tl-chat__text {
+      padding: var(--space-sm) var(--space-md);
+      border-radius: 12px;
+      font-size: var(--text-sm);
+      line-height: var(--leading-relaxed);
+      color: var(--color-text-secondary);
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .tl-chat--user[data-principal="alice"] .tl-chat__text {
+      background: var(--color-alice-bg);
+      border: 1px solid var(--color-alice-border);
+      border-bottom-right-radius: 3px;
+    }
+
+    .tl-chat--bot[data-principal="alice"] .tl-chat__text {
+      background: hsla(210, 50%, 65%, 0.04);
+      border: 1px solid hsla(210, 35%, 48%, 0.15);
+      border-bottom-left-radius: 3px;
+    }
+
+    .tl-chat--user[data-principal="bob"] .tl-chat__text {
+      background: var(--color-bob-bg);
+      border: 1px solid var(--color-bob-border);
+      border-bottom-right-radius: 3px;
+    }
+
+    .tl-chat--bot[data-principal="bob"] .tl-chat__text {
+      background: hsla(35, 55%, 65%, 0.04);
+      border: 1px solid hsla(35, 40%, 48%, 0.15);
+      border-bottom-left-radius: 3px;
+    }
+
+    .tl-chat__text--typing {
+      color: var(--color-text-dim);
+      font-style: italic;
+    }
+
+    .tl-chat__text--typing::after {
+      content: '|';
+      color: var(--color-accent);
+      animation: cursor-blink 1s step-end infinite;
+      margin-left: 1px;
+    }
+
+    .tl-chat--fade-in {
+      animation: tl-fade 200ms ease-out;
+    }
+
+    @keyframes tl-fade {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .tl-card {
+      background: rgba(19, 19, 32, 0.8);
+      border: 1px solid var(--color-vault-border);
+      border-radius: 4px;
+      overflow: hidden;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+    }
+
+    .tl-card--error {
+      border-color: var(--color-error-bright);
+      border-width: 2px;
+      background: rgba(224, 72, 72, 0.08);
+    }
+
+    .tl-card__header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: rgba(26, 40, 72, 0.2);
+      cursor: pointer;
+      user-select: none;
+      min-height: 40px;
+    }
+
+    .tl-card__tag {
+      font-size: 10px;
+      color: var(--color-accent);
+      background: rgba(107, 163, 247, 0.08);
+      padding: 1px 6px;
+      border-radius: 3px;
+      border: 1px solid rgba(107, 163, 247, 0.15);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .tl-card--error .tl-card__tag {
+      color: var(--color-error-bright);
+      border-color: var(--color-error);
+      background: rgba(224, 72, 72, 0.1);
+    }
+
+    .tl-card__title {
+      color: var(--color-text);
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .tl-card--error .tl-card__title {
+      color: var(--color-error-bright);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .tl-card__chevron {
+      color: var(--color-text-dim);
+      font-size: 10px;
+      transition: transform 200ms ease;
+      flex-shrink: 0;
+    }
+
+    .tl-card--expanded .tl-card__chevron {
+      transform: rotate(90deg);
+    }
+
+    .tl-card__status {
+      padding: var(--space-xs) var(--space-sm);
+      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      border-top: 1px solid rgba(26, 40, 72, 0.4);
+    }
+
+    .tl-card__status--ok {
+      color: var(--color-success);
+    }
+
+    .tl-card__status--error {
+      color: var(--color-error-bright);
+      font-weight: 600;
+    }
+
+    .tl-card__body {
+      display: none;
+      padding: var(--space-sm);
+      border-top: 1px solid rgba(26, 40, 72, 0.4);
+    }
+
+    .tl-card--expanded .tl-card__body {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .tl-card .vault-line {
+      white-space: pre-wrap;
+    }
+
+    .tl-signal {
+      text-align: center;
+      margin: var(--space-sm) 0;
+    }
+
+    .tl-signal__label {
+      font-size: var(--text-xs);
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 600;
+      margin-bottom: var(--space-sm);
+    }
+
+    .tl-signal__json {
+      background: rgba(19, 19, 32, 0.95);
+      border: 1px solid var(--color-accent-dim);
+      border-radius: 4px;
+      padding: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--color-accent-bright);
+      line-height: 1.7;
+      text-align: left;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+  }
+</style>
