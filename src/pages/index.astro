@@ -6,7 +6,9 @@ import AssuranceTiers from '../components/sections/AssuranceTiers.astro';
 import Ecosystem from '../components/sections/Ecosystem.astro';
 import StatusMap from '../components/sections/StatusMap.astro';
 import FAQ from '../components/sections/FAQ.astro';
+import Concepts from '../components/sections/Concepts.astro';
 import OpenProject from '../components/sections/OpenProject.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 import AVLockup from '../components/icons/AVLockup.astro';
 import VCAVLockup from '../components/icons/VCAVLockup.astro';
 ---
@@ -103,15 +105,10 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
     <Ecosystem />
     <StatusMap />
     <FAQ />
+    <Concepts />
     <OpenProject />
 
-    <footer class="site-footer">
-      <div class="container">
-        <p class="text-dim" style="font-size: var(--text-sm);">
-          vcav.io · <a href="mailto:contact@vcav.io" class="footer-link">contact@vcav.io</a>
-        </p>
-      </div>
-    </footer>
+    <SiteFooter />
   </main>
 </Layout>
 
@@ -377,18 +374,4 @@ import VCAVLockup from '../components/icons/VCAVLockup.astro';
     color: var(--color-accent-bright);
   }
 
-  .site-footer {
-    padding: var(--space-2xl) 0;
-    border-top: 1px solid var(--color-border-subtle);
-  }
-
-  .footer-link {
-    color: var(--color-text-dim);
-    text-decoration: none;
-    transition: color var(--duration-fast) var(--ease-out);
-  }
-
-  .footer-link:hover {
-    color: var(--color-accent);
-  }
 </style>

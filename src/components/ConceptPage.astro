@@ -1,5 +1,6 @@
 ---
 import AVMark from './icons/AVMark.astro';
+import SiteFooter from './SiteFooter.astro';
 
 interface Props {
   title: string;
@@ -108,13 +109,7 @@ const relatedArticles = articles.filter(a => a.slug !== currentSlug);
 </nav>
 )}
 
-<footer class="site-footer">
-  <div class="container">
-    <p class="text-dim" style="font-size: var(--text-sm);">
-      vcav.io · <a href="mailto:contact@vcav.io" class="footer-link">contact@vcav.io</a>
-    </p>
-  </div>
-</footer>
+<SiteFooter />
 
 <style>
   .top-bar {
@@ -406,18 +401,4 @@ const relatedArticles = articles.filter(a => a.slug !== currentSlug);
     }
   }
 
-  .site-footer {
-    padding: var(--space-2xl) 0;
-    border-top: 1px solid var(--color-border-subtle);
-  }
-
-  .footer-link {
-    color: var(--color-text-dim);
-    text-decoration: none;
-    transition: color var(--duration-fast) var(--ease-out);
-  }
-
-  .footer-link:hover {
-    color: var(--color-accent);
-  }
 </style>
