@@ -1,0 +1,147 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+import ComparisonSimulation from '../components/simulation/ComparisonSimulation.astro';
+---
+
+<Layout
+  title="When Your AI Talks to My AI — AgentVault"
+  description="Delegated coordination between AI agents only works when the communication channel is bounded and verifiable. See the same employment-reference scenario under unbounded and AgentVault coordination."
+  canonicalPath="/agentvault/when-your-ai-talks-to-my-ai/"
+>
+  <ConceptPage
+    title="When Your AI Talks to My AI"
+    subtitle="Delegated coordination between AI agents only works when the communication channel is bounded and verifiable."
+    currentSlug="when-your-ai-talks-to-my-ai"
+  >
+    <h2>Private reflection is becoming delegated coordination</h2>
+
+    <p>
+      Imagine using an AI assistant the way millions of people already use ChatGPT today: to talk through something awkward, personal, or unresolved. Maybe you have fallen out with a friend. Maybe you are trying to understand why a professional relationship broke down. Maybe you are working out whether to re-engage, apologise, ask for a reference, or simply move on.
+    </p>
+
+    <p>
+      In an agentic world, the next step is not hard to imagine. You do not just ask your AI to help you reflect. You ask it to help you act. It reaches out to the other party’s AI, gathers a signal, and comes back with something useful. That is not obviously creepy or irrational. It is the kind of delegated coordination people will actually want if agent assistants become more capable and more connected.
+    </p>
+
+    <p>
+      The instinctive response is to say: then do not let the agents talk. But that is not the real problem. The real problem is that in a normal agent stack, nothing defines what is allowed to cross the boundary once one agent starts talking to another. Private reflection turns into bilateral disclosure because the communication channel itself is unconstrained.
+    </p>
+
+    <h2>The thesis</h2>
+
+    <p>
+      Delegated coordination between AI agents is only safe when the communication channel is bounded and verifiable.
+    </p>
+
+    <p>
+      That is the core design point behind AgentVault. It is not a system for stopping agents from coordinating on your behalf. It is a protocol for making that coordination structurally safe enough to use. The question is not whether agents should be allowed to talk. The question is what the channel between them is physically capable of carrying.
+    </p>
+
+    <p>
+      To see the difference, compare the same scenario under two different coordination models.
+    </p>
+
+    <ComparisonSimulation />
+
+    <h2>Why this matters soon</h2>
+
+    <p>
+      This is not a far-future thought experiment. Once agents can invoke tools, maintain persistent context, and act on behalf of their users, they become natural intermediaries for all kinds of ordinary coordination: scheduling, negotiation, references, dispute resolution, compatibility checks, and sensitive multi-party workflows that people would prefer not to handle by sending raw context back and forth themselves.
+    </p>
+
+    <p>
+      Interoperability work is already pushing in that direction. The ecosystem is converging on a world where one agent can call another, negotiate with another, or exchange structured data with another. If that world arrives without a privacy layer, then the most useful agent behaviors also become the easiest route for private context to leak across organizational and interpersonal boundaries.
+    </p>
+
+    <p>
+      That is why the employment-reference example matters. It feels mundane. It is also exactly the kind of thing people will delegate. One side has real context. The other side wants a real signal. The difference between a safe system and a dangerous one is whether the interaction is designed to return a bounded answer or simply invite a candid story.
+    </p>
+
+    <h2>Why prompt-only restraint fails</h2>
+
+    <p>
+      The easiest way to build agent coordination is to let the agents exchange free text and tell them to be careful. In practice that means adding instructions such as “do not reveal sensitive details,” “keep this high level,” or “only share what is necessary.” But those are behavioral requests made to a system whose output channel still has effectively unbounded expressive capacity.
+    </p>
+
+    <p>
+      A free-text exchange does not just let a model answer the question. It lets it justify, caveat, narrate, disclose, speculate, and smuggle detail in whatever shape best matches its training objective. Even when the model is sincerely trying to be helpful, it has no reliable architectural way to know which facts were meant to stay private and which explanations accidentally reveal them. The model can only try to behave. It cannot constrain the channel it is speaking through.
+    </p>
+
+    <p>
+      This is why “structured outputs” alone are not enough. If the structure still includes a free-form explanation field, or any broad text surface, then the channel can still carry far more information than the user intended to share. The shape of the output matters because the shape determines the ceiling on what can leak.
+    </p>
+
+    <p>
+      In the unbounded reference-check simulation above, the agents are not being obviously malicious. They are attempting to be useful. That is the point. The system invites a candid answer, so it gets one: not just a hiring signal, but the private circumstances behind it. Once that information crosses the wire, the social boundary is already broken.
+    </p>
+
+    <h2>How AgentVault changes the behavior</h2>
+
+    <p>
+      AgentVault is an open protocol for bounded, verifiable agent-to-agent coordination. Its core move is simple: before private context is allowed to contribute to a shared answer, the parties agree what kind of answer is allowed to leave the session.
+    </p>
+
+    <p>
+      In the bounded employment-reference version, the agents do not open a free-text conversation and hope it goes well. They first bind the interaction to a <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>. That contract defines the purpose of the session, the output schema, and the enforcement terms. In other words, it decides in advance whether this session is allowed to emit a narrative explanation, a bounded signal, or nothing at all.
+    </p>
+
+    <p>
+      The next step is the schema. In AgentVault, the output is not just “JSON” in the loose sense. It is a specific schema that constrains what information can leave. In the simulation, the employment-reference check is reduced to a small set of bounded fields: a performance signal, a rehire signal, an integrity flag, and a confidence bucket. That is enough to answer the hiring question. It is not enough to retell the private management history behind it.
+    </p>
+
+    <p>
+      That is the crucial difference between a useful delegate and a gossiping representative. The bounded version still allows the agent to act. It still allows the parties to coordinate. It still permits a real signal to cross the boundary. What it does not permit is the spontaneous expansion of the channel into a candid narrative just because that would be “helpful.”
+    </p>
+
+    <p>
+      AgentVault also separates agreement from enforcement. The model is not trusted to police itself. An external relay validates the output against the agreed schema and policy before either party sees it. If the result does not fit the contract, it is rejected. That means the privacy boundary does not depend on whether the underlying model remembered to be discreet. It depends on whether the system will physically accept anything outside the bounded shape.
+    </p>
+
+    <p>
+      Finally, the session produces a <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipt</a>. That receipt binds the important governance artefacts of the session — contract, schema, policy, and execution metadata — to the result that actually came back. So the bounded signal is not just a claim about how the coordination was run. It is evidence that the coordination was run under those terms.
+    </p>
+
+    <p>
+      The result is a very different product behavior. In an ordinary agent stack, the safe answer is often to avoid outreach because you cannot trust the channel. In AgentVault, the outreach becomes the feature precisely because the channel is bounded. The same delegated behavior that feels unsafe in free text becomes useful once the system limits what the agents are allowed to say to each other.
+    </p>
+
+    <h2>What the bounded version makes possible</h2>
+
+    <p>
+      This is the part that matters most. AgentVault is not just a defensive protocol. It is an enabling one.
+    </p>
+
+    <p>
+      If the only safe architecture is “never let the agents coordinate,” then you lose a large fraction of the value of delegation. There is no safe reference check. There is no safe mediation pre-signal. There is no safe compatibility check. There is no safe way for one agent to speak to another on behalf of a user without risking that the entire private context comes along for the ride.
+    </p>
+
+    <p>
+      Bounded coordination changes that. It says: yes, the agents can talk. Yes, they can carry real context into a joint computation. Yes, they can return something useful. But they do so under a machine-readable agreement about what is allowed to leave. That is a much stronger and more realistic answer than simply telling a model not to overshare.
+    </p>
+
+    <p>
+      You can think of it as the difference between informal gossip and formal mediation. The same people may be involved. The same underlying facts may matter. But the channel, the rules, and the outcome are different. AgentVault does not make the private context disappear. It makes the interaction produce a bounded signal instead of a narrative leak.
+    </p>
+
+    <h2>The current trust model</h2>
+
+    <p>
+      In the current software execution lane, the relay still sees plaintext inputs. The receipt proves what contract, schema, and policy governed the exchange, but it does not make the relay operator blind to the underlying context. That is an honest limitation of the software-only trust model, and it matters when deciding what level of assurance is sufficient for a given deployment.
+    </p>
+
+    <p>
+      AgentVault’s stronger assurance story is to preserve the same protocol shape while narrowing the trust boundary with confidential-compute infrastructure. The point is not to pretend that all deployments are already hardware-attested. The point is that the bounded-channel model survives across assurance tiers: first make the coordination contractually bounded, then strengthen who must be trusted to enforce it.
+    </p>
+
+    <h2>Try it</h2>
+
+    <p>
+      The easiest way to make this concrete is to run the live AgentVault demo and inspect the pieces directly: the contract parameters, the bounded output, and the receipt verification step. The point of the demo is not that the agents never talk. It is that when they do coordinate, the session is visibly governed by a bounded contract rather than by an open-ended conversation.
+    </p>
+
+    <p>
+      If you want to explore the mechanics in more depth, start with <a href={`${import.meta.env.BASE_URL}bounded-disclosure/`}>bounded disclosure</a>, <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signals</a>, and <a href={`${import.meta.env.BASE_URL}how-coordination-contracts-work/`}>how coordination contracts work</a>, then compare that to the live demo and protocol materials in the <a href="https://github.com/vcav-io/agentvault" target="_blank" rel="noopener noreferrer">AgentVault repository</a>.
+    </p>
+  </ConceptPage>
+</Layout>
