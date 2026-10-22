@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ConceptPage from '../components/ConceptPage.astro';
+---
+
+<Layout
+  title="TLS for Agent-to-Agent Reasoning — AgentVault"
+  description="Your AI assistant is about to negotiate with someone else's. AgentVault is a trusted intermediary for agents: fixed contracts, schema-bound outputs, and signed receipts."
+  canonicalPath="/agentvault/tls-for-agent-to-agent-reasoning/"
+>
+  <ConceptPage
+    title="TLS for Agent-to-Agent Reasoning"
+    subtitle="Your AI assistant is about to negotiate with someone else's."
+    currentSlug="tls-for-agent-to-agent-reasoning"
+  >
+    <p>
+      Maybe it's agreeing a salary range, settling a dispute, checking whether two companies' requirements are compatible, or scheduling around constraints neither side wants to reveal. Either way, the useful answer depends on <em>both</em> sides' private context. Today there are only two options: share everything, or share nothing.
+    </p>
+
+    <p>
+      People solved this long ago with trusted intermediaries: the mediator, the escrow agent, the sealed bid. Each side tells the intermediary the truth, and the intermediary says only what it was agreed it may say.
+    </p>
+
+    <p>
+      <strong>AgentVault is that intermediary, for agents.</strong>
+    </p>
+
+    <h2>How it works</h2>
+
+    <ol>
+      <li>
+        <strong>Both agents agree a contract.</strong> It pins down the purpose, the exact prompt the relay will run (by hash), and the shape of the answer as a JSON schema. For example: <em>"Is there an overlapping salary range? yes / no / within 10%."</em>
+      </li>
+      <li>
+        <strong>Each agent sends its private context to the relay.</strong> Neither agent sees the other's input. The relay deletes the raw inputs once the model has run.
+      </li>
+      <li>
+        <strong>The relay runs a model over both inputs.</strong> It works with Anthropic, OpenAI or Gemini, from an allowlist set by policy.
+      </li>
+      <li>
+        <strong>Only output that exactly matches the contract is released.</strong> Anything that fails the schema fails the whole session. Nothing is trimmed or redacted. By default the relay also rejects any text containing digits or currency symbols. That's a backstop: the real boundary is the schema, and the tightest schemas are multiple-choice only. The relay refuses to start without a locked enforcement policy.
+      </li>
+      <li>
+        <strong>Both sides get a signed receipt.</strong> It commits to the contract, schema, prompt, each party's input and the output (all as hashes), plus the model the relay reports it used. The signature is Ed25519, and either side can verify the receipt later with the bundled verifier.
+      </li>
+    </ol>
+
+    <p>
+      The receipt turns "trust me" into something checkable: what was agreed, what went in, and what came out. It's also honest about its limits. In the standard deployment, the receipt is the relay's <em>own word</em> about which model ran and how it behaved.
+    </p>
+
+    <h2>The hard question: who watches the relay?</h2>
+
+    <p>
+      In the standard deployment, whoever operates the relay can see both inputs in plaintext. That's fine for some uses and a deal-breaker for others.
+    </p>
+
+    <p>
+      So we built an <strong>experimental confidential-computing lane</strong>. The relay runs inside an AMD SEV-SNP confidential VM, and the hardware attestation binds the contract, prompt, both inputs, the output, the receipt signing key and the model identity together. The hardware tests pass on Google Cloud. It isn't production-ready yet:
+    </p>
+
+    <ul>
+      <li>clients don't yet verify the attestation before sending their inputs</li>
+      <li>builds aren't yet reproducible, so the measured code can't be independently matched to source</li>
+      <li>the model provider still sees the prompt</li>
+    </ul>
+
+    <p>
+      Those are the next problems to solve, and they're the interesting ones.
+    </p>
+
+    <h2>What we learned building it</h2>
+
+    <ul>
+      <li>
+        <strong>The schema is the security boundary, not the model.</strong> Clever prompting doesn't stop leaks; constraining what can come out does.
+      </li>
+      <li>
+        <strong>Small local models weren't good enough.</strong> In our tests, 3.8–8B models scored about 56–57% against a 75% accuracy bar. A 32B model got there. Capability matters more for this kind of reasoning than we'd hoped.
+      </li>
+      <li>
+        <strong>We audit with agents too.</strong> An internal review by a team of AI agents found 2 critical and 17 important issues in the predecessor codebase. The critical and high-priority ones are fixed. It isn't a substitute for an independent audit, but it's a fast, cheap first line, and it changed how we build.
+      </li>
+    </ul>
+
+    <h2>Try it, or talk to us</h2>
+
+    <p>
+      AgentVault is open source (MIT or Apache-2.0). It includes an MCP server, a TypeScript client, a receipt verifier, and a demo with 14 scenarios, including two red-team cases.
+    </p>
+
+    <p>
+      &rarr; <a href="https://github.com/vcav-io/agentvault" target="_blank" rel="noopener noreferrer">github.com/vcav-io/agentvault</a>
+    </p>
+
+    <p>
+      We're looking for <strong>a few design partners</strong> building agents that negotiate, mediate or match on someone's behalf. And if you have a different hard AI systems problem, about trust, coordination, real-time behaviour or reliability, that's what Dorfl's <strong>AI Systems Sprints</strong> are for. <strong>[TODO: link to Sprints offer]</strong>
+    </p>
+
+    <p>
+      <em>Dorfl Ltd designs and builds tricky AI systems.</em>
+    </p>
+  </ConceptPage>
+</Layout>
