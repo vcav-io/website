@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vcav.io/schemas/encrypted_input.schema.json",
+  "title": "EncryptedInput (Deprecated Alias)",
+  "description": "Deprecated alias of signed_input.schema.json for backward compatibility.",
+  "allOf": [
+    { "$ref": "signed_input.schema.json" }
+  ]
+}
