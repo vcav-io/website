@@ -2,11 +2,16 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "astro",
   "redirects": [
-    { "source": "/", "destination": "/agentvault", "permanent": true }
+    { "source": "/", "destination": "/selkey", "permanent": true },
+    { "source": "/:base(agentvault|selkey)/a2a-and-agentvault{/}?", "destination": "/selkey/a2a-and-selkey/", "permanent": true },
+    { "source": "/:base(agentvault|selkey)/integrating-agentvault{/}?", "destination": "/selkey/integrating-selkey/", "permanent": true },
+    { "source": "/:base(agentvault|selkey)/understanding-agentvault-guarantees{/}?", "destination": "/selkey/understanding-selkey-guarantees/", "permanent": true },
+    { "source": "/agentvault", "destination": "/selkey", "permanent": true },
+    { "source": "/agentvault/:path(.*)", "destination": "/selkey/:path", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/agentvault", "destination": "/index.html" },
-    { "source": "/agentvault/(.*)", "destination": "/$1" }
+    { "source": "/selkey", "destination": "/index.html" },
+    { "source": "/selkey/(.*)", "destination": "/$1" }
   ],
   "headers": [
     {

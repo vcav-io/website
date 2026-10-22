@@ -4,25 +4,25 @@ import ConceptPage from '../components/ConceptPage.astro';
 ---
 
 <Layout
-  title="Understanding AgentVault Guarantees — AgentVault"
-  description="What AgentVault promises and what it does not. Lane-qualified guarantees, trust boundaries, and the layered responsibility model for bounded-disclosure coordination."
-  canonicalPath="/agentvault/understanding-agentvault-guarantees/"
+  title="Understanding Selkey Guarantees — Selkey"
+  description="What Selkey promises and what it does not. Lane-qualified guarantees, trust boundaries, and the layered responsibility model for bounded-disclosure coordination."
+  canonicalPath="/selkey/understanding-selkey-guarantees/"
 >
   <ConceptPage
-    title="Understanding AgentVault Guarantees"
-    subtitle="What exactly does AgentVault promise, and in which lane?"
-    currentSlug="understanding-agentvault-guarantees"
+    title="Understanding Selkey Guarantees"
+    subtitle="What exactly does Selkey promise, and in which lane?"
+    currentSlug="understanding-selkey-guarantees"
   >
     <h2>The core developer question</h2>
 
     <p>
-      Before integrating any coordination protocol, a developer needs to know precisely what it guarantees and what it does not. AgentVault is an agent-native bounded-disclosure coordination protocol. It constrains what can be emitted between participants by bounding the output channel with a contract, schema validation, and receipt-bound governance artefacts. It does not evaluate whether a signal is correct, truthful, or aligned with anyone's intent. In the software lane, deployments operate at <code>SELF_ASSERTED</code>, which proves signed provenance of declared rules, not execution integrity. The TEE lane raises this to <code>TEE_ATTESTED</code>. This page defines those boundaries, and distinguishes what is guaranteed by protocol structure from what still depends on the execution lane and trust model.
+      Before integrating any coordination protocol, a developer needs to know precisely what it guarantees and what it does not. Selkey is an agent-native bounded-disclosure coordination protocol. It constrains what can be emitted between participants by bounding the output channel with a contract, schema validation, and receipt-bound governance artefacts. It does not evaluate whether a signal is correct, truthful, or aligned with anyone's intent. In the software lane, deployments operate at <code>SELF_ASSERTED</code>, which proves signed provenance of declared rules, not execution integrity. The TEE lane raises this to <code>TEE_ATTESTED</code>. This page defines those boundaries, and distinguishes what is guaranteed by protocol structure from what still depends on the execution lane and trust model.
     </p>
 
     <h2>Layered responsibility model</h2>
 
     <p>
-      AgentVault distributes responsibility across three layers. Each layer has a distinct role, and no layer substitutes for another.
+      Selkey distributes responsibility across three layers. Each layer has a distinct role, and no layer substitutes for another.
     </p>
 
     <p>
@@ -40,7 +40,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Architecture</h2>
 
     <p>
-      The following diagram shows the trust boundaries and information flow in an AgentVault session. Note that the verifier sits adjacent to the execution path — it consumes the receipt, contract, policy, and public keys independently. Verification does not require the runtime, the operator, or the model.
+      The following diagram shows the trust boundaries and information flow in a Selkey session. Note that the verifier sits adjacent to the execution path — it consumes the receipt, contract, policy, and public keys independently. Verification does not require the runtime, the operator, or the model.
     </p>
 
     <pre style="font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.5; overflow-x: auto; padding: var(--space-md); background: var(--color-bg-elevated); border-radius: 6px; border: 1px solid var(--color-border);">
@@ -48,7 +48,7 @@ import ConceptPage from '../components/ConceptPage.astro';
                     ┌─────────────────────────────────────┐
                     │                                     │
   Participant A ──► │  ┌─────────────────────────────┐    │
-    (agent)         │  │     AgentVault Relay         │    │──► LLM Provider
+    (agent)         │  │     Selkey Relay         │    │──► LLM Provider
                     │  │                              │    │     (inference)
   Participant B ──► │  │  guardian ── schema ── sign  │ ◄──│
     (agent)         │  └─────────────────────────────┘    │
@@ -73,7 +73,7 @@ import ConceptPage from '../components/ConceptPage.astro';
       Verifier independence is the central result of the protocol's design. A third party can verify the declared governance artefacts and receipt commitments for a session without needing access to the relay, the operator, or the model that produced the output.
     </p>
 
-    <h2>What AgentVault guarantees</h2>
+    <h2>What Selkey guarantees</h2>
 
     <p>
       <strong>Participant boundary enforcement.</strong> Neither participant receives the other's raw input from the relay. The relay routes inputs and outputs separately. The output that leaves the relay conforms to the JSON Schema specified in the coordination contract. Output that fails schema validation is rejected — it never reaches either participant.
@@ -91,7 +91,7 @@ import ConceptPage from '../components/ConceptPage.astro';
       <strong>Independent verification.</strong> Verification requires the receipt, the contract, the policy, and the relay's public key. It does not require the runtime, the operator, or the model. A verifier who holds these artefacts can independently recompute all commitment hashes and confirm they match the receipt. At <code>SELF_ASSERTED</code>, this proves provenance and consistency of declarations, not honest execution.
     </p>
 
-    <h2>What AgentVault does not guarantee</h2>
+    <h2>What Selkey does not guarantee</h2>
 
     <p>
       <strong>Correctness.</strong> The protocol does not evaluate whether the bounded signal is correct. If the model produces <code>"STRONG_MATCH"</code> when the inputs suggest otherwise, the relay delivers the signal — it passed schema validation and the guardian policy. Correctness is a model quality question, not a protocol guarantee.
@@ -112,7 +112,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Execution lanes: what each adds</h2>
 
     <p>
-      AgentVault defines two execution lanes. The protocol structure is stable across lanes; what changes is who must be trusted for truthful execution. Every guarantee statement must specify which lane it applies to.
+      Selkey defines two execution lanes. The protocol structure is stable across lanes; what changes is who must be trusted for truthful execution. Every guarantee statement must specify which lane it applies to.
     </p>
 
     <p>
@@ -130,7 +130,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Trust boundaries</h2>
 
     <p>
-      <strong>Relay operator.</strong> In the API-mediated lane, the relay operator has full visibility: both inputs, the assembled prompt, the raw LLM output, the bounded result, and all runtime state. Deploying AgentVault does not constrain operator access. The operator is a trusted party. In the TEE lane, the operator is excluded from the trust envelope — the CVM prevents the operator from observing plaintext inputs.
+      <strong>Relay operator.</strong> In the API-mediated lane, the relay operator has full visibility: both inputs, the assembled prompt, the raw LLM output, the bounded result, and all runtime state. Deploying Selkey does not constrain operator access. The operator is a trusted party. In the TEE lane, the operator is excluded from the trust envelope — the CVM prevents the operator from observing plaintext inputs.
     </p>
 
     <p>
@@ -144,7 +144,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Current limitations</h2>
 
     <p>
-      In the software lane, AgentVault operates at <code>SELF_ASSERTED</code> assurance level. Receipt verification proves provenance (which relay signed it), not integrity of the underlying execution. The TEE lane is operational — validated on AMD SEV-SNP confidential VMs (GCP N2D, AMD Milan) — and raises assurance to <code>TEE_ATTESTED</code>, where the operator is excluded from plaintext and the receipt is bound to the measured execution environment. Provider attestation (<code>PROVIDER_ATTESTED</code>) is defined in the receipt schema but not yet implemented. Inputs travel over TLS but are not encrypted end-to-end — in the software lane, the relay has plaintext access. Cross-session entropy budget accumulation is not yet implemented (the budget resets per session). Fair exchange (simultaneous delivery to both participants) is not addressed by the protocol.
+      In the software lane, Selkey operates at <code>SELF_ASSERTED</code> assurance level. Receipt verification proves provenance (which relay signed it), not integrity of the underlying execution. The TEE lane is operational — validated on AMD SEV-SNP confidential VMs (GCP N2D, AMD Milan) — and raises assurance to <code>TEE_ATTESTED</code>, where the operator is excluded from plaintext and the receipt is bound to the measured execution environment. Provider attestation (<code>PROVIDER_ATTESTED</code>) is defined in the receipt schema but not yet implemented. Inputs travel over TLS but are not encrypted end-to-end — in the software lane, the relay has plaintext access. Cross-session entropy budget accumulation is not yet implemented (the budget resets per session). Fair exchange (simultaneous delivery to both participants) is not addressed by the protocol.
     </p>
   </ConceptPage>
 </Layout>

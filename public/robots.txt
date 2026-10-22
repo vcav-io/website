@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vcav.io/agentvault/sitemap-index.xml
+Sitemap: https://vcav.io/selkey/sitemap-index.xml

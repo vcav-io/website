@@ -7,11 +7,11 @@ const codeStyle = "font-family: var(--font-mono); font-size: var(--text-xs); lin
 const initiatorCode = `import {
   createAndSubmit,
   pollUntilDone,
-} from 'agentvault-client';
+} from 'selkey';
 import {
   buildRelayContract,
   computeRelayContractHash,
-} from 'agentvault-client/relay-contracts';
+} from 'selkey/relay-contracts';
 
 // 1. Build a contract from a bundled session template
 const contract = buildRelayContract('COMPATIBILITY', [
@@ -48,7 +48,7 @@ const output = await pollUntilDone(
 // output.receipt contains the signed receipt
 // output.output contains the bounded signal`;
 
-const responderCode = `import { joinAndWait } from 'agentvault-client';
+const responderCode = `import { joinAndWait } from 'selkey';
 
 // Credentials received from initiator
 const output = await joinAndWait(
@@ -68,7 +68,7 @@ if (output.state === 'COMPLETED') {
 
 const schemaRefCode = `import {
   buildRelayContractWithSchemaRef,
-} from 'agentvault-client/relay-contracts';
+} from 'selkey/relay-contracts';
 
 // Schema-by-reference — relay looks up by hash
 const contract = buildRelayContractWithSchemaRef(
@@ -78,22 +78,22 @@ const contract = buildRelayContractWithSchemaRef(
 );`;
 
 const envConfig = `# Core — required for both modes
-AV_RELAY_URL=http://localhost:3100
-AV_AGENT_ID=my-agent
+SELKEY_RELAY_URL=http://localhost:3100
+SELKEY_AGENT_ID=my-agent
 
 # INITIATE mode — needs the peer's descriptor URL
-AV_AFAL_SEED_HEX=<64-char-hex-ed25519-seed>
-AV_AFAL_PEER_DESCRIPTOR_URL=http://peer:4850/descriptor
+SELKEY_AFAL_SEED_HEX=<64-char-hex-ed25519-seed>
+SELKEY_AFAL_PEER_DESCRIPTOR_URL=http://peer:4850/descriptor
 
 # RESPOND mode — runs an HTTP server for incoming invites
-AV_AFAL_HTTP_PORT=4850
-AV_AFAL_BIND_ADDRESS=127.0.0.1
-AV_AFAL_TRUSTED_AGENTS='[{"agentId":"peer","publicKeyHex":"..."}]'
-AV_AFAL_ALLOWED_PURPOSES=MEDIATION,COMPATIBILITY`;
+SELKEY_AFAL_HTTP_PORT=4850
+SELKEY_AFAL_BIND_ADDRESS=127.0.0.1
+SELKEY_AFAL_TRUSTED_AGENTS='[{"agentId":"peer","publicKeyHex":"..."}]'
+SELKEY_AFAL_ALLOWED_PURPOSES=MEDIATION,COMPATIBILITY`;
 
 const mcpCode = `// Agent calls the MCP tool to initiate coordination
 const result = await mcpClient.callTool(
-  'agentvault.relay_signal',
+  'selkey.relay_signal',
   {
     mode: 'INITIATE',
     purpose: 'COMPATIBILITY',
@@ -111,7 +111,7 @@ const result = await mcpClient.callTool(
 //      and the bounded signal + receipt when completed`;
 
 const relayCode = `# Start the relay
-ANTHROPIC_API_KEY=sk-... cargo run -p agentvault-relay
+ANTHROPIC_API_KEY=sk-... cargo run -p selkey-relay
 
 # Verify it's running
 curl http://localhost:3100/health
@@ -119,36 +119,36 @@ curl http://localhost:3100/health
 ---
 
 <Layout
-  title="Integrating AgentVault — AgentVault"
-  description="The shortest path to a working AgentVault implementation. TypeScript client library, MCP server tools, contract builders, and minimal working examples for both integration paths."
-  canonicalPath="/agentvault/integrating-agentvault/"
+  title="Integrating Selkey — Selkey"
+  description="The shortest path to a working Selkey implementation. TypeScript client library, MCP server tools, contract builders, and minimal working examples for both integration paths."
+  canonicalPath="/selkey/integrating-selkey/"
 >
   <ConceptPage
-    title="Integrating AgentVault"
+    title="Integrating Selkey"
     subtitle="What is the shortest path to a working implementation?"
-    currentSlug="integrating-agentvault"
+    currentSlug="integrating-selkey"
   >
     <h2>Two integration paths</h2>
 
     <p>
-      AgentVault provides two integration paths: a direct client integration path and an MCP-based tool integration path. The TypeScript client library is lower-level and gives full control over session lifecycle. The MCP server is higher-level and designed for agents that already speak the MCP protocol. The examples below show the current minimal implementation path. Production integrations may wrap token handoff and session coordination inside higher-level agent or application channels.
+      Selkey provides two integration paths: a direct client integration path and an MCP-based tool integration path. The TypeScript client library is lower-level and gives full control over session lifecycle. The MCP server is higher-level and designed for agents that already speak the MCP protocol. The examples below show the current minimal implementation path. Production integrations may wrap token handoff and session coordination inside higher-level agent or application channels.
     </p>
 
     <p>
-      <strong>Use the client library</strong> when you are building a custom agent runtime, need fine-grained control over contract construction and session polling, or want to embed AgentVault calls directly in application code.
+      <strong>Use the client library</strong> when you are building a custom agent runtime, need fine-grained control over contract construction and session polling, or want to embed Selkey calls directly in application code.
     </p>
 
     <p>
-      <strong>Use the MCP server</strong> when your agent framework already supports MCP tools, you want to expose AgentVault coordination as a tool the agent can call, or you need both INITIATE and RESPOND modes without managing session state manually.
+      <strong>Use the MCP server</strong> when your agent framework already supports MCP tools, you want to expose Selkey coordination as a tool the agent can call, or you need both INITIATE and RESPOND modes without managing session state manually.
     </p>
 
     <h2>TypeScript client: minimal working example</h2>
 
     <p>
-      The <code>agentvault-client</code> package is a standalone fetch-based library with no framework dependencies. Install it from the repository:
+      The <code>selkey</code> package is a standalone fetch-based library with no framework dependencies. Install it from the repository:
     </p>
 
-    <pre style={codeStyle}>npm install github:vcav-io/agentvault#main --workspace=packages/agentvault-client</pre>
+    <pre style={codeStyle}>npm install github:vcav-io/selkey#main --workspace=packages/selkey-client</pre>
 
     <p>
       The package is not yet on npm. Install directly from the repository, or use a <code>file:</code> dependency if you have a local checkout.
@@ -193,7 +193,7 @@ curl http://localhost:3100/health
     <h2>MCP server</h2>
 
     <p>
-      The <code>agentvault-mcp-server</code> package exposes AgentVault operations as MCP tools. It supports two session modes:
+      The <code>selkey-mcp</code> package exposes Selkey operations as MCP tools. It supports two session modes:
     </p>
 
     <p>
@@ -201,7 +201,7 @@ curl http://localhost:3100/health
     </p>
 
     <p>
-      <strong>RESPOND mode</strong> — the agent listens for incoming invites, accepts or declines them, submits input to accepted sessions, and returns the result. Requires the AFAL HTTP server (<code>AV_AFAL_HTTP_PORT</code>).
+      <strong>RESPOND mode</strong> — the agent listens for incoming invites, accepts or declines them, submits input to accepted sessions, and returns the result. Requires the AFAL HTTP server (<code>SELKEY_AFAL_HTTP_PORT</code>).
     </p>
 
     <h3>Environment configuration</h3>
@@ -215,9 +215,9 @@ curl http://localhost:3100/health
     </p>
 
     <ul>
-      <li><code>agentvault.get_identity</code> — inspect the local agent identity, known peers, and pending inbox state.</li>
-      <li><code>agentvault.relay_signal</code> — run the INITIATE/RESPOND coordination flow, including AFAL and relay session management.</li>
-      <li><code>agentvault.verify_receipt</code> — verify a receipt signature and optionally check commitment hashes.</li>
+      <li><code>selkey.get_identity</code> — inspect the local agent identity, known peers, and pending inbox state.</li>
+      <li><code>selkey.relay_signal</code> — run the INITIATE/RESPOND coordination flow, including AFAL and relay session management.</li>
+      <li><code>selkey.verify_receipt</code> — verify a receipt signature and optionally check commitment hashes.</li>
     </ul>
 
     <h3>Minimal MCP integration</h3>
@@ -237,13 +237,13 @@ curl http://localhost:3100/health
     <h2>Relay requirements</h2>
 
     <p>
-      Both integration paths require a running AgentVault relay. The relay is a Rust binary (<code>agentvault-relay</code>) that needs a configured provider API key. See the environment docs for the supported provider variables. For development:
+      Both integration paths require a running Selkey relay. The relay is a Rust binary (<code>selkey-relay</code>) that needs a configured provider API key. See the environment docs for the supported provider variables. For development:
     </p>
 
     <pre style={codeStyle} set:text={relayCode} />
 
     <p>
-      The <code>verifying_key_hex</code> from the health endpoint is the Ed25519 public key needed for receipt verification. For production, set <code>AV_SIGNING_KEY_HEX</code> to a persistent key so receipts remain verifiable across relay restarts.
+      The <code>verifying_key_hex</code> from the health endpoint is the Ed25519 public key needed for receipt verification. For production, set <code>SELKEY_SIGNING_KEY_HEX</code> to a persistent key so receipts remain verifiable across relay restarts.
     </p>
   </ConceptPage>
 </Layout>

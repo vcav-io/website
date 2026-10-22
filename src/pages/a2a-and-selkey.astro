@@ -4,23 +4,23 @@ import ConceptPage from '../components/ConceptPage.astro';
 ---
 
 <Layout
-  title="A2A and AgentVault Solve Different Problems — AgentVault"
-  description="Google's A2A protocol handles agent discovery and communication. AgentVault constrains what agents can disclose during that communication. They operate at different layers."
-  canonicalPath="/agentvault/a2a-and-agentvault/"
+  title="A2A and Selkey Solve Different Problems — Selkey"
+  description="Google's A2A protocol handles agent discovery and communication. Selkey constrains what agents can disclose during that communication. They operate at different layers."
+  canonicalPath="/selkey/a2a-and-selkey/"
 >
   <ConceptPage
-    title="A2A and AgentVault Solve Different Problems"
-    subtitle="A2A handles discovery and communication. AgentVault constrains disclosure. They operate at different layers of the stack."
-    currentSlug="a2a-and-agentvault"
+    title="A2A and Selkey Solve Different Problems"
+    subtitle="A2A handles discovery and communication. Selkey constrains disclosure. They operate at different layers of the stack."
+    currentSlug="a2a-and-selkey"
   >
     <h2>Two protocols, two layers</h2>
 
     <p>
-      Google's Agent-to-Agent (A2A) protocol and AgentVault address different parts of the agent coordination problem. Understanding where each sits in the stack clarifies why they are complementary rather than competitive.
+      Google's Agent-to-Agent (A2A) protocol and Selkey address different parts of the agent coordination problem. Understanding where each sits in the stack clarifies why they are complementary rather than competitive.
     </p>
 
     <p>
-      A2A focuses on the communication layer: how agents discover each other, establish sessions, exchange messages, and manage task lifecycles. AgentVault focuses on the disclosure layer: what agents are permitted to reveal during that communication, and how that constraint is enforced and verified.
+      A2A focuses on the communication layer: how agents discover each other, establish sessions, exchange messages, and manage task lifecycles. Selkey focuses on the disclosure layer: what agents are permitted to reveal during that communication, and how that constraint is enforced and verified.
     </p>
 
     <p>
@@ -48,10 +48,10 @@ import ConceptPage from '../components/ConceptPage.astro';
       These are genuinely useful primitives. They solve the interoperability problem — making it possible for agents built by different vendors to communicate without bespoke integrations.
     </p>
 
-    <h2>What AgentVault provides</h2>
+    <h2>What Selkey provides</h2>
 
     <p>
-      AgentVault operates at a different level of abstraction. It does not handle discovery or task routing. Instead, it provides:
+      Selkey operates at a different level of abstraction. It does not handle discovery or task routing. Instead, it provides:
     </p>
 
     <ul>
@@ -79,7 +79,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </ul>
 
     <p>
-      A2A primarily operates at the discovery and communication layers. AgentVault operates at the disclosure-boundary layer. They occupy different positions in the stack.
+      A2A primarily operates at the discovery and communication layers. Selkey operates at the disclosure-boundary layer. They occupy different positions in the stack.
     </p>
 
     <p>
@@ -102,7 +102,7 @@ import ConceptPage from '../components/ConceptPage.astro';
 
     <ul>
       <li>A2A (or a similar communication protocol) provides the infrastructure: discovery, session management, message exchange, and task lifecycle.</li>
-      <li>AgentVault provides the disclosure constraint: pre-agreed terms, schema-bounded outputs, relay enforcement, and verifiable receipts.</li>
+      <li>Selkey provides the disclosure constraint: pre-agreed terms, schema-bounded outputs, relay enforcement, and verifiable receipts.</li>
     </ul>
 
     <p>
@@ -120,11 +120,11 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      As the agent ecosystem matures, the layered approach — where different protocols handle different concerns — will likely prove more robust than any single protocol trying to solve everything. The question is not which protocol wins, but how the layers compose. AgentVault is designed to sit on top of whatever communication layer the ecosystem converges on, adding <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signals</a> and verifiable disclosure constraints to any agent interaction that needs them.
+      As the agent ecosystem matures, the layered approach — where different protocols handle different concerns — will likely prove more robust than any single protocol trying to solve everything. The question is not which protocol wins, but how the layers compose. Selkey is designed to sit on top of whatever communication layer the ecosystem converges on, adding <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signals</a> and verifiable disclosure constraints to any agent interaction that needs them.
     </p>
 
     <p>
-      For more on how disclosure boundaries work in practice, see <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contracts</a> and <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signals</a>, or explore the full <a href="https://github.com/vcav-io/agentvault/blob/main/docs/protocol-spec.md" target="_blank" rel="noopener noreferrer">protocol specification</a>.
+      For more on how disclosure boundaries work in practice, see <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contracts</a> and <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>bounded signals</a>, or explore the full <a href="https://github.com/vcav-io/selkey/blob/main/docs/protocol-spec.md" target="_blank" rel="noopener noreferrer">protocol specification</a>.
     </p>
   </ConceptPage>
 </Layout>

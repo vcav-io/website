@@ -4,9 +4,9 @@ import ConceptPage from '../components/ConceptPage.astro';
 ---
 
 <Layout
-  title="Agent-to-Agent Privacy — AgentVault"
-  description="Agent-to-agent privacy is the problem of preventing sensitive personal context from leaking when AI agents coordinate. AgentVault provides the missing disclosure-boundary layer."
-  canonicalPath="/agentvault/agent-to-agent-privacy/"
+  title="Agent-to-Agent Privacy — Selkey"
+  description="Agent-to-agent privacy is the problem of preventing sensitive personal context from leaking when AI agents coordinate. Selkey provides the missing disclosure-boundary layer."
+  canonicalPath="/selkey/agent-to-agent-privacy/"
 >
   <ConceptPage
     title="Agent-to-Agent Privacy"
@@ -53,10 +53,10 @@ import ConceptPage from '../components/ConceptPage.astro';
       Privacy in agent-to-agent coordination requires structural constraints on what can flow between agents, not just protection of the pipe. This is fundamentally different from traditional user privacy concerns like GDPR compliance or data-protection regulations. Those frameworks govern how organizations collect, store, and process personal data. Agent-to-agent privacy governs what is disclosed during a live coordination session between autonomous software delegates. It is a coordination-level problem, and it requires a coordination-level solution.
     </p>
 
-    <h2>How AgentVault addresses agent-to-agent privacy</h2>
+    <h2>How Selkey addresses agent-to-agent privacy</h2>
 
     <p>
-      <a href={import.meta.env.BASE_URL}>AgentVault</a> replaces open-ended free-text communication between agents with a structured coordination protocol designed around disclosure boundaries. The core mechanism is simple: instead of letting agents talk freely and hoping they are discreet, the protocol constrains the channel itself so that only a bounded amount of information can pass through it.
+      <a href={import.meta.env.BASE_URL}>Selkey</a> replaces open-ended free-text communication between agents with a structured coordination protocol designed around disclosure boundaries. The core mechanism is simple: instead of letting agents talk freely and hoping they are discreet, the protocol constrains the channel itself so that only a bounded amount of information can pass through it.
     </p>
 
     <p>
@@ -76,7 +76,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      This is not a privacy-preserving computation in the cryptographic sense. It is not multi-party computation, homomorphic encryption, or differential privacy. Those techniques have their own strengths and trade-offs. AgentVault takes a different approach: <strong>structural enforcement</strong>. The channel is narrowed by design so that disclosure is bounded regardless of model behavior. The model processes private context to produce the output, but the output itself is constrained to a schema that limits how much information it can carry.
+      This is not a privacy-preserving computation in the cryptographic sense. It is not multi-party computation, homomorphic encryption, or differential privacy. Those techniques have their own strengths and trade-offs. Selkey takes a different approach: <strong>structural enforcement</strong>. The channel is narrowed by design so that disclosure is bounded regardless of model behavior. The model processes private context to produce the output, but the output itself is constrained to a schema that limits how much information it can carry.
     </p>
 
     <p>
@@ -112,7 +112,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      The missing layer is not better encryption or smarter models. It is structural constraints on what agents can disclose during coordination — constraints that hold regardless of model behavior, that are agreed before private context enters the system, and that are cryptographically verifiable after the fact. <a href={import.meta.env.BASE_URL}>AgentVault</a> provides that layer.
+      The missing layer is not better encryption or smarter models. It is structural constraints on what agents can disclose during coordination — constraints that hold regardless of model behavior, that are agreed before private context enters the system, and that are cryptographically verifiable after the fact. <a href={import.meta.env.BASE_URL}>Selkey</a> provides that layer.
     </p>
   </ConceptPage>
 </Layout>

@@ -1,7 +1,7 @@
 ---
 // VaultFamily.astro
-// Three components: AgentVault (primary), VFC (neutral), VCAV (muted)
-import AVMark from '../icons/AVMark.astro';
+// Three components: Selkey (primary), VFC (neutral), VCAV (muted)
+import SelkeyMark from '../icons/SelkeyMark.astro';
 import VCAVMark from '../icons/VCAVMark.astro';
 ---
 
@@ -9,7 +9,7 @@ import VCAVMark from '../icons/VCAVMark.astro';
   <div class="container">
     <h2>Execution Lanes and Trust Boundaries</h2>
     <p class="intro">
-      AgentVault runs in two execution lanes. In the <strong>software lane</strong>,
+      Selkey runs in two execution lanes. In the <strong>software lane</strong>,
       the relay operator can see your data — you trust them the way you trust any
       SaaS provider. In the <strong>TEE lane</strong>, coordination runs inside
       hardware-isolated memory that the operator cannot read, even with root access.
@@ -24,15 +24,15 @@ import VCAVMark from '../icons/VCAVMark.astro';
       <div class="card card--primary">
         <div class="card__header">
           <div class="card__name-row">
-            <AVMark class="card__icon" />
-            <h3 class="card__name">AgentVault</h3>
+            <SelkeyMark class="card__icon" />
+            <h3 class="card__name">Selkey</h3>
           </div>
           <a
-            href="https://github.com/vcav-io/agentvault"
+            href="https://github.com/vcav-io/selkey"
             class="card__link"
             target="_blank"
             rel="noopener noreferrer"
-          >vcav-io/agentvault</a>
+          >vcav-io/selkey</a>
         </div>
         <p class="card__description">
           The open protocol for private, verifiable agent-to-agent coordination.
@@ -82,7 +82,7 @@ import VCAVMark from '../icons/VCAVMark.astro';
     </div>
 
     <p class="disambiguation text-dim">
-      Not affiliated with other projects using the AgentVault name.
+      Not affiliated with other projects using the Selkey name.
       All packages use the <code>vcav-io</code> namespace.
     </p>
   </div>

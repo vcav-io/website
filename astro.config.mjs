@@ -5,6 +5,6 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://vcav.io',
-  base: '/agentvault/',
+  base: '/selkey/',
   integrations: [sitemap()],
 });

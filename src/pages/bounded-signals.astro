@@ -4,9 +4,9 @@ import ConceptPage from '../components/ConceptPage.astro';
 ---
 
 <Layout
-  title="Bounded Signals — AgentVault"
-  description="A bounded signal is the output of an AgentVault session: a compressed, schema-constrained result produced under a fixed coordination contract."
-  canonicalPath="/agentvault/bounded-signals/"
+  title="Bounded Signals — Selkey"
+  description="A bounded signal is the output of a Selkey session: a compressed, schema-constrained result produced under a fixed coordination contract."
+  canonicalPath="/selkey/bounded-signals/"
 >
   <ConceptPage
     title="Bounded Signals"
@@ -16,7 +16,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>What is a bounded signal?</h2>
 
     <p>
-      A <strong>bounded signal</strong> is the output of an <a href={import.meta.env.BASE_URL}>AgentVault</a> session. It is a compressed, schema-constrained result produced under a fixed <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>. Unlike free-text communication between agents, a bounded signal carries only what the output schema permits — nothing more, nothing less.
+      A <strong>bounded signal</strong> is the output of a <a href={import.meta.env.BASE_URL}>Selkey</a> session. It is a compressed, schema-constrained result produced under a fixed <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>. Unlike free-text communication between agents, a bounded signal carries only what the output schema permits — nothing more, nothing less.
     </p>
 
     <p>
@@ -24,7 +24,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      A bounded signal is not a summary or a filtered message. It is a <strong>structurally narrowed output</strong>: the channel itself can only carry what the schema defines. The term captures both the compression — a rich, multi-turn coordination reduced to a structured result — and the constraint — the result cannot exceed what the schema permits. This distinction is central to how AgentVault approaches <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a>: privacy is not a property of the model's behaviour, but a property of the output channel's structure.
+      A bounded signal is not a summary or a filtered message. It is a <strong>structurally narrowed output</strong>: the channel itself can only carry what the schema defines. The term captures both the compression — a rich, multi-turn coordination reduced to a structured result — and the constraint — the result cannot exceed what the schema permits. This distinction is central to how Selkey approaches <a href={`${import.meta.env.BASE_URL}agent-to-agent-privacy/`}>agent-to-agent privacy</a>: privacy is not a property of the model's behaviour, but a property of the output channel's structure.
     </p>
 
     <h2>Free text vs. bounded signals</h2>
@@ -42,13 +42,13 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      The difference is not just format. It is <strong>information capacity</strong>. A bounded signal physically cannot carry more information than the schema permits. This is measurable: the structural entropy of the schema defines the maximum number of bits that can flow through the output. AgentVault computes this quantity and includes it in the session's <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipt</a>, making the information bound auditable.
+      The difference is not just format. It is <strong>information capacity</strong>. A bounded signal physically cannot carry more information than the schema permits. This is measurable: the structural entropy of the schema defines the maximum number of bits that can flow through the output. Selkey computes this quantity and includes it in the session's <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipt</a>, making the information bound auditable.
     </p>
 
-    <h2>How bounded signals work in AgentVault</h2>
+    <h2>How bounded signals work in Selkey</h2>
 
     <p>
-      During an AgentVault session, the model processes private context from both parties under the terms of a <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>. The contract specifies the task, the privacy guarantees, and — critically — a JSON Schema that defines the output structure. This schema is agreed upon before the session begins, and both parties can inspect it to understand exactly what information the output can carry.
+      During a Selkey session, the model processes private context from both parties under the terms of a <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>. The contract specifies the task, the privacy guarantees, and — critically — a JSON Schema that defines the output structure. This schema is agreed upon before the session begins, and both parties can inspect it to understand exactly what information the output can carry.
     </p>
 
     <p>
@@ -84,7 +84,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      In AgentVault, the output channel is narrowed by construction. The schema defines what the channel can carry. The relay enforces it. The receipt proves it. The result is a signal that carries what the task requires and nothing more.
+      In Selkey, the output channel is narrowed by construction. The schema defines what the channel can carry. The relay enforces it. The receipt proves it. The result is a signal that carries what the task requires and nothing more.
     </p>
   </ConceptPage>
 </Layout>

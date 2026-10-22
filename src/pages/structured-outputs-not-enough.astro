@@ -4,9 +4,9 @@ import ConceptPage from '../components/ConceptPage.astro';
 ---
 
 <Layout
-  title="Structured Outputs Are Not Enough for Agent Privacy — AgentVault"
+  title="Structured Outputs Are Not Enough for Agent Privacy — Selkey"
   description="JSON Schema and structured outputs constrain format. But format alone does not constrain disclosure. Contracts, enforcement, and receipts complete the picture."
-  canonicalPath="/agentvault/structured-outputs-not-enough/"
+  canonicalPath="/selkey/structured-outputs-not-enough/"
 >
   <ConceptPage
     title="Structured Outputs Are Not Enough for Agent Privacy"
@@ -78,7 +78,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      Structured outputs provide the first guarantee. <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>Bounded signals</a> — AgentVault's output model — provide the second. The difference is the full trust chain surrounding the schema: how it was agreed, who enforces it, and how you verify it.
+      Structured outputs provide the first guarantee. <a href={`${import.meta.env.BASE_URL}bounded-signals/`}>Bounded signals</a> — Selkey's output model — provide the second. The difference is the full trust chain surrounding the schema: how it was agreed, who enforces it, and how you verify it.
     </p>
 
     <p>
@@ -89,16 +89,16 @@ import ConceptPage from '../components/ConceptPage.astro';
       This is why schema design matters for privacy, and why schema enforcement alone is not enough. The schema itself must be designed to limit information capacity — using enums, bounded integers, and fixed categorical labels rather than open strings. And the schema must be part of a broader agreement that both parties consented to before the session began.
     </p>
 
-    <h2>How AgentVault fills the gap</h2>
+    <h2>How Selkey fills the gap</h2>
 
     <p>
-      AgentVault builds on the foundation that structured outputs provide and adds the missing layers:
+      Selkey builds on the foundation that structured outputs provide and adds the missing layers:
     </p>
 
     <ul>
       <li><strong><a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>Coordination contracts</a></strong> establish the schema as part of a pre-agreed, content-addressed document. Both parties agree to identical terms — purpose, schema, prompt template, guardian policy — before any private context enters the system. The contract is referenced by its SHA-256 hash and cannot be modified during the session.</li>
       <li><strong>Relay enforcement</strong> validates every output against the contract's schema at an external point. The relay sits between the agents and rejects any output that falls outside the agreed structure. This is enforcement outside the model — an independent structural constraint that neither party controls.</li>
-      <li><strong>Channel-capacity constraints.</strong> AgentVault treats the schema as a channel-capacity limit. A field accepting an integer between 1 and 5 carries at most ~2.3 bits. A three-value enum carries ~1.6 bits. The total information capacity of the output is the sum of its fields' capacities — a measurable, finite bound on disclosure.</li>
+      <li><strong>Channel-capacity constraints.</strong> Selkey treats the schema as a channel-capacity limit. A field accepting an integer between 1 and 5 carries at most ~2.3 bits. A three-value enum carries ~1.6 bits. The total information capacity of the output is the sum of its fields' capacities — a measurable, finite bound on disclosure.</li>
       <li><strong>Cryptographic receipts</strong> bind the contract hash, schema, model identity, and output to a signed record. After the session, either party can verify that the output was produced under the agreed terms. The receipt makes the governance auditable, not just aspirational.</li>
     </ul>
 
@@ -113,7 +113,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      To see how bounded signals, contracts, and receipts work together in practice, explore the <a href="https://github.com/vcav-io/agentvault/blob/main/docs/getting-started.md" target="_blank" rel="noopener noreferrer">interactive demo</a>.
+      To see how bounded signals, contracts, and receipts work together in practice, explore the <a href="https://github.com/vcav-io/selkey/blob/main/docs/getting-started.md" target="_blank" rel="noopener noreferrer">interactive demo</a>.
     </p>
   </ConceptPage>
 </Layout>
