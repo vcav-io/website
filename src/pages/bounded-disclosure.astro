@@ -4,9 +4,9 @@ import ConceptPage from '../components/ConceptPage.astro';
 ---
 
 <Layout
-  title="Bounded Disclosure for AI Agents — AgentVault"
+  title="Bounded Disclosure for AI Agents — Selkey"
   description="Bounded disclosure constrains what AI agents can reveal during coordination. Learn how contracts, schemas, and relay enforcement create a structurally narrowed channel."
-  canonicalPath="/agentvault/bounded-disclosure/"
+  canonicalPath="/selkey/bounded-disclosure/"
 >
   <ConceptPage
     title="Bounded Disclosure for AI Agents"
@@ -16,7 +16,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>What is bounded disclosure?</h2>
 
     <p>
-      Bounded disclosure is the principle that coordination between AI agents should reveal only what is necessary for the task, and no more. It is the umbrella concept behind <a href={import.meta.env.BASE_URL}>AgentVault</a> — the idea that shapes every layer of the protocol, from session negotiation to receipt verification.
+      Bounded disclosure is the principle that coordination between AI agents should reveal only what is necessary for the task, and no more. It is the umbrella concept behind <a href={import.meta.env.BASE_URL}>Selkey</a> — the idea that shapes every layer of the protocol, from session negotiation to receipt verification.
     </p>
 
     <p>
@@ -24,7 +24,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      Bounded disclosure means the output of that coordination is <strong>structurally narrowed</strong> — compressed into a schema-constrained signal rather than transmitted as free text. The term describes both a design principle and a concrete enforcement mechanism. In AgentVault, bounded disclosure is achieved through four layers working together: <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contracts</a> define the session's bounds, JSON Schema constrains the output structure, relay enforcement rejects anything outside those bounds, and <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipts</a> prove what governed the session. These layers are not aspirational — they are enforced at the infrastructure level.
+      Bounded disclosure means the output of that coordination is <strong>structurally narrowed</strong> — compressed into a schema-constrained signal rather than transmitted as free text. The term describes both a design principle and a concrete enforcement mechanism. In Selkey, bounded disclosure is achieved through four layers working together: <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contracts</a> define the session's bounds, JSON Schema constrains the output structure, relay enforcement rejects anything outside those bounds, and <a href={`${import.meta.env.BASE_URL}cryptographic-receipts/`}>cryptographic receipts</a> prove what governed the session. These layers are not aspirational — they are enforced at the infrastructure level.
     </p>
 
     <h2>The channel capacity problem</h2>
@@ -42,13 +42,13 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      This is the difference between asking someone to whisper in a room with open doors and giving them a form with fixed fields to fill out. The whisper depends on cooperation. The form constrains the channel structurally. Channel capacity is not a metaphor in AgentVault — it is a <strong>measurable, computable property</strong> of the output schema. The schema's structural entropy defines the upper bound of information that can flow through the channel. AgentVault quantifies this and includes it in the session receipt, so both parties can verify exactly how much disclosure the channel permitted.
+      This is the difference between asking someone to whisper in a room with open doors and giving them a form with fixed fields to fill out. The whisper depends on cooperation. The form constrains the channel structurally. Channel capacity is not a metaphor in Selkey — it is a <strong>measurable, computable property</strong> of the output schema. The schema's structural entropy defines the upper bound of information that can flow through the channel. Selkey quantifies this and includes it in the session receipt, so both parties can verify exactly how much disclosure the channel permitted.
     </p>
 
     <h2>The four enforcement layers</h2>
 
     <p>
-      AgentVault implements bounded disclosure through four layers, each addressing a different failure mode. No single layer is sufficient on its own. Together, they create a defence-in-depth architecture where each layer compensates for the limitations of the others.
+      Selkey implements bounded disclosure through four layers, each addressing a different failure mode. No single layer is sufficient on its own. Together, they create a defence-in-depth architecture where each layer compensates for the limitations of the others.
     </p>
 
     <p>
@@ -78,17 +78,17 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      Bounded disclosure takes a different approach. It constrains what the <strong>output channel</strong> can carry, rather than hiding the inputs during computation. In AgentVault's software execution lane, the model provider sees the private context during processing — the model needs the context to reason effectively. Bounded disclosure does not hide inputs from the model. What it guarantees is that the output — what flows between the two parties — is structurally narrowed to only what the coordination task requires.
+      Bounded disclosure takes a different approach. It constrains what the <strong>output channel</strong> can carry, rather than hiding the inputs during computation. In Selkey's software execution lane, the model provider sees the private context during processing — the model needs the context to reason effectively. Bounded disclosure does not hide inputs from the model. What it guarantees is that the output — what flows between the two parties — is structurally narrowed to only what the coordination task requires.
     </p>
 
     <p>
-      For higher assurance, AgentVault provides a <strong>TEE execution lane</strong> that removes the relay operator from the trust envelope. Using confidential virtual machines with hardware attestation, the TEE lane ensures that even the infrastructure operator cannot observe plaintext context during processing. The trust boundary shrinks to the hardware and the attested code running inside it. And <strong>VCAV</strong>, the highest assurance tier, removes the model provider entirely — using local models running inside attested hardware with side-channel hardening, so that no external party sees the private context at any point. Bounded disclosure is the unifying principle across all three tiers. What changes between tiers is not the principle but the trust envelope — who must be trusted, and what hardware or cryptographic guarantees replace that trust.
+      For higher assurance, Selkey provides a <strong>TEE execution lane</strong> that removes the relay operator from the trust envelope. Using confidential virtual machines with hardware attestation, the TEE lane ensures that even the infrastructure operator cannot observe plaintext context during processing. The trust boundary shrinks to the hardware and the attested code running inside it. And <strong>VCAV</strong>, the highest assurance tier, removes the model provider entirely — using local models running inside attested hardware with side-channel hardening, so that no external party sees the private context at any point. Bounded disclosure is the unifying principle across all three tiers. What changes between tiers is not the principle but the trust envelope — who must be trusted, and what hardware or cryptographic guarantees replace that trust.
     </p>
 
     <h2>How bounded disclosure connects to other concepts</h2>
 
     <p>
-      Bounded disclosure is the overarching principle in AgentVault's architecture. It connects to every other concept in the protocol, and each concept implements a specific aspect of the bounded disclosure guarantee.
+      Bounded disclosure is the overarching principle in Selkey's architecture. It connects to every other concept in the protocol, and each concept implements a specific aspect of the bounded disclosure guarantee.
     </p>
 
     <p>
@@ -106,7 +106,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      <a href={import.meta.env.BASE_URL}>AgentVault</a> implements this through contracts, schemas, enforcement, and receipts — four layers that together reduce channel capacity to only what the task requires. The result is coordination that is <strong>private by construction, not by instruction</strong>.
+      <a href={import.meta.env.BASE_URL}>Selkey</a> implements this through contracts, schemas, enforcement, and receipts — four layers that together reduce channel capacity to only what the task requires. The result is coordination that is <strong>private by construction, not by instruction</strong>.
     </p>
   </ConceptPage>
 </Layout>

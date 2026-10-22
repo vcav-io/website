@@ -4,9 +4,9 @@ import ConceptPage from '../components/ConceptPage.astro';
 ---
 
 <Layout
-  title="Cryptographic Receipts for AI Agents — AgentVault"
+  title="Cryptographic Receipts for AI Agents — Selkey"
   description="Cryptographic receipts are signed records that prove which contract, schema, and policy governed an AI agent coordination session. Learn what they prove and what they do not."
-  canonicalPath="/agentvault/cryptographic-receipts/"
+  canonicalPath="/selkey/cryptographic-receipts/"
 >
   <ConceptPage
     title="Cryptographic Receipts for AI Agents"
@@ -16,7 +16,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>What is a cryptographic receipt?</h2>
 
     <p>
-      A <strong>cryptographic receipt</strong> is a signed record produced at the end of an <a href={import.meta.env.BASE_URL}>AgentVault</a> session. It binds the session result to the exact conditions that governed it: the <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>, the output schema, the prompt template, the guardian policy, the model identity, and the relay build. The receipt is signed using <code>Ed25519</code> — a fast, widely supported digital signature scheme — and delivered to both parties as part of the session result.
+      A <strong>cryptographic receipt</strong> is a signed record produced at the end of a <a href={import.meta.env.BASE_URL}>Selkey</a> session. It binds the session result to the exact conditions that governed it: the <a href={`${import.meta.env.BASE_URL}coordination-contracts/`}>coordination contract</a>, the output schema, the prompt template, the guardian policy, the model identity, and the relay build. The receipt is signed using <code>Ed25519</code> — a fast, widely supported digital signature scheme — and delivered to both parties as part of the session result.
     </p>
 
     <p>
@@ -24,7 +24,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      A receipt does not prove that the coordination was good, useful, or fair. It proves <strong>what governed the session</strong> — which contract was in force, which schema constrained the output, and which policy was applied. This is the verification layer of AgentVault: it makes the session auditable after the fact, giving both parties a tamper-evident record of the rules that were enforced during their coordination.
+      A receipt does not prove that the coordination was good, useful, or fair. It proves <strong>what governed the session</strong> — which contract was in force, which schema constrained the output, and which policy was applied. This is the verification layer of Selkey: it makes the session auditable after the fact, giving both parties a tamper-evident record of the rules that were enforced during their coordination.
     </p>
 
     <h2>What receipts prove</h2>
@@ -98,7 +98,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      Receipt verification is fast and lightweight. <code>Ed25519</code> verification takes microseconds, making it practical to verify every receipt as a matter of routine rather than as an exceptional audit step. AgentVault provides a receipt verifier tool that checks the signature and displays the bound fields in human-readable form, so both parties can inspect exactly what was recorded without parsing the raw structure themselves.
+      Receipt verification is fast and lightweight. <code>Ed25519</code> verification takes microseconds, making it practical to verify every receipt as a matter of routine rather than as an exceptional audit step. Selkey provides a receipt verifier tool that checks the signature and displays the bound fields in human-readable form, so both parties can inspect exactly what was recorded without parsing the raw structure themselves.
     </p>
 
     <p>

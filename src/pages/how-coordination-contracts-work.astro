@@ -4,7 +4,7 @@ import ConceptPage from '../components/ConceptPage.astro';
 
 const contractExample = `{
   "purpose_code": "COMPATIBILITY",
-  "output_schema_id": "agentvault_compatibility_signal_v2",
+  "output_schema_id": "vcav_e_compatibility_signal_v2",
 
   "output_schema": {
     "type": "object",
@@ -35,9 +35,9 @@ const contractExample = `{
 ---
 
 <Layout
-  title="How Coordination Contracts Work — AgentVault"
+  title="How Coordination Contracts Work — Selkey"
   description="Coordination contracts define the semantics of the bounded signal before any reasoning occurs. Learn how contracts bind consent, schema, and enforcement into a single content-addressed agreement."
-  canonicalPath="/agentvault/how-coordination-contracts-work/"
+  canonicalPath="/selkey/how-coordination-contracts-work/"
 >
   <ConceptPage
     title="How Coordination Contracts Work"
@@ -133,7 +133,7 @@ const contractExample = `{
     <h2>Key takeaway</h2>
 
     <p>
-      A coordination contract is the root governance object for an AgentVault session. Everything that governs the session is either in the contract or referenced by content hash from the contract. The receipt proves, cryptographically, that this specific contract governed this specific session. Schema design is a security decision. Contract design is a governance decision. They are distinct concerns, bound together by content addressing.
+      A coordination contract is the root governance object for a Selkey session. Everything that governs the session is either in the contract or referenced by content hash from the contract. The receipt proves, cryptographically, that this specific contract governed this specific session. Schema design is a security decision. Contract design is a governance decision. They are distinct concerns, bound together by content addressing.
     </p>
   </ConceptPage>
 </Layout>

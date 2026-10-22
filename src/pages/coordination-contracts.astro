@@ -4,9 +4,9 @@ import ConceptPage from '../components/ConceptPage.astro';
 ---
 
 <Layout
-  title="Coordination Contracts for AI Agents — AgentVault"
+  title="Coordination Contracts for AI Agents — Selkey"
   description="A coordination contract is a machine-readable agreement that defines the purpose, output schema, and disclosure terms for an AI agent coordination session."
-  canonicalPath="/agentvault/coordination-contracts/"
+  canonicalPath="/selkey/coordination-contracts/"
 >
   <ConceptPage
     title="Coordination Contracts for AI Agents"
@@ -16,11 +16,11 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>What is a coordination contract?</h2>
 
     <p>
-      A coordination contract is a machine-readable agreement that governs an <a href={import.meta.env.BASE_URL}>AgentVault</a> session. It defines three things: the <strong>purpose</strong> of the coordination, the <strong>allowed output structure</strong> expressed as a JSON Schema, and the <strong>disclosure terms</strong> that both agents consent to before any private context is shared.
+      A coordination contract is a machine-readable agreement that governs a <a href={import.meta.env.BASE_URL}>Selkey</a> session. It defines three things: the <strong>purpose</strong> of the coordination, the <strong>allowed output structure</strong> expressed as a JSON Schema, and the <strong>disclosure terms</strong> that both agents consent to before any private context is shared.
     </p>
 
     <p>
-      Contracts are content-addressed — each contract is referenced by its SHA-256 hash. This means any change to the contract, no matter how small, produces a different hash, making tampering immediately detectable. The hash serves as the contract's unique identifier for the entire session and is embedded in every downstream artifact. Contracts are composed from content-addressed registry artefacts — schemas, policies, model profiles, and prompt programs — each independently verifiable by its SHA-256 digest. The <code>av-contract</code> CLI resolves artefacts by digest, alias, or channel reference and validates compatibility before producing the final contract.
+      Contracts are content-addressed — each contract is referenced by its SHA-256 hash. This means any change to the contract, no matter how small, produces a different hash, making tampering immediately detectable. The hash serves as the contract's unique identifier for the entire session and is embedded in every downstream artifact. Contracts are composed from content-addressed registry artefacts — schemas, policies, model profiles, and prompt programs — each independently verifiable by its SHA-256 digest. The <code>selkey-contract</code> CLI resolves artefacts by digest, alias, or channel reference and validates compatibility before producing the final contract.
     </p>
 
     <p>
@@ -45,7 +45,7 @@ import ConceptPage from '../components/ConceptPage.astro';
       A coordination contract makes the terms explicit and machine-readable. Both agents — and both users — know before the session begins what the session is for, what structure the output will take, and what the disclosure limits are. The contract is not a suggestion or a guideline. It is the structural specification that the relay enforces throughout the session. This is analogous to the difference between a handshake deal and a written contract: the written version can be inspected, verified, and enforced. In the agent coordination context, "written" means machine-readable, content-addressed, and cryptographically bound to the session's output.
     </p>
 
-    <h2>How coordination contracts work in AgentVault</h2>
+    <h2>How coordination contracts work in Selkey</h2>
 
     <p>
       A coordination contract is a structured document composed of several components, each serving a distinct role in the session. The contract includes a <strong>human-readable purpose statement</strong> that describes the coordination's intent in plain language — for example, "assess roommate compatibility" or "compare insurance plan suitability." This purpose statement has no enforcement role; it exists so that users and operators can understand what the session is designed to accomplish.
@@ -96,7 +96,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     <h2>Key takeaway</h2>
 
     <p>
-      A coordination contract is the foundation of every AgentVault session. It makes disclosure terms explicit, machine-readable, and cryptographically referenced before any sensitive context is shared. The contract defines what the session is for, what the output may contain, and how the model is directed — and these terms are enforced by the relay and recorded in the receipt.
+      A coordination contract is the foundation of every Selkey session. It makes disclosure terms explicit, machine-readable, and cryptographically referenced before any sensitive context is shared. The contract defines what the session is for, what the output may contain, and how the model is directed — and these terms are enforced by the relay and recorded in the receipt.
     </p>
 
     <p>

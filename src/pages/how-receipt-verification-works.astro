@@ -4,9 +4,9 @@ import ConceptPage from '../components/ConceptPage.astro';
 ---
 
 <Layout
-  title="How Receipt Verification Works — AgentVault"
+  title="How Receipt Verification Works — Selkey"
   description="Receipt verification requires the receipt, contract, policy, and public keys. It does not require the runtime, the operator, or the model. Step-by-step walkthrough of independent verification."
-  canonicalPath="/agentvault/how-receipt-verification-works/"
+  canonicalPath="/selkey/how-receipt-verification-works/"
 >
   <ConceptPage
     title="How Receipt Verification Works"
@@ -56,7 +56,7 @@ import ConceptPage from '../components/ConceptPage.astro';
     </p>
 
     <p>
-      <strong>Step 4: Build the signing message.</strong> Prepend the domain separator: <code>"VCAV-RECEIPT-V2:" + canonical_json_string</code>. The shared receipt namespace remains VCAV-prefixed for family compatibility across AgentVault and VCAV. The colon is part of the separator. No null byte, no length prefix, no newline.
+      <strong>Step 4: Build the signing message.</strong> Prepend the domain separator: <code>"VCAV-RECEIPT-V2:" + canonical_json_string</code>. The shared receipt namespace remains VCAV-prefixed for family compatibility across Selkey and VCAV. The colon is part of the separator. No null byte, no length prefix, no newline.
     </p>
 
     <p>

@@ -1,5 +1,5 @@
 ---
-import AVMark from './icons/AVMark.astro';
+import SelkeyMark from './icons/SelkeyMark.astro';
 import SiteFooter from './SiteFooter.astro';
 
 interface Props {
@@ -21,15 +21,15 @@ const concepts = [
 
 const articles = [
   { slug: 'why-agent-interoperability-needs-a-privacy-layer', label: 'Why Interop Needs a Privacy Layer' },
-  { slug: 'a2a-and-agentvault', label: 'A2A and AgentVault' },
+  { slug: 'a2a-and-selkey', label: 'A2A and Selkey' },
   { slug: 'structured-outputs-not-enough', label: 'Structured Outputs Are Not Enough' },
   { slug: 'how-to-stop-ai-agents-leaking-private-context', label: 'Stop Agents Leaking Context' },
   { slug: 'agents-reason-together', label: 'When Agents Reason Together' },
-  { slug: 'understanding-agentvault-guarantees', label: 'Understanding Guarantees' },
+  { slug: 'understanding-selkey-guarantees', label: 'Understanding Guarantees' },
   { slug: 'how-coordination-contracts-work', label: 'How Contracts Work' },
   { slug: 'guardian-policy-defense-in-depth', label: 'Guardian Policy' },
   { slug: 'how-receipt-verification-works', label: 'Receipt Verification' },
-  { slug: 'integrating-agentvault', label: 'Integration Guide' },
+  { slug: 'integrating-selkey', label: 'Integration Guide' },
 ];
 
 const relatedConcepts = concepts.filter(c => c.slug !== currentSlug);
@@ -38,9 +38,9 @@ const relatedArticles = articles.filter(a => a.slug !== currentSlug);
 
 <nav class="top-bar">
   <div class="container top-bar__inner">
-    <a href={base} class="top-bar__home" aria-label="AgentVault home">
-      <AVMark class="top-bar__mark" />
-      <span class="top-bar__name font-mono">AgentVault</span>
+    <a href={base} class="top-bar__home" aria-label="Selkey home">
+      <SelkeyMark class="top-bar__mark" />
+      <span class="top-bar__name font-mono">Selkey</span>
     </a>
     <a href={base} class="top-bar__back font-mono">&larr; Overview</a>
   </div>
@@ -68,9 +68,9 @@ const relatedArticles = articles.filter(a => a.slug !== currentSlug);
     <div class="concept-explore__inner">
       <h2 class="concept-explore__title">Explore the implementation</h2>
       <ul class="concept-explore__links">
-        <li><a href="https://github.com/vcav-io/agentvault" target="_blank" rel="noopener noreferrer">GitHub repository</a></li>
-        <li><a href="https://github.com/vcav-io/agentvault/blob/main/docs/protocol-spec.md" target="_blank" rel="noopener noreferrer">Protocol specification</a></li>
-        <li><a href="https://github.com/vcav-io/agentvault/blob/main/docs/getting-started.md" target="_blank" rel="noopener noreferrer">Run the demo</a></li>
+        <li><a href="https://github.com/vcav-io/selkey" target="_blank" rel="noopener noreferrer">GitHub repository</a></li>
+        <li><a href="https://github.com/vcav-io/selkey/blob/main/docs/protocol-spec.md" target="_blank" rel="noopener noreferrer">Protocol specification</a></li>
+        <li><a href="https://github.com/vcav-io/selkey/blob/main/docs/getting-started.md" target="_blank" rel="noopener noreferrer">Run the demo</a></li>
       </ul>
     </div>
   </div>

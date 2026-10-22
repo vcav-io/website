@@ -42,6 +42,6 @@ Hosted on Vercel. Pushes to `main` auto-deploy.
 
 ## Guardrails
 
-- Only AgentVault + VFC are public. VCAV is private / in development.
-- Protocol details must match shipped code in `vcav-io/agentvault` and `vcav-io/vfc`.
+- Only Selkey + VFC are public. VCAV is private / in development.
+- Protocol details must match shipped code in `vcav-io/selkey` and `vcav-io/vfc`.
 - No analytics, tracking, or cookies.
